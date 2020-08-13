@@ -1,0 +1,7 @@
+/__pycache__
+/.vscode
+/static/css/bootstrap.*
+/static/css/bootstrap-grid.*
+/static/css/bootstrap-reboot.*
+/static/js/*
+

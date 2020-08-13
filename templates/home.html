@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Garrett</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/static/css/more_styles.css" />
+
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="form-body">
+        <div class="content-section">
+          <form novalidate="novalidate" method="POST" action="">
+            <fieldset class="form-group">
+            <legend>Create Owner</legend>
+            <div class="form-group">
+              {{ form.firstName.label(class="form-control-md") }} 
+              {% if form.firstName.errors %} 
+              {{ form.firstName(class="form-control form-control-md is-invalid") }}
+              <div class="invalid-feedback">
+                {% for error in form.firstName.errors %}
+                <span>{{ error }}</span>
+                {% endfor %}
+              </div>
+              {% else %} 
+              {{ form.firstName(class="form-control form-control-md")}} 
+              {% endif %}
+              </div>
+              </fieldset>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
