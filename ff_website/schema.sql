@@ -1,0 +1,8 @@
+DROP TABLE IF EXISTS members;
+
+CREATE TABLE members
+(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    firstname TEXT UNIQUE NOT NULL,
+    lastname TEXT UNIQUE NOT NULL
+);
