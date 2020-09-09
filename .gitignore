@@ -1,4 +1,5 @@
-/__pycache__
+ff_website/__pycache__
+__pycache__
 /.vscode
 ff_website/static/css/bootstrap.*
 ff_website/static/css/bootstrap-grid.*
