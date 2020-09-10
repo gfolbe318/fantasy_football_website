@@ -5,4 +5,5 @@ ff_website/static/css/bootstrap.*
 ff_website/static/css/bootstrap-grid.*
 ff_website/static/css/bootstrap-reboot.*
 ff_website/static/js/*
+env/
 
