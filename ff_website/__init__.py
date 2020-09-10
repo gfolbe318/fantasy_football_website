@@ -1,6 +1,5 @@
-import os
 from flask import Flask
-
+import os
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
@@ -22,8 +21,8 @@ def create_app(test_config=None):
     from . import db
     db.init_app(app)
 
-    @app.route("/")
-    def hello():
-        return "Hello, world"
-
     return app
+
+
+app = create_app()
+import ff_website.index
