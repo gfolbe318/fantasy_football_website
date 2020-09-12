@@ -6,5 +6,5 @@ ff_website/static/css/bootstrap-grid.*
 ff_website/static/css/bootstrap-reboot.*
 ff_website/static/js/*
 venv/
-intance/
+instance/
 ff_website.egg-info/
