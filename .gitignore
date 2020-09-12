@@ -1,9 +1,10 @@
 ff_website/__pycache__
-__pycache__
-/.vscode
+__pycache__/
+.vscode/
 ff_website/static/css/bootstrap.*
 ff_website/static/css/bootstrap-grid.*
 ff_website/static/css/bootstrap-reboot.*
 ff_website/static/js/*
 venv/
-
+intance/
+ff_website.egg-info/
