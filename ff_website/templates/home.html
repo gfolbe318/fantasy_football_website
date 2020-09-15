@@ -67,13 +67,15 @@
         <div class="row">
           <h1>Meet the league</h1>
         </div>
-        <div class="row">
-          {% for photo in photos %}
-          <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 buffer">
-            <img class="avi" src="{{photo}}" />
-            <p class="name">Garrett</p>
+        <div class="x">
+          <div class="row">
+            {% for photo in photos %}
+            <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 buffer">
+              <img class="avi" src="{{photo}}" />
+              <p class="name">Garrett</p>
+            </div>
+            {% endfor %}
           </div>
-          {% endfor %}
         </div>
       </div>
     </div>
