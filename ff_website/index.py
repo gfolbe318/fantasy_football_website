@@ -5,7 +5,9 @@ from ff_website import app
 
 @app.route("/", methods=["GET", "POST"])
 def hello():
-    return "Hello world!"
+    photo = "static/img/gmf.jpg"
+    l = [photo for _ in range(12)]
+    return render_template("home.html", photos=l)
 
 
 @app.route("/test", methods=["GET", "POST"])
