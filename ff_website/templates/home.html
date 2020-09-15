@@ -7,12 +7,14 @@
       type="text/css"
       href="{{ url_for('static', filename='css/bootstrap.css') }}"
     />
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link
       rel="stylesheet"
       type="text/css"
       href="{{ url_for('static', filename='css/additional.css') }}"
     />
-    <link rel="shortcut icon" href="#" />
 
     <script
       src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
@@ -67,7 +69,7 @@
         </div>
         <div class="row">
           {% for photo in photos %}
-          <div class="col buffer">
+          <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 buffer">
             <img class="avi" src="{{photo}}" />
             <p class="name">Garrett</p>
           </div>
