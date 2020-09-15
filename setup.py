@@ -7,7 +7,7 @@ setup(
     install_requires=[
         "autopep8",
         "click",
-        "flask",
+        "Flask",
         "flask-CLI",
         "itsdangerous",
         "jinja2",
