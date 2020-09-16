@@ -4,8 +4,8 @@ body {
   width: 100%;
 }
 
-.bg-custom {
-  background-color: white;
+body {
+  padding-top: 55px;
 }
 
 #home {

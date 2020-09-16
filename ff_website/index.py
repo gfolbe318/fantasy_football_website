@@ -10,6 +10,11 @@ def hello():
     return render_template("home.html", photos=l)
 
 
+@app.route("/members", methods=["GET", "POST"])
+def members():
+        return render_template("members.html")
+
+
 @app.route("/test", methods=["GET", "POST"])
 def test():
     return "Hello world"
