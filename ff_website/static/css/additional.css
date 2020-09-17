@@ -12,7 +12,7 @@ body {
   background: url("../img/college-football-general.jpg") no-repeat center center
     fixed;
   display: table;
-  height: 80%;
+  height: 100%;
   position: relative;
   width: 100%;
   background-size: cover;
@@ -59,4 +59,21 @@ h1 {
 
 .no-side-padding {
   padding: 0px;
+}
+
+.content {
+  width: 70%;
+  background-color: white;
+}
+
+@media (max-width: 500px) {
+  .content {
+    width: 100%;
+  }
+}
+
+@media (min-width: 500px) and (max-width: 900px) {
+  .content {
+    width: 85%;
+  }
 }

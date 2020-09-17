@@ -5,14 +5,14 @@ from ff_website import app
 
 @app.route("/", methods=["GET", "POST"])
 def hello():
-    photo = "static/img/gmf.jpg"
-    l = [photo for _ in range(12)]
-    return render_template("home.html", photos=l)
+    return render_template("home.html")
 
 
 @app.route("/members", methods=["GET", "POST"])
 def members():
-        return render_template("members.html")
+    photo = "static/img/gmf.jpg"
+    l = [photo for _ in range(12)]
+    return render_template("members.html",  photos=l)
 
 
 @app.route("/test", methods=["GET", "POST"])

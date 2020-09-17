@@ -4,22 +4,65 @@
     <h1>BOOTSTRAP</h1>
   </div>
 </div>
-<div id="members" class="container-fluid">
+<div class="container-fluid content">
   <div class="row">
-    <h1>Meet the league</h1>
+    Proin ut justo sit amet ipsum sollicitudin efficitur vitae ac augue.
+    Curabitur dignissim lorem nunc, nec viverra arcu faucibus quis. Fusce eget
+    tincidunt neque. Morbi iaculis tellus eget dui rhoncus hendrerit. Sed a
+    augue at lorem lacinia imperdiet nec non nisi. Curabitur faucibus ligula
+    tincidunt dolor imperdiet, gravida aliquam eros ornare. Donec ipsum nisi,
+    rutrum ut volutpat sit amet, finibus a metus. Duis tincidunt vitae lectus
+    vel mollis. Nam suscipit a nisl non ornare. Aenean id lorem in ex fermentum
+    egestas a nec lectus.
   </div>
   <div class="row">
-    {% for photo in photos %}
-    <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 buffer">
-      <img class="avi" src="{{photo}}" />
-      <p class="name">Garrett</p>
+    <h1>QUICKLINKS</h1>
+  </div>
+  <div class="container-fluid">
+    <div class="card-deck">
+      <div class="card">
+        <img
+          src="{{ url_for('static', filename='img/current_season.png') }}"
+          class="card-img-top"
+          alt="..."
+        />
+        <div class="card-body">
+          <h5 class="card-title">Current Season</h5>
+          <p class="card-text">
+            Current information about this season, including: standings,
+            announcements, and more.
+          </p>
+        </div>
+      </div>
+      <div class="card">
+        <img
+          src="{{ url_for('static', filename='img/archives.png') }}"
+          class="card-img-top"
+          alt="..."
+        />
+        <div class="card-body">
+          <h5 class="card-title">Archives</h5>
+          <p class="card-text">
+            Browse through members of previous seasons, pull up historical
+            results, and compare league members head to head.
+          </p>
+        </div>
+      </div>
+      <div class="card">
+        <img
+          src="{{ url_for('static', filename='img/hall_of_fame.png') }}"
+          class="card-img-top"
+          alt="..."
+        />
+        <div class="card-body">
+          <h5 class="card-title">Hall of Fame</h5>
+          <p class="card-text">
+            View the names of the enshrined members of our league who have
+            etched their names in the history books.
+          </p>
+        </div>
+      </div>
     </div>
-    {% endfor %}
-  </div>
-</div>
-<div id="stafford">
-  <div class="landing-text">
-    <h1>BOOTSTRAP</h1>
   </div>
 </div>
 
