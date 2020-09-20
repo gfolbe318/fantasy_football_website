@@ -6,64 +6,18 @@
 </div>
 <div class="container-fluid content">
   <div class="row">
-    Proin ut justo sit amet ipsum sollicitudin efficitur vitae ac augue.
-    Curabitur dignissim lorem nunc, nec viverra arcu faucibus quis. Fusce eget
-    tincidunt neque. Morbi iaculis tellus eget dui rhoncus hendrerit. Sed a
-    augue at lorem lacinia imperdiet nec non nisi. Curabitur faucibus ligula
-    tincidunt dolor imperdiet, gravida aliquam eros ornare. Donec ipsum nisi,
-    rutrum ut volutpat sit amet, finibus a metus. Duis tincidunt vitae lectus
-    vel mollis. Nam suscipit a nisl non ornare. Aenean id lorem in ex fermentum
-    egestas a nec lectus.
-  </div>
-  <div class="row">
-    <h1>QUICKLINKS</h1>
-  </div>
-  <div class="container-fluid">
-    <div class="card-deck">
-      <div class="card">
-        <img
-          src="{{ url_for('static', filename='img/current_season.png') }}"
-          class="card-img-top"
-          alt="..."
-        />
-        <div class="card-body">
-          <h5 class="card-title">Current Season</h5>
-          <p class="card-text">
-            Current information about this season, including: standings,
-            announcements, and more.
-          </p>
-        </div>
+    {% for l in ql %}
+    <div class="col-xl-3 col-md-6 col-sm-12 ql">
+      <div class="row"><img src="{{l.img_file}}" class="ql-img mx-auto" /></div>
+      <div class="row justify-content-center">
+        <h5>{{l.title}}</h5>
       </div>
-      <div class="card">
-        <img
-          src="{{ url_for('static', filename='img/archives.png') }}"
-          class="card-img-top"
-          alt="..."
-        />
-        <div class="card-body">
-          <h5 class="card-title">Archives</h5>
-          <p class="card-text">
-            Browse through members of previous seasons, pull up historical
-            results, and compare league members head to head.
-          </p>
-        </div>
-      </div>
-      <div class="card">
-        <img
-          src="{{ url_for('static', filename='img/hall_of_fame.png') }}"
-          class="card-img-top"
-          alt="..."
-        />
-        <div class="card-body">
-          <h5 class="card-title">Hall of Fame</h5>
-          <p class="card-text">
-            View the names of the enshrined members of our league who have
-            etched their names in the history books.
-          </p>
-        </div>
+      <div class="row text-center justify-content-center">
+        <hr />
+        <p>{{l.description}}</p>
       </div>
     </div>
+    {% endfor %}
   </div>
 </div>
-
 {% endblock content %}

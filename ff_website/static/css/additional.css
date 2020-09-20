@@ -6,6 +6,7 @@ body {
 
 body {
   padding-top: 55px;
+  background-color: lightblue;
 }
 
 #home {
@@ -62,7 +63,9 @@ h1 {
 }
 
 .content {
-  width: 70%;
+  padding-top: 2rem;
+  width: 60%;
+  height: 100%;
   background-color: white;
 }
 
@@ -74,6 +77,25 @@ h1 {
 
 @media (min-width: 500px) and (max-width: 900px) {
   .content {
-    width: 85%;
+    width: 80%;
   }
+}
+
+.ql {
+  padding-left: 2rem;
+  padding-right: 2rem;
+  margin-bottom: 2rem;
+  /* margin: auto; */
+}
+
+.ql-img {
+  height: 5rem;
+  width: 5rem;
+}
+
+hr {
+  border: 0.25px solid black;
+  width: 50%;
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
 }
