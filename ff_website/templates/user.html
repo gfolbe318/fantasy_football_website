@@ -1,0 +1,15 @@
+{% extends "layout.html" %} {% block content %}
+<div class="container-fluid content">
+  <div class="row">
+    <div class="col-3">
+      <img
+        src="{{url_for('static', filename='img/gmf.jpg')}}"
+        class="user_img d-block mx-auto"
+      />
+    </div>
+    <div class="col-9">
+      <p>hello</p>
+    </div>
+  </div>
+</div>
+{% endblock content %}

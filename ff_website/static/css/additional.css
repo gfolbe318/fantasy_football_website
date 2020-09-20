@@ -1,9 +1,3 @@
-html,
-body {
-  height: 100%;
-  width: 100%;
-}
-
 body {
   padding-top: 55px;
   background-color: lightblue;
@@ -37,6 +31,7 @@ body {
 .avi {
   min-height: 10rem;
   min-width: 10rem;
+
   max-height: 90%;
   max-width: 90%;
   margin: auto;
@@ -95,7 +90,7 @@ h1 {
 
 hr {
   border: 0.25px solid black;
-  width: 50%;
+  width: 5rem;
   margin-top: 0.25rem;
   margin-bottom: 0.25rem;
 }
