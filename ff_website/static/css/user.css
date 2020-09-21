@@ -20,8 +20,9 @@
 }
 
 .stat {
-  margin-top: 1rem;
+  margin-bottom: 2rem;
 }
+
 th:first-child,
 td:first-child {
   position: sticky;
