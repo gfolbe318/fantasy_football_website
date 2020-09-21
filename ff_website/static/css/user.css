@@ -36,3 +36,40 @@ td:first-child {
 tr {
   text-align: center;
 }
+
+.panel {
+  margin-bottom: 20px;
+  background-color: #fff;
+  border: none;
+  border-radius: 0;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+.panel-group .panel {
+  margin-bottom: 0;
+  border-radius: 0;
+}
+.panel-group .panel + .panel {
+  margin-top: 0;
+}
+.panel-default {
+  border: none;
+}
+.panel-heading {
+  padding: 20px 15px;
+  border: none;
+  border-radius: 0;
+}
+.panel-default > .panel-heading {
+  color: #333;
+  background: none;
+  border-top: 1px solid #ddd;
+}
+.panel-default > .panel-heading + .panel-collapse > .panel-body {
+  border: none;
+}
+.panel-heading .accordion-toggle::before {
+  content: "\22c1";
+  float: right;
+  color: grey;
+}

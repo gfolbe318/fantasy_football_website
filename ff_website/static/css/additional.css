@@ -37,11 +37,7 @@ body {
   max-width: 90%;
   margin: auto;
   display: block;
-}
-
-.buffer {
-  padding-bottom: 20px;
-  text-align: center;
+  border-radius: 2rem;
 }
 
 #members {
@@ -59,7 +55,7 @@ h1 {
 }
 
 .content {
-  padding-top: 2rem;
+  padding-top: 1rem;
   width: 60%;
   background-color: white;
 }
@@ -93,4 +89,10 @@ hr {
   width: 5rem;
   margin-top: 0.25rem;
   margin-bottom: 0.25rem;
+}
+
+.member-card {
+  padding: 1rem;
+  justify-content: center;
+  text-align: center;
 }
