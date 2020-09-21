@@ -38,6 +38,6 @@ def members():
     return render_template("league_members.html",  photos=l)
 
 
-@app.route("/test", methods=["GET", "POST"])
+@app.route("/members/2", methods=["GET", "POST"])
 def test():
-    return "Hello world"
+    return render_template("user.html")

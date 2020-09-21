@@ -1,4 +1,35 @@
 .user_img {
   width: 90%;
   margin: 0;
+  border-radius: 2rem;
+}
+
+.bio-group {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.bio-elem {
+  padding-top: 1rem;
+  font-size: 1.25rem;
+}
+
+.stat-title {
+  text-decoration: underline;
+}
+
+.stat {
+  margin-top: 1rem;
+}
+th:first-child,
+td:first-child {
+  position: sticky;
+  left: 0px;
+  background-color: lightgray;
+}
+
+.table td,
+tr {
+  text-align: center;
 }
