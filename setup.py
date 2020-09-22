@@ -16,6 +16,8 @@ setup(
         "pycodestyle",
         "setuptools",
         "toml",
-        "Werkzeug"
+        "Werkzeug",
+        "Flask-WTF",
+        "WTForms"
     ],
 )
