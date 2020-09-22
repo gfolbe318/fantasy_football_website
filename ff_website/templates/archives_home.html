@@ -1,0 +1,51 @@
+{% extends "layout.html" %} {% block content %}
+<div class="container-fluid content h-100" style="vertical-align: middle">
+  <div class="row text-center">
+    <div class="col-12">
+      <h1>Archives</h1>
+      <p>
+        Welcome to the archives. At your fingertips lies the storied tale of our
+        great league. Dive into history by clicking on one of the links below to
+        get started.
+      </p>
+    </div>
+  </div>
+  <div class="row justify-content-center text-center">
+    <div class="col-md-7">
+      <div class="list-group">
+        <a
+          href="{{ url_for('h2h') }}"
+          class="list-group-item list-group-item-action"
+        >
+          <h5 class="mb-1">Player H2H Comparison</h5>
+          <p class="mb-1">
+            See how two league members compare by viewing all historial matchups
+            between any two members.
+          </p>
+        </a>
+        <a class="list-group-item list-group-item-action">
+          <h5 class="mb-1">Range of Games</h5>
+          <p class="mb-1">
+            View all games played within a range of dates, at a specific week in
+            the season, and more.
+          </p>
+        </a>
+        <a href="#" class="list-group-item list-group-item-action">
+          <h5 class="mb-1">Game Qualities</h5>
+
+          <p class="mb-1">
+            View games that meet a specific range of qualities such as margin of
+            defeat or points scored.
+          </p>
+        </a>
+        <a href="#" class="list-group-item list-group-item-action">
+          <h5 class="mb-1">Season Summary</h5>
+          <p class="mb-1">
+            View full season summaries of every year on record.
+          </p>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
