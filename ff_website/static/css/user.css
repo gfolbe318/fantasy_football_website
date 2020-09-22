@@ -73,3 +73,10 @@ tr {
   float: right;
   color: grey;
 }
+
+.separator {
+  width: 80%;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  height: 0px;
+}

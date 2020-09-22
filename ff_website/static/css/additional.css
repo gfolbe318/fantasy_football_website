@@ -1,7 +1,11 @@
+html,
+body {
+  height: 100%;
+}
+
 body {
   padding-top: 55px;
   background-color: lightblue;
-  height: 100%;
 }
 
 #home {
