@@ -5,3 +5,11 @@
   margin-bottom: 15px;
   border-radius: 10px;
 }
+
+.form-control.is-invalid {
+  background-image: none;
+}
+
+#matchup-summary {
+  margin: 1rem;
+}
