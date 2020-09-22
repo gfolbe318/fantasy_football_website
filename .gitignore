@@ -10,3 +10,4 @@ instance/
 ff_website.egg-info/
 img/
 sitemap.txt
+ff_website/credentials.py

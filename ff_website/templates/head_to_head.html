@@ -1,0 +1,54 @@
+{% extends "layout.html" %} {% block content %}
+<div class="container-fluid content">
+  <div class="row">
+    <div class="col-12">
+      <ul class="list-group">
+        <li class="list-group-item active">Player H2H Comparison</li>
+        <li class="list-group-item">Range of Games</li>
+        <li class="list-group-item">Game Qualities</li>
+        <li class="list-group-item">Season Summary</li>
+      </ul>
+    </div>
+  </div>
+  <div class="form-body">
+    <div class="content-section">
+      <form novalidate="novalidate" method="POST">
+        <fieldset class="form-group">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+          <legend>Compare Two Members</legend>
+          <div class="form-group">
+            {{ form.leagueMemberOne.label(class="form-control-md") }} {% if
+            form.leagueMemberOne.errors %} {{
+            form.leagueMemberOne(class="form-control form-control-md
+            is-invalid") }}
+            <div class="invalid-feedback">
+              {% for error in form.leagueMemberOne.errors %}
+              <span>{{ error }}</span>
+              {% endfor %}
+            </div>
+            {% else %} {{ form.leagueMemberOne(class="form-control
+            form-control-md") }} {% endif %}
+          </div>
+
+          <div class="form-group">
+            {{ form.leagueMemberTwo.label(class="form-control-md") }} {% if
+            form.leagueMemberTwo.errors %} {{
+            form.leagueMemberTwo(class="form-control form-control-md
+            is-invalid") }}
+            <div class="invalid-feedback">
+              {% for error in form.leagueMemberTwo.errors %}
+              <span>{{ error }}</span>
+              {% endfor %}
+            </div>
+            {% else %} {{ form.leagueMemberTwo(class="form-control
+            form-control-md") }} {% endif %}
+          </div>
+        </fieldset>
+        <div class="form-group">
+          {{ form.submit(class="btn btn-outline-info")}}
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock content %}
