@@ -19,9 +19,19 @@ class H2H(FlaskForm):
     owners = [("", "Please select a league member..."), (1, "Garrett Folbe"),
               (2, "Noah Nathan"), (3, "Jason Silverstone")]
 
-    leagueMemberOne = SelectField(
-        "League Member One", choices=owners, validators=[DataRequired()])
-    leagueMemberTwo = SelectField(
-        "League Member Two", choices=owners, validators=[DataRequired()])
+    def valid_names_one(self, leagueMemberOne):
+        print("here")
+        if self.leagueMemberTwo.data == leagueMemberOne.data:
+            raise ValidationError("Cannot compare two of the same members")
 
-    submit = SubmitField("Submit")
+    def valid_names_two(self, leagueMemberTwo):
+        print("here")
+        if self.leagueMemberOne.data == leagueMemberTwo.data:
+            raise ValidationError("Cannot compare two of the same members")
+
+    leagueMemberOne = SelectField(
+        "League Member One", choices=owners, validators=[DataRequired(), valid_names_one])
+    leagueMemberTwo = SelectField(
+        "League Member Two", choices=owners, validators=[DataRequired(), valid_names_two])
+
+    submit = SubmitField("Compare members")
