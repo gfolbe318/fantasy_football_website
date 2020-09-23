@@ -4,6 +4,7 @@
   margin-top: 15px;
   margin-bottom: 15px;
   border-radius: 10px;
+  border: 1px solid lightgrey;
 }
 
 .form-control.is-invalid {
@@ -12,4 +13,17 @@
 
 #matchup-summary {
   margin: 1rem;
+  font-size: 1.25rem;
+}
+
+th.no-color:first-child,
+td.no-color:first-child {
+  position: sticky;
+  left: 0px;
+  background-color: lightgray;
+}
+
+.small-pic {
+  height: 10rem;
+  width: 10rem;
 }

@@ -10,53 +10,61 @@
       </ul>
     </div>
   </div>
-  <div class="form-body">
-    <div class="content-section">
-      <form novalidate="novalidate" method="POST">
-        <fieldset class="form-group">
-          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-          <legend>Select Two Members</legend>
-          <div class="row">
-            <div class="col-md-6 sol-sm-12">
-              <div class="form-group">
-                {{ form.leagueMemberOne.label(class="form-control-md") }} {% if
-                form.leagueMemberOne.errors %} {{
-                form.leagueMemberOne(class="form-control form-control-md
-                is-invalid") }}
-                <div class="invalid-feedback">
-                  {% for error in form.leagueMemberOne.errors %}
-                  <span>{{ error }}</span>
-                  {% endfor %}
+  <div class="row">
+    <div class="col-12">
+      <div class="form-body">
+        <div class="content-section">
+          <form novalidate="novalidate" method="POST">
+            <fieldset class="form-group">
+              <input
+                type="hidden"
+                name="csrf_token"
+                value="{{ csrf_token() }}"
+              />
+              <legend>Select Two Members</legend>
+              <div class="row">
+                <div class="col-md-6 sol-sm-12">
+                  <div class="form-group">
+                    {{ form.leagueMemberOne.label(class="form-control-md") }} {%
+                    if form.leagueMemberOne.errors %} {{
+                    form.leagueMemberOne(class="form-control form-control-md
+                    is-invalid") }}
+                    <div class="invalid-feedback">
+                      {% for error in form.leagueMemberOne.errors %}
+                      <span>{{ error }}</span>
+                      {% endfor %}
+                    </div>
+                    {% else %} {{ form.leagueMemberOne(class="form-control
+                    form-control-md") }} {% endif %}
+                  </div>
                 </div>
-                {% else %} {{ form.leagueMemberOne(class="form-control
-                form-control-md") }} {% endif %}
+                <div class="col-md-6 sol-sm-12">
+                  <div class="form-group">
+                    {{ form.leagueMemberTwo.label(class="form-control-md") }} {%
+                    if form.leagueMemberTwo.errors %} {{
+                    form.leagueMemberTwo(class="form-control form-control-md
+                    is-invalid") }}
+                    <div class="invalid-feedback">
+                      {% for error in form.leagueMemberTwo.errors %}
+                      <span>{{ error }}</span>
+                      {% endfor %}
+                    </div>
+                    {% else %} {{ form.leagueMemberTwo(class="form-control
+                    form-control-md") }} {% endif %}
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+            <div class="row">
+              <div class="col-12 text-center">
+                <div class="form-group">
+                  {{ form.submit(class="btn btn-outline-info")}}
+                </div>
               </div>
             </div>
-            <div class="col-md-6 sol-sm-12">
-              <div class="form-group">
-                {{ form.leagueMemberTwo.label(class="form-control-md") }} {% if
-                form.leagueMemberTwo.errors %} {{
-                form.leagueMemberTwo(class="form-control form-control-md
-                is-invalid") }}
-                <div class="invalid-feedback">
-                  {% for error in form.leagueMemberTwo.errors %}
-                  <span>{{ error }}</span>
-                  {% endfor %}
-                </div>
-                {% else %} {{ form.leagueMemberTwo(class="form-control
-                form-control-md") }} {% endif %}
-              </div>
-            </div>
-          </div>
-        </fieldset>
-        <div class="row">
-          <div class="col-12 text-center">
-            <div class="form-group">
-              {{ form.submit(class="btn btn-outline-info")}}
-            </div>
-          </div>
+          </form>
         </div>
-      </form>
+      </div>
     </div>
   </div>
   <div class="row">
@@ -64,65 +72,91 @@
       <h1>Head to Head Results</h1>
     </div>
   </div>
-  <div class="row">
-    <div class=col-12">
-    <p id="matchup-summary">
-      Alex Ross and Garrett Folbe have played <b>5</b> times with Alex Ross
-      holding a <b>3-2 series lead</b> overall. <b>3</b> of these matchups have
-      come in the regular season, and <b>2</b> have been in the playoffs. The
-      two teams have combined for a total of <b>1234.5</b> points, with an
-      average matchup score of <b>82.5-71</b> in favor of Garrett Folbe.
-      Currently, Alex holds a <b>1 game win streak</b> in the series.
-    </p>
+  <div class="row text-center">
+    <div class="col-6">
+      <div class="card float-right h2h-card">
+        <img
+          class="card-img-top small-pic"
+          src="{{url_for('static', filename='img/gmf.jpg')}}"
+        />
+        <div class="card-body">
+          <p class="card-text">Garrett Folbe</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-6">
+      <div class="card float-left h2h-card">
+        <img
+          class="card-img-top small-pic"
+          src="{{url_for('static', filename='img/gmf.jpg')}}"
+        />
+        <div class="card-body">
+          <p class="card-text">Garrett Folbe</p>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
 
-<div class="col-12">
-  <div
-    class="table-responsive-sm table-responsive-md table-responsive-xs table-responsive justify-content-center"
-  >
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th scope="col">#</th>
-          <th scope="col">Season</th>
-          <th scope="col">Week</th>
-          <th scope="col">Matchup Format</th>
-          <th scope="col">Winning Team</th>
-          <th scope="col">Losing Team</th>
-          <th scope="col">Score</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <th scope="row">1</th>
-          <td>2020</td>
-          <td>13</td>
-          <td>Playoffs</td>
-          <td>Alex Ross</td>
-          <td>Garrett Folbe</td>
-          <td>100.2-91.6</td>
-        </tr>
-        <tr>
-          <th scope="row">2</th>
-          <td>2020</td>
-          <td>13</td>
-          <td>Reg. Season</td>
-          <td>Alex Ross</td>
-          <td>Garrett Folbe</td>
-          <td>100.2-91.6</td>
-        </tr>
-        <tr>
-          <th scope="row">2</th>
-          <td>2020</td>
-          <td>13</td>
-          <td>Playoffs</td>
-          <td>Alex Ross</td>
-          <td>Garrett Folbe</td>
-          <td>100.2-91.6</td>
-        </tr>
-      </tbody>
-    </table>
+  <div class="row justify-content-center">
+    <div class="col-lg-10 col-sm-12 text-center">
+      <p id="matchup-summary">
+        Alex Ross and Garrett Folbe have played <b>5</b> times with Alex Ross
+        holding a <b>3-2 series lead</b> overall. <b>3</b> of these matchups
+        have come in the regular season, and <b>2</b> have been in the playoffs.
+        The two teams have combined for a total of <b>1234.5</b> points, with an
+        average matchup score of <b>82.5-71</b> in favor of Garrett Folbe.
+        Currently, Alex holds a <b>1 game win streak</b> in the series.
+      </p>
+    </div>
   </div>
+
+  <div class="col-12">
+    <div
+      class="table-responsive-sm table-responsive-md table-responsive-xs table-responsive justify-content-center"
+    >
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Season</th>
+            <th scope="col">Week</th>
+            <th scope="col">Matchup Format</th>
+            <th scope="col">Winning Team</th>
+            <th scope="col">Losing Team</th>
+            <th scope="col">Score</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">1</th>
+            <td>2020</td>
+            <td>13</td>
+            <td>Playoffs</td>
+            <td>Alex Ross</td>
+            <td>Garrett Folbe</td>
+            <td>100.2-91.6</td>
+          </tr>
+          <tr>
+            <th scope="row">2</th>
+            <td>2020</td>
+            <td>13</td>
+            <td>Reg. Season</td>
+            <td>Alex Ross</td>
+            <td>Garrett Folbe</td>
+            <td>100.2-91.6</td>
+          </tr>
+          <tr>
+            <th scope="row">2</th>
+            <td>2020</td>
+            <td>13</td>
+            <td>Playoffs</td>
+            <td>Alex Ross</td>
+            <td>Garrett Folbe</td>
+            <td>100.2-91.6</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% endblock content %}
 </div>
-{% endblock content %}
