@@ -23,19 +23,14 @@
             between any two members.
           </p>
         </a>
-        <a class="list-group-item list-group-item-action">
-          <h5 class="mb-1">Range of Games</h5>
-          <p class="mb-1">
-            View all games played within a range of dates, at a specific week in
-            the season, and more.
-          </p>
-        </a>
-        <a href="#" class="list-group-item list-group-item-action">
+        <a
+          href="{{ url_for('game_qualities') }}"
+          class="list-group-item list-group-item-action"
+        >
           <h5 class="mb-1">Game Qualities</h5>
-
           <p class="mb-1">
-            View games that meet a specific range of qualities such as margin of
-            defeat or points scored.
+            View all games filtered by multiple qualities such as date played,
+            points scored, margin of victory, etc.
           </p>
         </a>
         <a href="#" class="list-group-item list-group-item-action">
