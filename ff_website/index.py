@@ -1,6 +1,7 @@
 from flask import render_template, request, url_for
 from ff_website.db import get_db
 from ff_website import app
+from forms import H2H
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -41,3 +42,19 @@ def members():
 @app.route("/members/2", methods=["GET", "POST"])
 def test():
     return render_template("user.html")
+
+
+@app.route("/archives/", methods=["GET", "POST"])
+def archives_home():
+    return render_template("archives_home.html")
+
+
+@app.route("/archives/head_to_head", methods=["GET", "POST"])
+def h2h():
+    form = H2H()
+    if form.validate_on_submit():
+        print("succeeded")
+    else:
+        print("failed")
+
+    return render_template("head_to_head.html", form=form)
