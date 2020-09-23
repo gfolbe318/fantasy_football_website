@@ -58,3 +58,8 @@ def h2h():
         print("failed")
 
     return render_template("head_to_head.html", form=form)
+
+
+@app.route("/archives/game_qualities", methods=["GET", "POST"])
+def game_qualities():
+    return render_template("game_qualities.html")
