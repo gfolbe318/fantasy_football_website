@@ -1,7 +1,7 @@
-from flask import render_template, request, url_for
+from flask import render_template, request, url_for, jsonify
 from ff_website.db import get_db
 from ff_website import app
-from forms import H2H
+from forms import GameQualities, HeadToHead
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -51,7 +51,7 @@ def archives_home():
 
 @app.route("/archives/head_to_head", methods=["GET", "POST"])
 def h2h():
-    form = H2H()
+    form = HeadToHead()
     if form.validate_on_submit():
         print("succeeded")
     else:
@@ -62,4 +62,28 @@ def h2h():
 
 @app.route("/archives/game_qualities", methods=["GET", "POST"])
 def game_qualities():
-    return render_template("game_qualities.html")
+    form = GameQualities()
+    if form.validate_on_submit():
+        print(form.data["filter"])
+        print("succeeded")
+    else:
+        print("failed")
+    return render_template("game_qualities.html", form=form)
+
+
+@app.route("/apis/all_members", methods=["GET"])
+def get_members():
+    """
+    SELECT member_id, first_name, last_name FROM members....
+    """
+
+    return jsonify(
+        [
+            {"member_id": 1,
+             "name": "Garrett Folbe"},
+            {"member_id": 2,
+             "name": "Noah Nathan"},
+            {"member_id": 3,
+             "name": "Merrick Weingarten"}
+        ]
+    )

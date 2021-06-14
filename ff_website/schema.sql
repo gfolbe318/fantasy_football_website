@@ -16,7 +16,7 @@ CREATE TABLE game
     game_id INTEGER PRIMARY KEY,
     team_A_score FLOAT NOT NULL,
     team_B_score FLOAT NOT NULL,
-    matchup_date TEXT NOT NULL,
+    season INTEGER NOT NULL,
     week INTEGER NOT NULL,
     matchup_length INTEGER NOT NULL,
     playoffs INTEGER NOT NULL,
