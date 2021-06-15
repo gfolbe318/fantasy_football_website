@@ -1,0 +1,56 @@
+{
+    "2017": {
+        "1": "Noah Nathan",    
+        "2": "Brad Silverman",
+        "3": "Dylan Wittenberg",
+        "4": "Jarrett Black",
+        "5": "Daniel Banooni",
+        "6": "Merrick Weingarten",
+        "7": "Alex Ross",
+        "8": "Jason Silverstone",
+        "9": "Garrett Folbe",
+        "10": "CJ Drogosch"
+    },
+    "2018": {
+        "1": "Alex Ross",
+        "2": "Daniel Banooni",
+        "3": "Garrett Folbe",
+        "4": "Noah Nathan",
+        "5": "Jonah Lopas",
+        "6": "Dylan Wittenberg",
+        "7": "Brad Silverman",
+        "8": "Merrick Bank",
+        "9": "CJ Drogosch",
+        "10": "Jason Silverstone",
+        "11": "Merrick Weingarten",
+        "12": "Jarrett Black"
+    },
+    "2019":{
+        "1" : "Alex Ross",
+        "2" : "Jonah Lopas",
+        "3" : "Merrick Bank",
+        "4" : "Dylan Wittenberg",
+        "5" : "Brad Silverman",
+        "6" : "Noah Nathan",
+        "7" : "Jason Silverstone",
+        "8" : "Daniel Banooni",
+        "9" : "Merrick Weingarten",
+        "10" : "Jarrett Black",
+        "11" : "CJ Drogosch",
+        "12" : "Garrett Folbe"
+    },
+    "2020" : {
+        "1" : "Alex Ross",
+        "2" : "Jonah Lopas",
+        "3" : "Merrick Bank",
+        "4" : "Daniel Michaels",
+        "5" : "Brad Silverman",
+        "6" : "Noah Nathan",
+        "7" : "Jason Silverstone",
+        "8" : "Daniel Banooni",
+        "9" : "Merrick Weingarten",
+        "10" : "Jarrett Black",
+        "11" : "CJ Drogosch",
+        "12" : "Garrett Folbe"
+    }
+}

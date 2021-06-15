@@ -1,17 +1,10 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, SelectField
-from wtforms import validators
 from wtforms.validators import DataRequired, ValidationError
 
+from datetime import datetime
 
-class createOwner(FlaskForm):
-    years = [(x, x) for x in range(2011, 2020)]
-
-    firstName = StringField("First Name", validators=[DataRequired()])
-    lastName = StringField("Last Name", validators=[DataRequired()])
-    initialYear = SelectField(
-        "Year Joined", choices=years, validators=[DataRequired()])
-    submit = SubmitField("Submit")
+from ff_website.db import get_db
 
 
 class HeadToHead(FlaskForm):
@@ -53,3 +46,22 @@ class GameQualities(FlaskForm):
                                            (25, 25),
                                            (100, 100)])
     submit = SubmitField("Get Results")
+
+
+class createMember(FlaskForm):
+
+    current_year = datetime.now().year
+    years = [(x, x) for x in range(2011, current_year)]
+    years = [("", "Select a year...")] + years
+    initialYear = SelectField(
+        "Year Joined", choices=years, validators=[DataRequired()])
+    firstName = StringField("First Name", validators=[DataRequired()])
+    lastName = StringField("Last Name", validators=[DataRequired()])
+    activeMember = SelectField("Activity Status...",
+                               choices=[("", "Select a status"),
+                                        ("Active", "Active"),
+                                        ("Inactive", "Inactive")],
+                               validators=[DataRequired()]
+                               )
+
+    submit = SubmitField("Submit")

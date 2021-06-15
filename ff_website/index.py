@@ -1,7 +1,7 @@
-from flask import render_template, request, url_for, jsonify
+from flask import render_template, url_for, jsonify, redirect, flash
 from ff_website.db import get_db
 from ff_website import app
-from forms import GameQualities, HeadToHead
+from forms import *
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -71,6 +71,40 @@ def game_qualities():
     return render_template("game_qualities.html", form=form)
 
 
+@app.route("/tools/create_member", methods=["GET", "POST"])
+def create_member():
+    form = createMember()
+    if form.validate_on_submit():
+        db = get_db()
+        query = db.execute(
+            """
+            SELECT first_name, last_name FROM member
+            WHERE first_name=? AND last_name=?
+            """,
+            (form.data["firstName"], form.data["lastName"])
+        ).fetchone()
+        if query:
+            form.firstName.errors.append(
+                "A member of this name already exists")
+            form.lastName.errors.append(
+                "A member of this name already exists")
+        else:
+            db.execute(
+                """
+                INSERT INTO member 
+                (first_name, last_name, year_joined, active)
+                VALUES(?, ?, ?, ?)
+                """, (form.data["firstName"], form.data["lastName"],
+                      form.data["initialYear"], form.data["activeMember"])
+            )
+            db.commit()
+            db.close()
+            flash('Member created!', 'success')
+            return redirect(url_for('create_member'))
+
+    return render_template("create_member.html", form=form)
+
+
 @app.route("/apis/all_members", methods=["GET"])
 def get_members():
     """
@@ -87,3 +121,22 @@ def get_members():
              "name": "Merrick Weingarten"}
         ]
     )
+
+
+@app.route("/apis/test", methods=["GET", "POST"])
+def add_league_members():
+
+    db = get_db()
+    # sql_as_string = open(
+    #     "C:\\Users\\gmfol\\Desktop\\IndProj\\ff_website\\ff_website\\members.sql").read()
+    # db.executescript(sql_as_string)
+
+    db.execute(
+        """
+        INSERT INTO member(
+            first_name, last_name, year_joined, active)
+            VALUES (?, ?, ?, ?)
+        """,
+        ("Garrett", "Folbe", 2016, 1)
+    )
+    db.commit()

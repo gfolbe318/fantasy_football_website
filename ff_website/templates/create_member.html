@@ -1,0 +1,75 @@
+{% extends "layout.html" %} {% block content %}
+<div class="container-fluid content">
+  <div class="row justify-content-center">
+    <div class="col-12">
+      <div class="form-body">
+        <div class="content-section">
+          <form novalidate="novalidate" method="POST" autocomplete="off">
+            <legend>Create a new league member</legend>
+            <fieldset class="form-group">
+              <input
+                type="hidden"
+                name="csrf_token"
+                value="{{ csrf_token() }}"
+              />
+              <div class="form-group">
+                {{ form.firstName.label(class="form-control-md") }} {% if
+                form.firstName.errors %} {{ form.firstName(class="form-control
+                form-control-md is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.firstName.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+                {% else %} {{ form.firstName(class="form-control
+                form-control-md") }} {% endif %}
+              </div>
+              <div class="form-group">
+                {{ form.lastName.label(class="form-control-md") }} {% if
+                form.lastName.errors %} {{ form.lastName(class="form-control
+                form-control-md is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.lastName.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+                {% else %} {{ form.lastName(class="form-control
+                form-control-md") }} {% endif %}
+              </div>
+              <div class="form-group">
+                {{ form.initialYear.label(class="form-control-md") }} {% if
+                form.initialYear.errors %} {{
+                form.initialYear(class="form-control form-control-md
+                is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.initialYear.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+                {% else %} {{ form.initialYear(class="form-control
+                form-control-md") }} {% endif %}
+              </div>
+              <div class="form-group">
+                {{ form.activeMember.label(class="form-control-md") }} {% if
+                form.activeMember.errors %} {{
+                form.activeMember(class="form-control form-control-md
+                is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.activeMember.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+                {% else %} {{ form.activeMember(class="form-control
+                form-control-md") }} {% endif %}
+              </div>
+              <div class="form-group submit-button">
+                {{ form.submit(class="btn btn-outline-info")}}
+              </div>
+            </fieldset>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
