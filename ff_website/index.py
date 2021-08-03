@@ -1,7 +1,11 @@
-from flask import render_template, url_for, jsonify, redirect, flash
-from ff_website.db import get_db
+from flask import flash, redirect, render_template, url_for
+
 from ff_website import app
-from forms import *
+from ff_website.apis import get_all_members
+from ff_website.constants import *
+from ff_website.db import get_db
+from ff_website.forms import (CreateGame, CreateMember, GameQualities,
+                              HeadToHead)
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -73,13 +77,13 @@ def game_qualities():
 
 @app.route("/tools/create_member", methods=["GET", "POST"])
 def create_member():
-    form = createMember()
+    form = CreateMember()
     if form.validate_on_submit():
         db = get_db()
         query = db.execute(
-            """
-            SELECT first_name, last_name FROM member
-            WHERE first_name=? AND last_name=?
+            f"""
+            SELECT {MEMBER_ID}, {LAST_NAME} FROM member
+            WHERE {FIRST_NAME}=? AND {LAST_NAME}=?
             """,
             (form.data["firstName"], form.data["lastName"])
         ).fetchone()
@@ -90,9 +94,9 @@ def create_member():
                 "A member of this name already exists")
         else:
             db.execute(
-                """
+                f"""
                 INSERT INTO member 
-                (first_name, last_name, year_joined, active)
+                ({FIRST_NAME}, {LAST_NAME}, {YEAR_JOINED}, {ACTIVE})
                 VALUES(?, ?, ?, ?)
                 """, (form.data["firstName"], form.data["lastName"],
                       form.data["initialYear"], form.data["activeMember"])
@@ -105,22 +109,50 @@ def create_member():
     return render_template("create_member.html", form=form)
 
 
-@app.route("/apis/all_members", methods=["GET"])
-def get_members():
-    """
-    SELECT member_id, first_name, last_name FROM members....
-    """
+@app.route("/tools/create_game", methods=["GET", "POST"])
+def create_game():
+    form = CreateGame()
+    if form.validate_on_submit():
+        db = get_db()
+        query = db.execute(
+            f"""
+            SELECT {TEAM_A_ID}, {TEAM_B_ID}, {WEEK}, {SEASON} FROM game
+            WHERE {TEAM_A_ID}=? AND {TEAM_B_ID}=? AND {WEEK}=? AND {SEASON}=?
+            """,
+            (form.data["teamAName"], form.data["teamBName"],
+             form.data["week"], form.data["season"])
+        ).fetchone()
+        if query:
+            form.teamAName.errors.append(
+                "A game with these two opponents already exists at the given date"
+            )
+            form.teamBName.errors.append(
+                "A game with these two opponents already exists at the given date"
+            )
+            form.week.errors.append(
+                "A game with these two opponents already exists at the given date"
+            )
+            form.season.errors.append(
+                "A game with these two opponents already exists at the given date"
+            )
+        else:
+            db.execute(
+                f"""
+                INSERT INTO game
+                ({TEAM_A_SCORE}, {TEAM_B_SCORE}, {SEASON}, {WEEK}, 
+                {MATCHUP_LENGTH}, {PLAYOFFS}, {TEAM_A_ID}, {TEAM_B_ID})
+                VALUES(?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (form.data["teamAScore"], form.data["teamBScore"], form.data["season"],
+                 form.data["week"], form.data["matchupLength"], form.data["playoffs"],
+                 form.data["teamAName"], form.data["teamBName"])
+            )
+            db.commit()
+            db.close()
+            flash('Game created!', 'success')
+            return redirect(url_for('create_game'))
 
-    return jsonify(
-        [
-            {"member_id": 1,
-             "name": "Garrett Folbe"},
-            {"member_id": 2,
-             "name": "Noah Nathan"},
-            {"member_id": 3,
-             "name": "Merrick Weingarten"}
-        ]
-    )
+    return render_template("create_game.html", form=form)
 
 
 @app.route("/apis/test", methods=["GET", "POST"])

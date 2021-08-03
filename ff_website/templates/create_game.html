@@ -1,0 +1,139 @@
+{% extends "layout.html" %} {% block content %}
+<div class="container-fluid content">
+  <div class="row justify-content-center">
+    <div class="col-12">
+      <div class="form-body">
+        <div class="content-section">
+          <form novalidate="novalidate" method="POST" autocomplete="off">
+            <legend>Create a new league game</legend>
+            <fieldset class="form-group">
+              <input
+                type="hidden"
+                name="csrf_token"
+                value="{{ csrf_token() }}"
+              />
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-6">
+                    {{ form.teamAName.label(class="form-control-md") }} {% if
+                    form.teamAName.errors %} {{
+                    form.teamAName(class="form-control form-control-md
+                    is-invalid") }}
+                    <div class="invalid-feedback">
+                      {% for error in form.teamAName.errors %}
+                      <span>{{ error }}</span>
+                      {% endfor %}
+                    </div>
+                    {% else %} {{ form.teamAName(class="form-control
+                    form-control-md") }} {% endif %}
+                  </div>
+                  <div class="col-6">
+                    {{ form.teamAScore.label(class="form-control-md") }} {% if
+                    form.teamAScore.errors %} {{
+                    form.teamAScore(class="form-control form-control-md
+                    is-invalid") }}
+                    <div class="invalid-feedback">
+                      {% for error in form.teamAScore.errors %}
+                      <span>{{ error }}</span>
+                      {% endfor %}
+                    </div>
+                    {% else %} {{ form.teamAScore(class="form-control
+                    form-control-md") }} {% endif %}
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-6">
+                    {{ form.teamBName.label(class="form-control-md") }} {% if
+                    form.teamBName.errors %} {{
+                    form.teamBName(class="form-control form-control-md
+                    is-invalid") }}
+                    <div class="invalid-feedback">
+                      {% for error in form.teamBName.errors %}
+                      <span>{{ error }}</span>
+                      {% endfor %}
+                    </div>
+                    {% else %} {{ form.teamBName(class="form-control
+                    form-control-md") }} {% endif %}
+                  </div>
+                  <div class="col-6">
+                    {{ form.teamBScore.label(class="form-control-md") }} {% if
+                    form.teamBScore.errors %} {{
+                    form.teamBScore(class="form-control form-control-md
+                    is-invalid") }}
+                    <div class="invalid-feedback">
+                      {% for error in form.teamBScore.errors %}
+                      <span>{{ error }}</span>
+                      {% endfor %}
+                    </div>
+                    {% else %} {{ form.teamBScore(class="form-control
+                    form-control-md") }} {% endif %}
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-3">
+                    {{ form.season.label(class="form-control-md") }} {% if
+                    form.season.errors %} {{ form.season(class="form-control
+                    form-control-md is-invalid") }}
+                    <div class="invalid-feedback">
+                      {% for error in form.season.errors %}
+                      <span>{{ error }}</span>
+                      {% endfor %}
+                    </div>
+                    {% else %} {{ form.season(class="form-control
+                    form-control-md") }} {% endif %}
+                  </div>
+                  <div class="col-3">
+                    {{ form.week.label(class="form-control-md") }} {% if
+                    form.week.errors %} {{ form.week(class="form-control
+                    form-control-md is-invalid") }}
+                    <div class="invalid-feedback">
+                      {% for error in form.week.errors %}
+                      <span>{{ error }}</span>
+                      {% endfor %}
+                    </div>
+                    {% else %} {{ form.week(class="form-control
+                    form-control-md") }} {% endif %}
+                  </div>
+                  <div class="col-3">
+                    {{ form.matchupLength.label(class="form-control-md") }} {%
+                    if form.matchupLength.errors %} {{
+                    form.matchupLength(class="form-control form-control-md
+                    is-invalid") }}
+                    <div class="invalid-feedback">
+                      {% for error in form.matchupLength.errors %}
+                      <span>{{ error }}</span>
+                      {% endfor %}
+                    </div>
+                    {% else %} {{ form.matchupLength(class="form-control
+                    form-control-md") }} {% endif %}
+                  </div>
+                  <div class="col-3">
+                    {{ form.playoffs.label(class="form-control-md") }} {% if
+                    form.playoffs.errors %} {{ form.playoffs(class="form-control
+                    form-control-md is-invalid") }}
+                    <div class="invalid-feedback">
+                      {% for error in form.playoffs.errors %}
+                      <span>{{ error }}</span>
+                      {% endfor %}
+                    </div>
+                    {% else %} {{ form.playoffs(class="form-control
+                    form-control-md") }} {% endif %}
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group submit-button">
+                {{ form.submit(class="btn btn-outline-info")}}
+              </div>
+            </fieldset>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

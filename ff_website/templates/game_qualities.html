@@ -36,6 +36,20 @@
                 </div>
               </div>
               <div class="row">
+                <div class="col-12">
+                  <div class="form-group">
+                    {{ form.excludeTwoWeeks.label }} {{ form.excludeTwoWeeks }}
+                  </div>
+                </div>
+                <div class="col-md-6 col-sm-12">
+                  <div class="form-group">
+                    {{ form.numberOfResults.label(class="form-control-md") }} {{
+                    form.numberOfResults(class="form-control form-control-md")
+                    }}
+                  </div>
+                </div>
+              </div>
+              <div class="row">
                 <div class="form-group submit-button">
                   {{ form.submit(class="btn btn-outline-info")}}
                 </div>
