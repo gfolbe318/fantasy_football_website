@@ -1,7 +1,5 @@
 from datetime import datetime
-from logging import PlaceHolder
 
-from flask.helpers import url_for
 from flask_wtf import FlaskForm
 from wtforms import FloatField, SelectField, StringField, SubmitField
 from wtforms.fields.core import BooleanField, FloatField
@@ -13,7 +11,7 @@ from ff_website.constants import FIRST_NAME, LAST_NAME, MEMBER_ID
 
 def get_all_members_helper():
 
-    placeholder = [(0, "Please select a member...")]
+    placeholder = [("", "Please select a member...")]
 
     all_members = get_all_members()
     members = placeholder + [
@@ -42,11 +40,11 @@ class HeadToHead(FlaskForm):
     members = get_all_members_helper()
 
     def valid_names_one(self, leagueMemberOne):
-        if self.leagueMemberTwo.data == leagueMemberOne.data:
+        if self.leagueMemberTwo.data == leagueMemberOne.data and leagueMemberOne.data:
             raise ValidationError("League members must be different")
 
     def valid_names_two(self, leagueMemberTwo):
-        if self.leagueMemberOne.data == leagueMemberTwo.data:
+        if self.leagueMemberOne.data == leagueMemberTwo.data and leagueMemberTwo.data:
             raise ValidationError("League members must be different")
 
     leagueMemberOne = SelectField(
@@ -102,8 +100,6 @@ class CreateMember(FlaskForm):
 class CreateGame(FlaskForm):
 
     def validate_week(self, postSeason):
-        print("here")
-        print(self.week.data, postSeason.data)
         if (self.week.data == "PS" and postSeason.data == "0") or \
                 (self.week.data != "PS" and postSeason.data == "1"):
             raise ValidationError("Mismatch in week")

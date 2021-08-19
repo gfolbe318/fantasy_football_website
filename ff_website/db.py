@@ -11,7 +11,6 @@ def get_db():
             detect_types=sqlite3.PARSE_DECLTYPES
         )
         g.db.row_factory = sqlite3.Row
-        init_db()
 
     return g.db
 
@@ -36,6 +35,8 @@ def init_db_command():
     init_db()
     click.echo("Initialized databases")
 
+
+# TODO: Add a function to backup tables
 
 def init_app(app):
     app.teardown_appcontext(close_db)

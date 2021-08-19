@@ -1,11 +1,7 @@
 from flask import flash, redirect, render_template, url_for
 
 from ff_website import app
-from ff_website.apis import get_all_members
-from ff_website.constants import *
-from ff_website.db import get_db
-from ff_website.forms import (CreateGame, CreateMember, GameQualities,
-                              HeadToHead)
+
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -172,3 +168,9 @@ def add_league_members():
         ("Garrett", "Folbe", 2016, 1)
     )
     db.commit()
+
+from ff_website.apis import get_all_members
+from ff_website.constants import *
+from ff_website.db import get_db
+from ff_website.forms import (CreateGame, CreateMember, GameQualities,
+                              HeadToHead)

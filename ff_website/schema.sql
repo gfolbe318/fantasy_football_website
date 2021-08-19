@@ -1,7 +1,4 @@
-DROP TABLE IF EXISTS member;
-DROP TABLE IF EXISTS game;
-
-CREATE TABLE member
+CREATE TABLE IF NOT EXISTS member
 (
     member_id INTEGER PRIMARY KEY,
     first_name TEXT NOT NULL,
@@ -11,7 +8,7 @@ CREATE TABLE member
 );
 
 
-CREATE TABLE game
+CREATE TABLE IF NOT EXISTS game
 (
     game_id INTEGER PRIMARY KEY,
     team_A_score FLOAT NOT NULL,

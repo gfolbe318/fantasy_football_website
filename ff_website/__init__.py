@@ -28,4 +28,5 @@ def create_app(test_config=None):
 
 
 app = create_app()
-import ff_website.index
+from ff_website import index
+from ff_website import apis

@@ -1,4 +1,4 @@
-from ff_website.db import get_db
+from ff_website.db import get_db, init_db
 from ff_website import app
 from ff_website.constants import *
 
@@ -8,6 +8,7 @@ def get_all_members():
     Returns a list of all members that are queried from the database
     """
     with app.app_context():
+        init_db()
         db = get_db()
         all_members = db.execute(
             f"""
