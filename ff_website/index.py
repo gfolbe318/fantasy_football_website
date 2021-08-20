@@ -1,7 +1,13 @@
-from flask import flash, redirect, render_template, url_for
+import json
+
+from flask import flash, redirect, render_template, url_for, jsonify
 
 from ff_website import app
-
+from ff_website.apis import get_all_members, get_member_id
+from ff_website.constants import *
+from ff_website.db import get_db
+from ff_website.forms import (CreateGame, CreateMember, GameQualities,
+                              HeadToHead)
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -151,26 +157,67 @@ def create_game():
     return render_template("create_game.html", form=form)
 
 
-@app.route("/apis/test", methods=["GET", "POST"])
+@app.route("/apis/add_all_members", methods=["GET", "POST"])
 def add_league_members():
 
     db = get_db()
-    # sql_as_string = open(
-    #     "C:\\Users\\gmfol\\Desktop\\IndProj\\ff_website\\ff_website\\members.sql").read()
-    # db.executescript(sql_as_string)
 
+    # Clear table
     db.execute(
         """
-        INSERT INTO member(
-            first_name, last_name, year_joined, active)
-            VALUES (?, ?, ?, ?)
-        """,
-        ("Garrett", "Folbe", 2016, 1)
+        DELETE FROM member
+        """
     )
+
+    members = json.load(open(member_data, "r"))
+
+    for member in members:
+        db.execute(
+            """
+            INSERT INTO member(
+                first_name, last_name, year_joined, active)
+                VALUES (?, ?, ?, ?)
+            """,
+            (member[FIRST_NAME], member[LAST_NAME],
+             member[YEAR_JOINED], member[ACTIVE])
+        )
     db.commit()
 
-from ff_website.apis import get_all_members
-from ff_website.constants import *
-from ff_website.db import get_db
-from ff_website.forms import (CreateGame, CreateMember, GameQualities,
-                              HeadToHead)
+    return jsonify(members)
+
+
+@app.route("/apis/add_all_games", methods=["GET", "POST"])
+def add_games():
+    db = get_db()
+
+    # Clear table
+    db.execute(
+        """
+        DELETE FROM game
+        """
+    )
+    db.commit()
+    games = json.load(open(games_data, "r"))
+
+    for game in games:
+        first_name_home, last_name_home = game[HOME_TEAM].split(" ")
+        member_id_home = get_member_id(first_name_home, last_name_home)
+
+        first_name_away, last_name_away = game[AWAY_TEAM].split(" ")
+        member_id_away = get_member_id(first_name_away, last_name_away)
+
+        db = get_db()
+        db.execute(
+            f"""
+            INSERT INTO game(
+                {TEAM_A_SCORE}, {TEAM_B_SCORE}, {SEASON}, {WEEK},
+                {MATCHUP_LENGTH}, {PLAYOFFS}, {TEAM_A_ID}, {TEAM_B_ID}
+            ) VALUES(?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            (game[HOME_SCORE], game[AWAY_SCORE],
+             game[SEASON], game[WEEK], game[MATCHUP_LENGTH],
+             game[PLAYOFFS], member_id_home, member_id_away)
+        )
+        db.commit()
+
+    return jsonify(games)

@@ -1,0 +1,80 @@
+[
+    {
+        "first_name": "Garrett",
+        "last_name": "Folbe",
+        "year_joined": 2016,
+        "active": true
+    },
+    {
+        "first_name": "Alex",
+        "last_name": "Ross",
+        "year_joined": 2017,
+        "active": true
+    },
+    {
+        "first_name": "Noah",
+        "last_name": "Nathan",
+        "year_joined": 2011,
+        "active": true
+    },
+    {
+        "first_name": "Brad",
+        "last_name": "Silverman",
+        "year_joined": 2017,
+        "active": true
+    },
+    {
+        "first_name": "Merrick",
+        "last_name": "Weingarten",
+        "year_joined": 2011,
+        "active": true
+    },
+    {
+        "first_name": "Jonah",
+        "last_name": "Lopas",
+        "year_joined": 2011,
+        "active": true
+    },
+    {
+        "first_name": "Jason",
+        "last_name": "Silverstone",
+        "year_joined": 2011,
+        "active": true
+    },
+    {
+        "first_name": "Merrick",
+        "last_name": "Bank",
+        "year_joined": 2018,
+        "active": true
+    },
+    {
+        "first_name": "CJ",
+        "last_name": "Drogosch",
+        "year_joined": 2016,
+        "active": true
+    },
+    {
+        "first_name": "Daniel",
+        "last_name": "Banooni",
+        "year_joined": 2015,
+        "active": true
+    },
+    {
+        "first_name": "Jarrett",
+        "last_name": "Black",
+        "year_joined": 2015,
+        "active": true
+    },
+    {
+        "first_name": "Daniel",
+        "last_name": "Michaels",
+        "year_joined": 2020,
+        "active": true
+    },
+    {
+        "first_name": "Dylan",
+        "last_name": "Wittenberg",
+        "year_joined": 2017,
+        "active": false
+    }
+]
