@@ -1,11 +1,12 @@
 import json
+import pandas as pd
 
-from flask import flash, redirect, render_template, url_for, jsonify
+from flask import flash, redirect, render_template, url_for, jsonify, request
 
 from ff_website import app
 from ff_website.apis import get_all_members, get_member_id
 from ff_website.constants import *
-from ff_website.db import get_db
+from ff_website.db import get_db, init_db
 from ff_website.forms import (CreateGame, CreateMember, GameQualities,
                               HeadToHead)
 
@@ -57,16 +58,59 @@ def archives_home():
 
 @app.route("/archives/head_to_head", methods=["GET", "POST"])
 def h2h():
+
+    args = request.args
+    print(args)
     form = HeadToHead()
+    try:
+        df = pd.DataFrame(columns=[
+                          "Season", "Week", "Matchup Format", "Winning Team", "Losing Team", "Score"])
+        member_one_id = args.get("member_one_id")
+        member_two_id = args.get("member_two_id")
+        db = get_db()
+        query = db.execute(
+            f"""
+            SELECT team_A_score, team_B_score, season, week, matchup_length, playoffs,
+            t2.first_name as team_A_first_name, t2.last_name as team_A_last_name, t3.first_name as team_B_first_name, t3.last_name as team_B_last_name
+            FROM game g
+            INNER JOIN member t2
+            ON t2.member_id = team_A_id
+            INNER JOIN member t3
+            ON t3.member_id = team_B_id
+            WHERE team_A_id = ? AND team_B_id = ? OR team_A_id = ? AND team_B_id = ? 
+            """, (member_one_id, member_two_id,
+                  member_two_id, member_one_id)
+        ).fetchall()
+        for row in query:
+            team_A_score = row["team_A_score"]
+            team_B_score = row["team_B_score"]
+            season = row["season"]
+            week = row["week"]
+            matchup_length = row["matchup_length"]
+            playoffs = row["playoffs"]
+            team_A_name = f"{row['team_A_first_name']} {row['team_A_last_name']}"
+            team_B_name = f"{row['team_B_first_name']} {row['team_B_last_name']}"
+
+            winning_team = team_A_name if team_A_score > team_B_score else team_B_name
+            losing_team = team_A_name if team_A_score < team_B_score else team_B_name
+
+            winning_score = team_A_score if team_A_score > team_B_score else team_B_score
+            losing_score = team_A_score if team_A_score < team_B_score else team_B_score
+            asterisk = "*" if matchup_length == 2 else ""
+            matchup_format = "Playoffs" if playoffs else "Regular Season"
+            df.loc[len(df.index)] = [season, week,
+                                     matchup_format, winning_team, losing_team, f"{winning_score}-{losing_score}{asterisk}"]
+
+    except AttributeError as e:
+        print("Something went wrong!")
+
     if form.validate_on_submit():
-        print("succeeded")
-    else:
-        print("failed")
+        return redirect(url_for("h2h", member_one_id=form.data["leagueMemberOne"], member_two_id=form.data["leagueMemberTwo"]))
 
     return render_template("head_to_head.html", form=form)
 
 
-@app.route("/archives/game_qualities", methods=["GET", "POST"])
+@ app.route("/archives/game_qualities", methods=["GET", "POST"])
 def game_qualities():
     form = GameQualities()
     if form.validate_on_submit():
@@ -77,7 +121,7 @@ def game_qualities():
     return render_template("game_qualities.html", form=form)
 
 
-@app.route("/tools/create_member", methods=["GET", "POST"])
+@ app.route("/tools/create_member", methods=["GET", "POST"])
 def create_member():
     form = CreateMember()
     if form.validate_on_submit():
@@ -97,7 +141,7 @@ def create_member():
         else:
             db.execute(
                 f"""
-                INSERT INTO member 
+                INSERT INTO member
                 ({FIRST_NAME}, {LAST_NAME}, {YEAR_JOINED}, {ACTIVE})
                 VALUES(?, ?, ?, ?)
                 """, (form.data["firstName"], form.data["lastName"],
