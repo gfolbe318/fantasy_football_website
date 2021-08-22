@@ -66,6 +66,7 @@
       </div>
     </div>
   </div>
+  {% if team_A_name %}
   <div class="row">
     <div class="col-12">
       <h1>Head to Head Results</h1>
@@ -79,7 +80,7 @@
           src="{{url_for('static', filename='img/gmf.jpg')}}"
         />
         <div class="card-body">
-          <p class="card-text">Garrett Folbe</p>
+          <p class="card-text">{{team_A_name}}</p>
         </div>
       </div>
     </div>
@@ -90,7 +91,7 @@
           src="{{url_for('static', filename='img/gmf.jpg')}}"
         />
         <div class="card-body">
-          <p class="card-text">Garrett Folbe</p>
+          <p class="card-text">{{team_B_name}}</p>
         </div>
       </div>
     </div>
@@ -99,69 +100,23 @@
   <div class="row justify-content-center">
     <div class="col-lg-10 col-sm-12 text-center">
       <p id="matchup-summary">
-        Alex Ross and Garrett Folbe have played <b>5</b> times with Alex Ross
-        holding a <b>3-2 series lead</b> overall. <b>3</b> of these matchups
-        have come in the regular season, and <b>2</b> have been in the playoffs.
-        The two teams have combined for a total of <b>1234.5</b> points, with an
-        average matchup score of <b>82.5-71</b> in favor of Garrett Folbe.
-        Currently, Alex holds a <b>1 game win streak</b> in the series.
+        {{team_A_name}} and {{team_B_name}} have played
+        <b>{{num_matchups}}</b> {{num_times}} with {{series_winner_name}}
+        holding a <b>{{series_split}} series lead</b> overall.
+        <b>{{num_regular_matchups}}</b> of these matchups have come in the
+        regular season, and <b>{{num_playoff_matchups}}</b> have been in the
+        playoffs. The two teams have combined for a total of
+        <b>{{total_points}}</b> points, with an average victory margin of
+        <b>{{margin_of_victory}} for the winning team</b>. Currently,
+        {{streak_holder}} holds a <b>{{streak_count}} game win streak</b> in the
+        series.
       </p>
     </div>
   </div>
 
   <div class="col-12">
-    <div
-      class="
-        table-responsive-sm
-        table-responsive-md
-        table-responsive-xs
-        table-responsive
-        justify-content-center
-      "
-    >
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Season</th>
-            <th scope="col">Week</th>
-            <th scope="col">Matchup Format</th>
-            <th scope="col">Winning Team</th>
-            <th scope="col">Losing Team</th>
-            <th scope="col">Score</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th scope="row">1</th>
-            <td>2020</td>
-            <td>13</td>
-            <td>Playoffs</td>
-            <td>Alex Ross</td>
-            <td>Garrett Folbe</td>
-            <td>100.2-91.6</td>
-          </tr>
-          <tr>
-            <th scope="row">2</th>
-            <td>2020</td>
-            <td>13</td>
-            <td>Reg. Season</td>
-            <td>Alex Ross</td>
-            <td>Garrett Folbe</td>
-            <td>100.2-91.6</td>
-          </tr>
-          <tr>
-            <th scope="row">2</th>
-            <td>2020</td>
-            <td>13</td>
-            <td>Playoffs</td>
-            <td>Alex Ross</td>
-            <td>Garrett Folbe</td>
-            <td>100.2-91.6</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <div class="table-responsive justify-content-center">{{df|safe}}</div>
   </div>
+  {% endif %}
 </div>
 {% endblock content %}

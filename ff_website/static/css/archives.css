@@ -31,3 +31,13 @@ td.no-color:first-child {
 .submit-button {
   margin: 0 auto;
 }
+
+th {
+  text-align: center;
+}
+
+td,
+tr,
+th {
+  border: none;
+}

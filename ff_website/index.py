@@ -1,5 +1,6 @@
 import json
 import pandas as pd
+import inflect
 
 from flask import flash, redirect, render_template, url_for, jsonify, request
 
@@ -9,6 +10,8 @@ from ff_website.constants import *
 from ff_website.db import get_db, init_db
 from ff_website.forms import (CreateGame, CreateMember, GameQualities,
                               HeadToHead)
+
+from ff_website.helper_functions import get_series_split, get_matchup_breakdown, get_streak_head_to_head
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -60,30 +63,44 @@ def archives_home():
 def h2h():
 
     args = request.args
-    print(args)
     form = HeadToHead()
+    team_A_name, team_B_name, series_winner_name, num_matchups, num_times, series_split, num_playoff_matchups, num_regular_matchups, streak_count, streak_holder =\
+        None, None, None, None, None, None, None, None, None, None
+    total_points = 0
+    margin_of_victory = 0
+    df = pd.DataFrame(columns=[
+        "Season", "Week", "Matchup Format", "Winning Team", "Losing Team", "Score"])
+
+    member_one_id, member_two_id = None, None
     try:
-        df = pd.DataFrame(columns=[
-                          "Season", "Week", "Matchup Format", "Winning Team", "Losing Team", "Score"])
         member_one_id = args.get("member_one_id")
         member_two_id = args.get("member_two_id")
+    except AttributeError as e:
+        print("Something went wrong getting parameters!", e)
+
+    if member_one_id and member_two_id:
+        df = pd.DataFrame(columns=[
+                          "Season", "Week", "Matchup Format", "Winning Team", "Losing Team", "Score"])
+
         db = get_db()
         query = db.execute(
             f"""
             SELECT team_A_score, team_B_score, season, week, matchup_length, playoffs,
             t2.first_name as team_A_first_name, t2.last_name as team_A_last_name, t3.first_name as team_B_first_name, t3.last_name as team_B_last_name
-            FROM game g
+            FROM game
             INNER JOIN member t2
             ON t2.member_id = team_A_id
             INNER JOIN member t3
             ON t3.member_id = team_B_id
-            WHERE team_A_id = ? AND team_B_id = ? OR team_A_id = ? AND team_B_id = ? 
+            WHERE team_A_id = ? AND team_B_id = ? OR team_A_id = ? AND team_B_id = ?
             """, (member_one_id, member_two_id,
                   member_two_id, member_one_id)
         ).fetchall()
         for row in query:
             team_A_score = row["team_A_score"]
             team_B_score = row["team_B_score"]
+            total_points += (float(team_A_score) + float(team_B_score))
+
             season = row["season"]
             week = row["week"]
             matchup_length = row["matchup_length"]
@@ -96,18 +113,45 @@ def h2h():
 
             winning_score = team_A_score if team_A_score > team_B_score else team_B_score
             losing_score = team_A_score if team_A_score < team_B_score else team_B_score
+            margin_of_victory += (float(winning_score) - float(losing_score))
+
             asterisk = "*" if matchup_length == 2 else ""
             matchup_format = "Playoffs" if playoffs else "Regular Season"
             df.loc[len(df.index)] = [season, week,
                                      matchup_format, winning_team, losing_team, f"{winning_score}-{losing_score}{asterisk}"]
 
-    except AttributeError as e:
-        print("Something went wrong!")
+        num_matchups = len(df.index)
+        try:
+            margin_of_victory /= num_matchups
+        except:
+            ZeroDivisionError
+
+        series_winner_name, series_split =\
+            get_series_split(df)
+        num_regular_matchups, num_playoff_matchups = get_matchup_breakdown(df)
+        streak_holder, streak_count = get_streak_head_to_head(df)
+        df.index += 1
+        p = inflect.engine()
+        num_times = p.plural("time", num_matchups)
 
     if form.validate_on_submit():
         return redirect(url_for("h2h", member_one_id=form.data["leagueMemberOne"], member_two_id=form.data["leagueMemberTwo"]))
 
-    return render_template("head_to_head.html", form=form)
+    return render_template("head_to_head.html", form=form,
+                           team_A_name=team_A_name,
+                           team_B_name=team_B_name,
+                           num_matchups=num_matchups,
+                           num_times=num_times,
+                           series_winner_name=series_winner_name,
+                           series_split=series_split,
+                           num_playoff_matchups=num_playoff_matchups,
+                           num_regular_matchups=num_regular_matchups,
+                           total_points=round(total_points, 2),
+                           margin_of_victory=round(margin_of_victory, 2),
+                           streak_holder=streak_holder,
+                           streak_count=streak_count,
+                           df=df.to_html(classes="table table-striped")
+                           )
 
 
 @ app.route("/archives/game_qualities", methods=["GET", "POST"])
