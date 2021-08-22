@@ -62,15 +62,19 @@ def archives_home():
 @app.route("/archives/head_to_head", methods=["GET", "POST"])
 def h2h():
 
-    args = request.args
-    form = HeadToHead()
+    # Initialize variables that will be returned on successful submission of the form
+    # If we do not make the variables None-types, the template cannot be rendered
     team_A_name, team_B_name, series_winner_name, num_matchups, num_times, series_split, num_playoff_matchups, num_regular_matchups, streak_count, streak_holder =\
         None, None, None, None, None, None, None, None, None, None
+
+    args = request.args
+    form = HeadToHead()
     total_points = 0
     margin_of_victory = 0
     df = pd.DataFrame(columns=[
         "Season", "Week", "Matchup Format", "Winning Team", "Losing Team", "Score"])
 
+    # Get the member_ids from the request
     member_one_id, member_two_id = None, None
     try:
         member_one_id = args.get("member_one_id")
@@ -78,6 +82,7 @@ def h2h():
     except AttributeError as e:
         print("Something went wrong getting parameters!", e)
 
+    # If we got the members successfully, find the history of their games
     if member_one_id and member_two_id:
         df = pd.DataFrame(columns=[
                           "Season", "Week", "Matchup Format", "Winning Team", "Losing Team", "Score"])
@@ -121,18 +126,36 @@ def h2h():
                                      matchup_format, winning_team, losing_team, f"{winning_score}-{losing_score}{asterisk}"]
 
         num_matchups = len(df.index)
-        try:
-            margin_of_victory /= num_matchups
-        except:
-            ZeroDivisionError
+        if num_matchups > 0:
+            try:
+                margin_of_victory /= num_matchups
+            except:
+                ZeroDivisionError
 
-        series_winner_name, series_split =\
-            get_series_split(df)
-        num_regular_matchups, num_playoff_matchups = get_matchup_breakdown(df)
-        streak_holder, streak_count = get_streak_head_to_head(df)
-        df.index += 1
-        p = inflect.engine()
-        num_times = p.plural("time", num_matchups)
+            series_winner_name, series_split =\
+                get_series_split(df)
+            num_regular_matchups, num_playoff_matchups = get_matchup_breakdown(
+                df)
+            streak_holder, streak_count = get_streak_head_to_head(df)
+            df.index += 1
+            p = inflect.engine()
+            num_times = p.plural("time", num_matchups)
+        else:
+            # We still need to get the names of the members. We sort the member_ids by ascending
+            # order to keep track of which name gets returned first
+            query = db.execute(
+                f"""
+                SELECT {MEMBER_ID}, {FIRST_NAME}, {LAST_NAME} from member
+                WHERE {MEMBER_ID}=? OR {MEMBER_ID}=?
+                ORDER BY {MEMBER_ID} asc
+                """, (member_one_id, member_two_id)
+            ).fetchall()
+            if member_one_id < member_two_id:
+                team_A_name = f"{query[0]['first_name']} {query[0]['last_name']}"
+                team_B_name = f"{query[1]['first_name']} {query[1]['last_name']}"
+            else:
+                team_A_name = f"{query[0]['first_name']} {query[1]['last_name']}"
+                team_B_name = f"{query[1]['first_name']} {query[0]['last_name']}"
 
     if form.validate_on_submit():
         return redirect(url_for("h2h", member_one_id=form.data["leagueMemberOne"], member_two_id=form.data["leagueMemberTwo"]))
@@ -150,7 +173,8 @@ def h2h():
                            margin_of_victory=round(margin_of_victory, 2),
                            streak_holder=streak_holder,
                            streak_count=streak_count,
-                           df=df.to_html(classes="table table-striped")
+                           df=df.to_html(classes="table table-striped"),
+                           matchups_exist=num_matchups != 0
                            )
 
 

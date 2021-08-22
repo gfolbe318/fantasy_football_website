@@ -99,6 +99,7 @@
 
   <div class="row justify-content-center">
     <div class="col-lg-10 col-sm-12 text-center">
+      {% if matchups_exist %}
       <p id="matchup-summary">
         {{team_A_name}} and {{team_B_name}} have played
         <b>{{num_matchups}}</b> {{num_times}} with {{series_winner_name}}
@@ -111,12 +112,16 @@
         {{streak_holder}} holds a <b>{{streak_count}} game win streak</b> in the
         series.
       </p>
+      {% else %}
+      <p id="matchup-summary">No matchups found between these two members!</p>
+      {% endif %}
     </div>
   </div>
 
+  {% if matchups_exist %}
   <div class="col-12">
     <div class="table-responsive justify-content-center">{{df|safe}}</div>
   </div>
-  {% endif %}
+  {% endif %} {% endif %}
 </div>
 {% endblock content %}
