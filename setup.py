@@ -12,9 +12,14 @@ setup(
         "itsdangerous",
         "jinja2",
         "MarkupSafe",
+        "numpy",
+        "pandas",
         "pip",
         "pycodestyle",
+        "python-dateutil"
+        "pytz"
         "setuptools",
+        "six",
         "toml",
         "Werkzeug",
         "Flask-WTF",
