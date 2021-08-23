@@ -234,6 +234,7 @@ def game_qualities():
 
             total_scores_list.append(row["total_score"])
         df["Total Points"] = total_scores_list
+        db.close()
 
     # Fewest points scored individual
     if filter_type == "2":
@@ -267,6 +268,7 @@ def game_qualities():
             matchup_format = "Playoffs" if playoffs else "Regular Season"
             df.loc[len(df.index)] = [season, week,
                                      matchup_format, team_name, points]
+        db.close()
 
     # Most points scored combined
     if filter_type == "3":
@@ -309,6 +311,7 @@ def game_qualities():
 
             total_scores_list.append(row["total_score"])
         df["Total Points"] = total_scores_list
+        db.close()
 
     # Fewest points scored combined
     if filter_type == "4":
@@ -342,6 +345,7 @@ def game_qualities():
             matchup_format = "Playoffs" if playoffs else "Regular Season"
             df.loc[len(df.index)] = [season, week,
                                      matchup_format, team_name, points]
+        db.close()
 
     # Largest margin of victory
     if filter_type == "5":
@@ -384,6 +388,7 @@ def game_qualities():
 
             deficits_list.append(row["margin"])
         df["Margin"] = deficits_list
+        db.close()
 
     # Smallest margin of victory
     if filter_type == "6":
@@ -426,6 +431,7 @@ def game_qualities():
 
             deficits_list.append(row["margin"])
         df["Margin"] = deficits_list
+        db.close()
 
     df.index += 1
 

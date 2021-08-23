@@ -39,19 +39,23 @@ def get_data_one_week_playoffs(year):
                 away_team_member = member_ids[str(game["away"]["teamId"])]
                 away_score = game["away"]["totalPoints"]
 
-            playoffs = False if game["playoffTierType"] == "NONE" else True
+                # Account for weird bug that makes week 14 the playoffs
+                if game["playoffTierType"] == "NONE" or game['winner'] == "UNDECIDED":
+                    playoffs = False
+                elif game["playoffTierType"] == "WINNERS_BRACKET":
+                    playoffs = True
 
-            all_games.append(
-                {"season": year,
-                 "week": week,
-                 "matchup_length": 1,
-                 "playoffs": playoffs,
-                 "home_team": home_team_member,
-                 "home_score": home_score,
-                 "away_team": away_team_member,
-                 "away_score": away_score
-                 }
-            )
+                all_games.append(
+                    {"season": year,
+                     "week": week,
+                     "matchup_length": 1,
+                     "playoffs": playoffs,
+                     "home_team": home_team_member,
+                     "home_score": home_score,
+                     "away_team": away_team_member,
+                     "away_score": away_score
+                     }
+                )
 
     return all_games
 
@@ -74,7 +78,7 @@ def get_all_data():
         for game in data:
             all_games.append(game)
 
-    json.dump(all_games, open("data\\all_games.json", "w"))
+    json.dump(all_games, open("data\\all_games.json", "w"), indent=4)
 
 
 if __name__ == "__main__":

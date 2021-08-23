@@ -784,16 +784,6 @@
         "week": 14,
         "matchup_length": 1,
         "playoffs": true,
-        "home_team": "Merrick Weingarten",
-        "home_score": 156.34,
-        "away_team": "Daniel Banooni",
-        "away_score": 65.92
-    },
-    {
-        "season": "2020",
-        "week": 14,
-        "matchup_length": 1,
-        "playoffs": true,
         "home_team": "Daniel Michaels",
         "home_score": 124.74,
         "away_team": "Noah Nathan",
@@ -806,16 +796,6 @@
         "playoffs": true,
         "home_team": "Garrett Folbe",
         "home_score": 124.52,
-        "away_team": "CJ Drogosch",
-        "away_score": 90.24
-    },
-    {
-        "season": "2020",
-        "week": 14,
-        "matchup_length": 1,
-        "playoffs": true,
-        "home_team": "Merrick Bank",
-        "home_score": 81.26,
         "away_team": "CJ Drogosch",
         "away_score": 90.24
     },
