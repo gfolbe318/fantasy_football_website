@@ -1,0 +1,732 @@
+[
+    {
+        "season": "2017",
+        "week": 1,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Garrett Folbe",
+        "home_score": 91.94,
+        "away_team": "Noah Nathan",
+        "away_score": 129.84
+    },
+    {
+        "season": "2017",
+        "week": 1,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Alex Ross",
+        "home_score": 90.28,
+        "away_team": "Dylan Wittenberg",
+        "away_score": 81.94
+    },
+    {
+        "season": "2017",
+        "week": 1,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Merrick Weingarten",
+        "home_score": 114.62,
+        "away_team": "Jason Silverstone",
+        "away_score": 76.48
+    },
+    {
+        "season": "2017",
+        "week": 1,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Brad Silverman",
+        "home_score": 80.8,
+        "away_team": "Jarrett Black",
+        "away_score": 97.34
+    },
+    {
+        "season": "2017",
+        "week": 1,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Daniel Banooni",
+        "home_score": 65.2,
+        "away_team": "CJ Drogosch",
+        "away_score": 48.22
+    },
+    {
+        "season": "2017",
+        "week": 2,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Alex Ross",
+        "home_score": 116.28,
+        "away_team": "Garrett Folbe",
+        "away_score": 43.22
+    },
+    {
+        "season": "2017",
+        "week": 2,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Brad Silverman",
+        "home_score": 78.26,
+        "away_team": "Merrick Weingarten",
+        "away_score": 85.04
+    },
+    {
+        "season": "2017",
+        "week": 2,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Dylan Wittenberg",
+        "home_score": 83.84,
+        "away_team": "Jason Silverstone",
+        "away_score": 79.3
+    },
+    {
+        "season": "2017",
+        "week": 2,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jarrett Black",
+        "home_score": 77.98,
+        "away_team": "Daniel Banooni",
+        "away_score": 102.66
+    },
+    {
+        "season": "2017",
+        "week": 2,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Noah Nathan",
+        "home_score": 120.58,
+        "away_team": "CJ Drogosch",
+        "away_score": 65.52
+    },
+    {
+        "season": "2017",
+        "week": 3,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "CJ Drogosch",
+        "home_score": 105.56,
+        "away_team": "Garrett Folbe",
+        "away_score": 86.68
+    },
+    {
+        "season": "2017",
+        "week": 3,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jason Silverstone",
+        "home_score": 85.42,
+        "away_team": "Alex Ross",
+        "away_score": 154.12
+    },
+    {
+        "season": "2017",
+        "week": 3,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Dylan Wittenberg",
+        "home_score": 76.5,
+        "away_team": "Brad Silverman",
+        "away_score": 109.92
+    },
+    {
+        "season": "2017",
+        "week": 3,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Merrick Weingarten",
+        "home_score": 65.62,
+        "away_team": "Daniel Banooni",
+        "away_score": 77.1
+    },
+    {
+        "season": "2017",
+        "week": 3,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Noah Nathan",
+        "home_score": 75.02,
+        "away_team": "Jarrett Black",
+        "away_score": 77.8
+    },
+    {
+        "season": "2017",
+        "week": 4,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Garrett Folbe",
+        "home_score": 77.48,
+        "away_team": "Jarrett Black",
+        "away_score": 70.98
+    },
+    {
+        "season": "2017",
+        "week": 4,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Daniel Banooni",
+        "home_score": 70.1,
+        "away_team": "Noah Nathan",
+        "away_score": 91.16
+    },
+    {
+        "season": "2017",
+        "week": 4,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Alex Ross",
+        "home_score": 103.38,
+        "away_team": "Brad Silverman",
+        "away_score": 111.18
+    },
+    {
+        "season": "2017",
+        "week": 4,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jason Silverstone",
+        "home_score": 75.92,
+        "away_team": "CJ Drogosch",
+        "away_score": 144.2
+    },
+    {
+        "season": "2017",
+        "week": 4,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Merrick Weingarten",
+        "home_score": 106.68,
+        "away_team": "Dylan Wittenberg",
+        "away_score": 71.42
+    },
+    {
+        "season": "2017",
+        "week": 5,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Garrett Folbe",
+        "home_score": 88.26,
+        "away_team": "Daniel Banooni",
+        "away_score": 118.36
+    },
+    {
+        "season": "2017",
+        "week": 5,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jarrett Black",
+        "home_score": 112.44,
+        "away_team": "CJ Drogosch",
+        "away_score": 66.86
+    },
+    {
+        "season": "2017",
+        "week": 5,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Alex Ross",
+        "home_score": 51.72,
+        "away_team": "Merrick Weingarten",
+        "away_score": 108.84
+    },
+    {
+        "season": "2017",
+        "week": 5,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Dylan Wittenberg",
+        "home_score": 55.1,
+        "away_team": "Noah Nathan",
+        "away_score": 103.74
+    },
+    {
+        "season": "2017",
+        "week": 5,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Brad Silverman",
+        "home_score": 93.96,
+        "away_team": "Jason Silverstone",
+        "away_score": 64.88
+    },
+    {
+        "season": "2017",
+        "week": 6,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Garrett Folbe",
+        "home_score": 83.46,
+        "away_team": "Brad Silverman",
+        "away_score": 93.44
+    },
+    {
+        "season": "2017",
+        "week": 6,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "CJ Drogosch",
+        "home_score": 118.78,
+        "away_team": "Merrick Weingarten",
+        "away_score": 89.92
+    },
+    {
+        "season": "2017",
+        "week": 6,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jarrett Black",
+        "home_score": 75.7,
+        "away_team": "Dylan Wittenberg",
+        "away_score": 69.84
+    },
+    {
+        "season": "2017",
+        "week": 6,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Daniel Banooni",
+        "home_score": 102.5,
+        "away_team": "Alex Ross",
+        "away_score": 98.18
+    },
+    {
+        "season": "2017",
+        "week": 6,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Noah Nathan",
+        "home_score": 69.52,
+        "away_team": "Jason Silverstone",
+        "away_score": 67.84
+    },
+    {
+        "season": "2017",
+        "week": 7,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Dylan Wittenberg",
+        "home_score": 96.14,
+        "away_team": "Garrett Folbe",
+        "away_score": 80.42
+    },
+    {
+        "season": "2017",
+        "week": 7,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Alex Ross",
+        "home_score": 102.66,
+        "away_team": "CJ Drogosch",
+        "away_score": 132.66
+    },
+    {
+        "season": "2017",
+        "week": 7,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jason Silverstone",
+        "home_score": 86.88,
+        "away_team": "Jarrett Black",
+        "away_score": 90.62
+    },
+    {
+        "season": "2017",
+        "week": 7,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Brad Silverman",
+        "home_score": 68.92,
+        "away_team": "Daniel Banooni",
+        "away_score": 88.62
+    },
+    {
+        "season": "2017",
+        "week": 7,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Merrick Weingarten",
+        "home_score": 116.06,
+        "away_team": "Noah Nathan",
+        "away_score": 76.48
+    },
+    {
+        "season": "2017",
+        "week": 8,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Garrett Folbe",
+        "home_score": 109.84,
+        "away_team": "Jason Silverstone",
+        "away_score": 84.92
+    },
+    {
+        "season": "2017",
+        "week": 8,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Noah Nathan",
+        "home_score": 85.08,
+        "away_team": "Alex Ross",
+        "away_score": 78.62
+    },
+    {
+        "season": "2017",
+        "week": 8,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Daniel Banooni",
+        "home_score": 65.02,
+        "away_team": "Dylan Wittenberg",
+        "away_score": 38.86
+    },
+    {
+        "season": "2017",
+        "week": 8,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "CJ Drogosch",
+        "home_score": 132.38,
+        "away_team": "Brad Silverman",
+        "away_score": 105.1
+    },
+    {
+        "season": "2017",
+        "week": 8,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jarrett Black",
+        "home_score": 84.56,
+        "away_team": "Merrick Weingarten",
+        "away_score": 80.42
+    },
+    {
+        "season": "2017",
+        "week": 9,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Daniel Banooni",
+        "home_score": 98.78,
+        "away_team": "Garrett Folbe",
+        "away_score": 113.78
+    },
+    {
+        "season": "2017",
+        "week": 9,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "CJ Drogosch",
+        "home_score": 97.68,
+        "away_team": "Jarrett Black",
+        "away_score": 100.1
+    },
+    {
+        "season": "2017",
+        "week": 9,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jason Silverstone",
+        "home_score": 92.4,
+        "away_team": "Merrick Weingarten",
+        "away_score": 79.56
+    },
+    {
+        "season": "2017",
+        "week": 9,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Brad Silverman",
+        "home_score": 95.5,
+        "away_team": "Noah Nathan",
+        "away_score": 70.42
+    },
+    {
+        "season": "2017",
+        "week": 9,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Dylan Wittenberg",
+        "home_score": 104.92,
+        "away_team": "Alex Ross",
+        "away_score": 66.34
+    },
+    {
+        "season": "2017",
+        "week": 10,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Noah Nathan",
+        "home_score": 74.3,
+        "away_team": "Garrett Folbe",
+        "away_score": 94.36
+    },
+    {
+        "season": "2017",
+        "week": 10,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Merrick Weingarten",
+        "home_score": 80.84,
+        "away_team": "Brad Silverman",
+        "away_score": 80.1
+    },
+    {
+        "season": "2017",
+        "week": 10,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jason Silverstone",
+        "home_score": 78.34,
+        "away_team": "Dylan Wittenberg",
+        "away_score": 98.4
+    },
+    {
+        "season": "2017",
+        "week": 10,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Alex Ross",
+        "home_score": 55.64,
+        "away_team": "Jarrett Black",
+        "away_score": 129.28
+    },
+    {
+        "season": "2017",
+        "week": 10,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "CJ Drogosch",
+        "home_score": 126.96,
+        "away_team": "Daniel Banooni",
+        "away_score": 80.28
+    },
+    {
+        "season": "2017",
+        "week": 11,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Merrick Weingarten",
+        "home_score": 67.2,
+        "away_team": "Garrett Folbe",
+        "away_score": 103.32
+    },
+    {
+        "season": "2017",
+        "week": 11,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Alex Ross",
+        "home_score": 108.4,
+        "away_team": "Jason Silverstone",
+        "away_score": 126.46
+    },    
+    {
+        "season": "2017",
+        "week": 11,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Brad Silverman",
+        "home_score": 105.7,
+        "away_team": "Dylan Wittenberg",
+        "away_score": 110.6
+    },    
+    {
+        "season": "2017",
+        "week": 11,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Daniel Banooni",
+        "home_score": 97.98,
+        "away_team": "Jarrett Black",
+        "away_score": 125.7
+    },    
+    {
+        "season": "2017",
+        "week": 11,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "CJ Drogosch",
+        "home_score": 115.32,
+        "away_team": "Noah Nathan",
+        "away_score": 79.4
+    },
+    {
+        "season": "2017",
+        "week": 12,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Garrett Folbe",
+        "home_score": 116.08,
+        "away_team": "CJ Drogosch",
+        "away_score": 98.4
+    },
+    {
+        "season": "2017",
+        "week": 12,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Dylan Wittenberg",
+        "home_score": 82.04,
+        "away_team": "Merrick Weingarten",
+        "away_score": 78.96
+    },
+    {
+        "season": "2017",
+        "week": 12,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Brad Silverman",
+        "home_score": 71.88,
+        "away_team": "Alex Ross",
+        "away_score": 108.48
+    },
+    {
+        "season": "2017",
+        "week": 12,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jason Silverstone",
+        "home_score": 96.24,
+        "away_team": "Daniel Banooni",
+        "away_score": 93.68
+    },
+    {
+        "season": "2017",
+        "week": 12,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jarrett Black",
+        "home_score": 93.16,
+        "away_team": "Noah Nathan",
+        "away_score": 89.56
+    },
+    {
+        "season": "2017",
+        "week": 13,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jarrett Black",
+        "home_score": 102.2,
+        "away_team": "Garrett Folbe",
+        "away_score": 125.32
+    },
+    {
+        "season": "2017",
+        "week": 13,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Noah Nathan",
+        "home_score": 97.86,
+        "away_team": "Daniel Banooni",
+        "away_score": 63.14
+    },
+    {
+        "season": "2017",
+        "week": 13,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Merrick Weingarten",
+        "home_score": 71.18,
+        "away_team": "Alex Ross",
+        "away_score": 75.12
+    },
+    {
+        "season": "2017",
+        "week": 13,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Dylan Wittenberg",
+        "home_score": 134.56,
+        "away_team": "CJ Drogosch",
+        "away_score": 92.38
+    },
+    {
+        "season": "2017",
+        "week": 13,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jason Silverstone",
+        "home_score": 68.68,
+        "away_team": "Brad Silverman",
+        "away_score": 108.4
+    },
+    {
+        "season": "2017",
+        "week": 14,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Garrett Folbe",
+        "home_score": 122.14,
+        "away_team": "Alex Ross",
+        "away_score": 38.8
+    },
+    {
+        "season": "2017",
+        "week": 14,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Daniel Banooni",
+        "home_score": 93.64,
+        "away_team": "Merrick Weingarten",
+        "away_score": 109.74
+    },
+    {
+        "season": "2017",
+        "week": 14,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Noah Nathan",
+        "home_score": 94.42,
+        "away_team": "Dylan Wittenberg",
+        "away_score": 112.94
+    },
+    {
+        "season": "2017",
+        "week": 14,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jarrett Black",
+        "home_score": 71.8,
+        "away_team": "Brad Silverman",
+        "away_score": 97.64
+    },
+    {
+        "season": "2017",
+        "week": 14,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "CJ Drogosch",
+        "home_score": 117.04,
+        "away_team": "Jason Silverstone",
+        "away_score": 66.64
+    },
+    {
+        "season": "2017",
+        "week": 15,
+        "matchup_length": 1,
+        "playoffs": true,
+        "home_team": "Garrett Folbe",
+        "home_score": 62.48,
+        "away_team": "Jarrett Black",
+        "away_score": 121.14
+    },
+    {
+        "season": "2017",
+        "week": 15,
+        "matchup_length": 1,
+        "playoffs": true,
+        "home_team": "CJ Drogosch",
+        "home_score": 107.38,
+        "away_team": "Dylan Wittenberg",
+        "away_score":  131.94
+    },
+    {
+        "season": "2017",
+        "week": 16,
+        "matchup_length": 1,
+        "playoffs": true,
+        "home_team": "Dylan Wittenberg",
+        "home_score": 122.66,
+        "away_team": "Jarrett Black",
+        "away_score":  69.16
+    }
+]

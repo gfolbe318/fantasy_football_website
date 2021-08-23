@@ -3,10 +3,10 @@ import requests
 
 from credentials import cookies
 
-from constants import league_IDs
+from ff_website.constants import league_IDs
 
 
-league_members = json.load(open("member_ids.json"))
+league_members = json.load(open("data\\member_ids.json"))
 
 
 def load_notebook(year):
@@ -64,12 +64,17 @@ def get_data_multiple_week_playoffs(year):
 def get_all_data():
     all_games = []
 
+    games2017 = json.load(open("data\\2017games.json", "r"))
+    for game in games2017:
+        all_games.append(game)
+
     for year in ["2018", "2019", "2020"]:
         data = get_data_one_week_playoffs(year)
+        json.dump(data, open(f"data\\{year}games.json", "w"), indent=4)
         for game in data:
             all_games.append(game)
 
-    json.dump(all_games, open("all_games.json", "w"))
+    json.dump(all_games, open("data\\all_games.json", "w"))
 
 
 if __name__ == "__main__":
