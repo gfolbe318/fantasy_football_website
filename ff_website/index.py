@@ -5,9 +5,9 @@ import inflect
 from flask import flash, redirect, render_template, url_for, jsonify, request
 
 from ff_website import app
-from ff_website.apis import get_all_members, get_member_id
+from ff_website.apis import get_member_id
 from ff_website.constants import *
-from ff_website.db import get_db, init_db
+from ff_website.db import get_db
 from ff_website.forms import (CreateGame, CreateMember, GameQualities,
                               HeadToHead)
 
@@ -64,8 +64,8 @@ def h2h():
 
     # Initialize variables that will be returned on successful submission of the form
     # If we do not make the variables None-types, the template cannot be rendered
-    team_A_name, team_B_name, series_winner_name, num_matchups, num_times, series_split, num_playoff_matchups, num_regular_matchups, streak_count, streak_holder =\
-        None, None, None, None, None, None, None, None, None, None
+    team_A_name, team_B_name, series_winner_name, num_matchups, num_times, series_split, tied, num_playoff_matchups, num_regular_matchups, streak_count, streak_holder =\
+        None, None, None, None, None, None, None, None, None, None, None
 
     args = request.args
     form = HeadToHead()
@@ -132,10 +132,10 @@ def h2h():
             except:
                 ZeroDivisionError
 
-            series_winner_name, series_split =\
+            series_winner_name, series_split, tied =\
                 get_series_split(df)
-            num_regular_matchups, num_playoff_matchups = get_matchup_breakdown(
-                df)
+            num_regular_matchups, num_playoff_matchups =\
+                get_matchup_breakdown(df)
             streak_holder, streak_count = get_streak_head_to_head(df)
             df.index += 1
             p = inflect.engine()
@@ -156,16 +156,18 @@ def h2h():
             else:
                 team_A_name = f"{query[0]['first_name']} {query[1]['last_name']}"
                 team_B_name = f"{query[1]['first_name']} {query[0]['last_name']}"
-
+        db.close()
     if form.validate_on_submit():
         return redirect(url_for("h2h", member_one_id=form.data["leagueMemberOne"], member_two_id=form.data["leagueMemberTwo"]))
 
-    return render_template("head_to_head.html", form=form,
+    return render_template("head_to_head.html",
+                           form=form,
                            team_A_name=team_A_name,
                            team_B_name=team_B_name,
                            num_matchups=num_matchups,
                            num_times=num_times,
                            series_winner_name=series_winner_name,
+                           tied=tied,
                            series_split=series_split,
                            num_playoff_matchups=num_playoff_matchups,
                            num_regular_matchups=num_regular_matchups,
@@ -181,12 +183,259 @@ def h2h():
 @ app.route("/archives/game_qualities", methods=["GET", "POST"])
 def game_qualities():
     form = GameQualities()
+    args = request.args
+
+    df = pd.DataFrame(columns=[
+        "Season", "Week", "Matchup Format", "Winning Team", "Losing Team", "Score"])
+    try:
+        filter_type = args.get("filter_type")
+        num_results = args.get("num_results")
+    except AttributeError as e:
+        print("Something went wrong getting paramters", e)
+
+    # Fewest points scored combined
+    if filter_type == "1":
+        total_scores_list = []
+        db = get_db()
+        query = db.execute(
+            f"""
+            SELECT team_A_score, team_B_score, season, week, matchup_length, playoffs, team_A_score+team_B_score as total_score,
+            t2.first_name as team_A_first_name, t2.last_name as team_A_last_name, t3.first_name as team_B_first_name, t3.last_name as team_B_last_name
+            FROM game
+            INNER JOIN member t2
+            ON t2.member_id = team_A_id
+            INNER JOIN member t3
+            ON t3.member_id = team_B_id
+            ORDER BY total_score ASC LIMIT {num_results}
+            """
+        ).fetchall()
+        for row in query:
+            team_A_score = row["team_A_score"]
+            team_B_score = row["team_B_score"]
+
+            season = row["season"]
+            week = row["week"]
+            matchup_length = row["matchup_length"]
+            playoffs = row["playoffs"]
+
+            team_A_name = f"{row['team_A_first_name']} {row['team_A_last_name']}"
+            team_B_name = f"{row['team_B_first_name']} {row['team_B_last_name']}"
+
+            winning_team = team_A_name if team_A_score > team_B_score else team_B_name
+            losing_team = team_A_name if team_A_score < team_B_score else team_B_name
+
+            winning_score = team_A_score if team_A_score > team_B_score else team_B_score
+            losing_score = team_A_score if team_A_score < team_B_score else team_B_score
+
+            asterisk = "*" if matchup_length == 2 else ""
+            matchup_format = "Playoffs" if playoffs else "Regular Season"
+            df.loc[len(df.index)] = [season, week,
+                                     matchup_format, winning_team, losing_team, f"{winning_score}-{losing_score}{asterisk}"]
+
+            total_scores_list.append(row["total_score"])
+        df["Total Points"] = total_scores_list
+
+    # Fewest points scored individual
+    if filter_type == "2":
+        df = pd.DataFrame(columns=[
+            "Season", "Week", "Matchup Format", "League Member", "Points"])
+        db = get_db()
+        query = db.execute(
+            f"""
+            WITH t as(
+                SELECT game_id, team_A_score as points, season, week, matchup_length, playoffs, team_A_id as team_id from game
+                UNION ALL
+                SELECT game_id, team_B_score as points, season, week, matchup_length, playoffs, team_B_id as team_id from game
+                ORDER BY team_A_score DESC
+            )
+            SELECT points, season, week, matchup_length, playoffs, team_id, first_name, last_name
+            FROM t
+            INNER JOIN member on member_id = team_id
+            ORDER BY points ASC LIMIT {num_results}
+            """
+        ).fetchall()
+        for row in query:
+            points = row["points"]
+            season = row["season"]
+            week = row["week"]
+            matchup_length = row["matchup_length"]
+            playoffs = row["playoffs"]
+
+            team_name = f"{row['first_name']} {row['last_name']}"
+
+            asterisk = "*" if matchup_length == 2 else ""
+            matchup_format = "Playoffs" if playoffs else "Regular Season"
+            df.loc[len(df.index)] = [season, week,
+                                     matchup_format, team_name, points]
+
+    # Most points scored combined
+    if filter_type == "3":
+        total_scores_list = []
+        db = get_db()
+        query = db.execute(
+            f"""
+            SELECT team_A_score, team_B_score, season, week, matchup_length, playoffs, team_A_score+team_B_score as total_score,
+            t2.first_name as team_A_first_name, t2.last_name as team_A_last_name, t3.first_name as team_B_first_name, t3.last_name as team_B_last_name
+            FROM game
+            INNER JOIN member t2
+            ON t2.member_id = team_A_id
+            INNER JOIN member t3
+            ON t3.member_id = team_B_id
+            ORDER BY total_score DESC LIMIT {num_results}
+            """
+        ).fetchall()
+        for row in query:
+            team_A_score = row["team_A_score"]
+            team_B_score = row["team_B_score"]
+
+            season = row["season"]
+            week = row["week"]
+            matchup_length = row["matchup_length"]
+            playoffs = row["playoffs"]
+
+            team_A_name = f"{row['team_A_first_name']} {row['team_A_last_name']}"
+            team_B_name = f"{row['team_B_first_name']} {row['team_B_last_name']}"
+
+            winning_team = team_A_name if team_A_score > team_B_score else team_B_name
+            losing_team = team_A_name if team_A_score < team_B_score else team_B_name
+
+            winning_score = team_A_score if team_A_score > team_B_score else team_B_score
+            losing_score = team_A_score if team_A_score < team_B_score else team_B_score
+
+            asterisk = "*" if matchup_length == 2 else ""
+            matchup_format = "Playoffs" if playoffs else "Regular Season"
+            df.loc[len(df.index)] = [season, week,
+                                     matchup_format, winning_team, losing_team, f"{winning_score}-{losing_score}{asterisk}"]
+
+            total_scores_list.append(row["total_score"])
+        df["Total Points"] = total_scores_list
+
+    # Fewest points scored combined
+    if filter_type == "4":
+        df = pd.DataFrame(columns=[
+            "Season", "Week", "Matchup Format", "League Member", "Points"])
+        db = get_db()
+        query = db.execute(
+            f"""
+            WITH t as(
+                SELECT game_id, team_A_score as points, season, week, matchup_length, playoffs, team_A_id as team_id from game
+                UNION ALL
+                SELECT game_id, team_B_score as points, season, week, matchup_length, playoffs, team_B_id as team_id from game
+                ORDER BY team_A_score DESC
+            )
+            SELECT points, season, week, matchup_length, playoffs, team_id, first_name, last_name
+            FROM t
+            INNER JOIN member on member_id = team_id
+            ORDER BY points DESC LIMIT {num_results}
+            """
+        ).fetchall()
+        for row in query:
+            points = row["points"]
+            season = row["season"]
+            week = row["week"]
+            matchup_length = row["matchup_length"]
+            playoffs = row["playoffs"]
+
+            team_name = f"{row['first_name']} {row['last_name']}"
+
+            asterisk = "*" if matchup_length == 2 else ""
+            matchup_format = "Playoffs" if playoffs else "Regular Season"
+            df.loc[len(df.index)] = [season, week,
+                                     matchup_format, team_name, points]
+
+    # Largest margin of victory
+    if filter_type == "5":
+        deficits_list = []
+        db = get_db()
+        query = db.execute(
+            f"""
+            SELECT team_A_score, team_B_score, season, week, matchup_length, playoffs, abs(team_A_score-team_B_score) as margin,
+            t2.first_name as team_A_first_name, t2.last_name as team_A_last_name, t3.first_name as team_B_first_name, t3.last_name as team_B_last_name
+            FROM game
+            INNER JOIN member t2
+            ON t2.member_id = team_A_id
+            INNER JOIN member t3
+            ON t3.member_id = team_B_id
+            ORDER BY margin DESC LIMIT {num_results}
+            """
+        ).fetchall()
+        for row in query:
+            team_A_score = row["team_A_score"]
+            team_B_score = row["team_B_score"]
+
+            season = row["season"]
+            week = row["week"]
+            matchup_length = row["matchup_length"]
+            playoffs = row["playoffs"]
+
+            team_A_name = f"{row['team_A_first_name']} {row['team_A_last_name']}"
+            team_B_name = f"{row['team_B_first_name']} {row['team_B_last_name']}"
+
+            winning_team = team_A_name if team_A_score > team_B_score else team_B_name
+            losing_team = team_A_name if team_A_score < team_B_score else team_B_name
+
+            winning_score = team_A_score if team_A_score > team_B_score else team_B_score
+            losing_score = team_A_score if team_A_score < team_B_score else team_B_score
+
+            asterisk = "*" if matchup_length == 2 else ""
+            matchup_format = "Playoffs" if playoffs else "Regular Season"
+            df.loc[len(df.index)] = [season, week,
+                                     matchup_format, winning_team, losing_team, f"{winning_score}-{losing_score}{asterisk}"]
+
+            deficits_list.append(row["margin"])
+        df["Margin"] = deficits_list
+
+    # Smallest margin of victory
+    if filter_type == "6":
+        deficits_list = []
+        db = get_db()
+        query = db.execute(
+            f"""
+            SELECT team_A_score, team_B_score, season, week, matchup_length, playoffs, abs(team_A_score-team_B_score) as margin,
+            t2.first_name as team_A_first_name, t2.last_name as team_A_last_name, t3.first_name as team_B_first_name, t3.last_name as team_B_last_name
+            FROM game
+            INNER JOIN member t2
+            ON t2.member_id = team_A_id
+            INNER JOIN member t3
+            ON t3.member_id = team_B_id
+            ORDER BY margin ASC LIMIT {num_results}
+            """
+        ).fetchall()
+        for row in query:
+            team_A_score = row["team_A_score"]
+            team_B_score = row["team_B_score"]
+
+            season = row["season"]
+            week = row["week"]
+            matchup_length = row["matchup_length"]
+            playoffs = row["playoffs"]
+
+            team_A_name = f"{row['team_A_first_name']} {row['team_A_last_name']}"
+            team_B_name = f"{row['team_B_first_name']} {row['team_B_last_name']}"
+
+            winning_team = team_A_name if team_A_score > team_B_score else team_B_name
+            losing_team = team_A_name if team_A_score < team_B_score else team_B_name
+
+            winning_score = team_A_score if team_A_score > team_B_score else team_B_score
+            losing_score = team_A_score if team_A_score < team_B_score else team_B_score
+
+            asterisk = "*" if matchup_length == 2 else ""
+            matchup_format = "Playoffs" if playoffs else "Regular Season"
+            df.loc[len(df.index)] = [season, week,
+                                     matchup_format, winning_team, losing_team, f"{winning_score}-{losing_score}{asterisk}"]
+
+            deficits_list.append(row["margin"])
+        df["Margin"] = deficits_list
+
+    df.index += 1
+
     if form.validate_on_submit():
-        print(form.data["filter"])
-        print("succeeded")
-    else:
-        print("failed")
-    return render_template("game_qualities.html", form=form)
+        return redirect(url_for("game_qualities", filter_type=form.data["filter"], num_results=form.data["numberOfResults"]))
+
+    return render_template("game_qualities.html",
+                           form=form,
+                           query_specified=len(df.index != 0),
+                           df=df.to_html(classes="table table-striped"))
 
 
 @ app.route("/tools/create_member", methods=["GET", "POST"])

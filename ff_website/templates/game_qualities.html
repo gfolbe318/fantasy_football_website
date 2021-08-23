@@ -36,13 +36,6 @@
                 </div>
               </div>
               <div class="row">
-                <div class="col-12">
-                  <div class="form-group">
-                    {{ form.excludeTwoWeeks.label }} {{ form.excludeTwoWeeks }}
-                  </div>
-                </div>
-              </div>
-              <div class="row">
                 <div class="form-group submit-button">
                   {{ form.submit(class="btn btn-outline-info")}}
                 </div>
@@ -54,57 +47,8 @@
     </div>
   </div>
   <div class="col-12">
-    <div
-      class="
-        table-responsive-sm
-        table-responsive-md
-        table-responsive-xs
-        table-responsive
-        justify-content-center
-      "
-    >
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Season</th>
-            <th scope="col">Week</th>
-            <th scope="col">Matchup Format</th>
-            <th scope="col">Winning Team</th>
-            <th scope="col">Losing Team</th>
-            <th scope="col">Score</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th scope="row">1</th>
-            <td>2020</td>
-            <td>13</td>
-            <td>Playoffs</td>
-            <td>Alex Ross</td>
-            <td>Garrett Folbe</td>
-            <td>100.2-91.6</td>
-          </tr>
-          <tr>
-            <th scope="row">2</th>
-            <td>2020</td>
-            <td>13</td>
-            <td>Reg. Season</td>
-            <td>Alex Ross</td>
-            <td>Garrett Folbe</td>
-            <td>100.2-91.6</td>
-          </tr>
-          <tr>
-            <th scope="row">2</th>
-            <td>2020</td>
-            <td>13</td>
-            <td>Playoffs</td>
-            <td>Alex Ross</td>
-            <td>Garrett Folbe</td>
-            <td>100.2-91.6</td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="table-responsive justify-content-center">
+      {% if query_specified %} {{df|safe}} {% endif %}
     </div>
   </div>
 </div>

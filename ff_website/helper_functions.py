@@ -14,7 +14,7 @@ def get_series_split(df: pd.DataFrame):
         winners.index) == 1 else winners[series_loser]
     series_split = f"{series_winner_wins}-{series_loser_wins}"
 
-    return series_winner, series_split
+    return series_winner, series_split, series_loser_wins == series_winner_wins
 
 
 def get_matchup_breakdown(df: pd.DataFrame):

@@ -102,8 +102,10 @@
       {% if matchups_exist %}
       <p id="matchup-summary">
         {{team_A_name}} and {{team_B_name}} have played
-        <b>{{num_matchups}}</b> {{num_times}} with {{series_winner_name}}
-        holding a <b>{{series_split}} series lead</b> overall.
+        <b>{{num_matchups}}</b> {{num_times}} {% if tied %} with the series
+        being tied <b>{{series_split}}</b>. {% else %} with
+        {{series_winner_name}} holding a
+        <b>{{series_split}} series lead</b> overall. {% endif %}
         <b>{{num_regular_matchups}}</b> of these matchups have come in the
         regular season, and <b>{{num_playoff_matchups}}</b> have been in the
         playoffs. The two teams have combined for a total of

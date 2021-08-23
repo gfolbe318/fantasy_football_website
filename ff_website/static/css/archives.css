@@ -40,4 +40,5 @@ td,
 tr,
 th {
   border: none;
+  font-size: small;
 }

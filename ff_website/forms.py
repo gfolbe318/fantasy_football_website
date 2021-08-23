@@ -63,7 +63,7 @@ class GameQualities(FlaskForm):
                              (1, "Fewest Points Scored (Combined)"),
                              (2, "Fewest Points Scored (Individual)"),
                              (3, "Most Points Scored (Combined)"),
-                             (4, "Most Points Scored (Individual"),
+                             (4, "Most Points Scored (Individual)"),
                              (5, "Largest Margin of Victory"),
                              (6, "Smallest Margin of Victory")],
                          validators=[DataRequired("Please select a filter")])
@@ -72,10 +72,6 @@ class GameQualities(FlaskForm):
                                   choices=[(10, 10),
                                            (25, 25),
                                            (100, 100)])
-
-    # Expand options to be a choice field: 1 week only, 1 and 2 weeks, 2 week onlys
-    excludeTwoWeeks = BooleanField("Include 2 week matchups?",
-                                   default=False)
 
     submit = SubmitField("Get Results")
 
@@ -89,8 +85,8 @@ class CreateMember(FlaskForm):
     lastName = StringField("Last Name", validators=[DataRequired()])
     activeMember = SelectField("Activity Status...",
                                choices=[("", "Select a status"),
-                                        ("Active", "Active"),
-                                        ("Inactive", "Inactive")],
+                                        (1, "Active"),
+                                        (0, "Inactive")],
                                validators=[DataRequired()]
                                )
 
