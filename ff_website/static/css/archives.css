@@ -11,6 +11,14 @@
   background-image: none;
 }
 
+a:link {
+  text-decoration: none;
+}
+
+a:visited {
+  text-decoration: none;
+}
+
 #matchup-summary {
   margin: 1rem;
   font-size: 1.25rem;
@@ -41,4 +49,17 @@ tr,
 th {
   border: none;
   font-size: small;
+}
+
+th {
+  background-color: lightgray;
+}
+
+td,
+th {
+  white-space: nowrap;
+}
+
+table {
+  border: 1px solid black;
 }

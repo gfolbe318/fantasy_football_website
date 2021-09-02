@@ -76,6 +76,17 @@ class GameQualities(FlaskForm):
     submit = SubmitField("Get Results")
 
 
+class SeasonSelector(FlaskForm):
+
+    year = SelectField('Season',
+                       choices=[("", "Please select a season..."),
+                                ("2017", "2017"), ("2018", "2018"),
+                                ("2019", "2019"), ("2020", "2020")],
+                       validators=[DataRequired()])
+
+    submit = SubmitField("View Season")
+
+
 class CreateMember(FlaskForm):
     years = get_years_helper(2011)
 

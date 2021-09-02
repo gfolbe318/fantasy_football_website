@@ -1,4 +1,4 @@
-{% extends "layout.html" %}{% block content %}
+{% extends "layout.html" %} {% block content %}
 <div class="container-fluid content">
   <div class="row justify-content-center text-center">
     <div class="col-lg-5 col-md-7 col-sm-10">
@@ -9,63 +9,66 @@
           </li>
         </a>
         <a href="{{url_for('game_qualities')}}">
-          <li class="list-group-item list-group-item-dark">Game Qualities</li>
+          <li class="list-group-item list-group-item-action">Game Qualities</li>
         </a>
         <a href="{{url_for('season_summary')}}">
-          <li class="list-group-item list-group-item-action">Season Summary</li>
+          <li class="list-group-item list-group-item-dark">Season Summary</li>
         </a>
       </ul>
     </div>
   </div>
-  <div class="row justify-content-center">
+  <div class="row">
     <div class="col-12">
       <div class="form-body">
         <div class="content-section">
           <form novalidate="novalidate" method="POST">
-            <legend>Filter by specific qualities</legend>
             <fieldset class="form-group">
               <input
                 type="hidden"
                 name="csrf_token"
                 value="{{ csrf_token() }}"
               />
+              <legend>Select a year</legend>
               <div class="row">
                 <div class="col-md-6 col-sm-12">
                   <div class="form-group">
-                    {{ form.filter.label(class="form-control-md") }} {% if
-                    form.filter.errors %} {{ form.filter(class="form-control
+                    {{ form.year.label(class="form-control-md") }} {% if
+                    form.year.errors %} {{ form.year(class="form-control
                     form-control-md is-invalid") }}
                     <div class="invalid-feedback">
-                      {% for error in form.filter.errors %}
+                      {% for error in form.year.errors %}
                       <span>{{ error }}</span>
                       {% endfor %}
                     </div>
-                    {% else %} {{ form.filter(class="form-control
+                    {% else %} {{ form.year(class="form-control
                     form-control-md") }} {% endif %}
                   </div>
                 </div>
-                <div class="col-md-6 col-sm-12">
-                  <div class="form-group">
-                    {{ form.numberOfResults.label(class="form-control-md") }} {{
-                    form.numberOfResults(class="form-control form-control-md")
-                    }}
-                  </div>
-                </div>
               </div>
-              <div class="row">
-                <div class="form-group submit-button">
+            </fieldset>
+            <div class="row">
+              <div class="col-12 text-center">
+                <div class="form-group">
                   {{ form.submit(class="btn btn-outline-info")}}
                 </div>
               </div>
-            </fieldset>
+            </div>
           </form>
         </div>
       </div>
     </div>
   </div>
-  <div class="col-12">
-    <div class="table-responsive justify-content-center">
-      {% if query_specified %} {{df|safe}} {% endif %}
+  <div class="row">
+    <div class="col-12">
+      <div class="table-responsive justify-content-center">
+        {% if year %}
+        <div class="col-12">
+          <div class="table-responsive justify-content-center">
+            {{standings|safe}}
+          </div>
+        </div>
+        {% endif %}
+      </div>
     </div>
   </div>
 </div>

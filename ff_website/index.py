@@ -3,15 +3,16 @@ import pandas as pd
 import inflect
 
 from flask import flash, redirect, render_template, url_for, jsonify, request
+from pandas.core.frame import DataFrame
 
 from ff_website import app
 from ff_website.apis import get_member_id
 from ff_website.constants import *
-from ff_website.db import get_db
+from ff_website.db import get_db, init_db
 from ff_website.forms import (CreateGame, CreateMember, GameQualities,
-                              HeadToHead)
+                              HeadToHead, SeasonSelector)
 
-from ff_website.helper_functions import get_series_split, get_matchup_breakdown, get_streak_head_to_head
+from ff_website.helper_functions import *
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -49,23 +50,83 @@ def members():
     return render_template("league_members.html",  photos=l)
 
 
-@app.route("/members/2", methods=["GET", "POST"])
-def test():
-    return render_template("user.html")
+@app.route("/member/<int:id>", methods=["GET", "POST"])
+def test(id):
+
+    class Card:
+        def __init__(self, text, value):
+            self.text = text
+            self.value = value
+
+    cards = []
+
+    db = get_db()
+
+    member_info = db.execute(
+        """
+        SELECT * FROM member
+        WHERE member_id=?
+        """, (id,)
+    ).fetchone()
+    name = f"{member_info[FIRST_NAME]} {member_info[LAST_NAME]}"
+
+    year_joined = member_info[YEAR_JOINED]
+
+    all_games = db.execute(
+        """
+            SELECT team_A_score, team_B_score, season, week, matchup_length, playoffs,
+            t2.first_name as team_A_first_name, t2.last_name as team_A_last_name, t3.first_name as team_B_first_name, t3.last_name as team_B_last_name, t3.year_joined
+            FROM game
+            INNER JOIN member t2
+            ON t2.member_id = team_A_id
+            INNER JOIN member t3
+            ON t3.member_id = team_B_id
+            WHERE team_A_id=? OR team_B_id=?
+        """, (id, id)
+    ).fetchall()
+
+    last_year = all_games[-1][SEASON]
+    record, po_record = get_overall_record(all_games, name)
+    playoff_appearances = get_playoff_appearances(all_games)
+
+    total_points, longest_win_streak, longest_losing_streak, most_points, fewest_points = get_additional_stats(
+        all_games, name)
+
+    total_points_str = "{:.2f}".format(total_points)
+    avg_points_str = "{:.2f}".format(total_points/len(all_games))
+
+    cards.append(Card("Total Games", len(all_games)))
+    cards.append(Card("Overall Record", record))
+    cards.append(Card("Playoff Record", po_record))
+    cards.append(Card("Total Points", total_points_str))
+    cards.append(Card("Points per game", avg_points_str))
+    cards.append(Card("Most Points", most_points))
+    cards.append(Card("Fewest Points", fewest_points))
+    cards.append(Card("Longest Win Streak", longest_win_streak))
+    cards.append(Card("Longest Losing Streak", longest_losing_streak))
+
+    seasons = get_schedules(all_games, name)
+
+    return render_template("member.html",
+                           name=name,
+                           year_joined=year_joined,
+                           last_year=last_year,
+                           playoff_appearances=playoff_appearances,
+                           cards=cards,
+                           seasons=seasons)
 
 
-@app.route("/archives/", methods=["GET", "POST"])
+@ app.route("/archives/", methods=["GET", "POST"])
 def archives_home():
     return render_template("archives_home.html")
 
 
-@app.route("/archives/head_to_head", methods=["GET", "POST"])
+@ app.route("/archives/head_to_head", methods=["GET", "POST"])
 def h2h():
 
     # Initialize variables that will be returned on successful submission of the form
     # If we do not make the variables None-types, the template cannot be rendered
-    team_A_name, team_B_name, series_winner_name, num_matchups, num_times, series_split, tied, num_playoff_matchups, num_regular_matchups, streak_count, streak_holder =\
-        None, None, None, None, None, None, None, None, None, None, None
+    team_A_name, team_B_name, series_winner_name, num_matchups, num_times, series_split, tied, num_playoff_matchups, num_regular_matchups, streak_count, streak_holder = None, None, None, None, None, None, None, None, None, None, None
 
     args = request.args
     form = HeadToHead()
@@ -85,7 +146,7 @@ def h2h():
     # If we got the members successfully, find the history of their games
     if member_one_id and member_two_id:
         df = pd.DataFrame(columns=[
-                          "Season", "Week", "Matchup Format", "Winning Team", "Losing Team", "Score"])
+            "Season", "Week", "Matchup Format", "Winning Team", "Losing Team", "Score"])
 
         db = get_db()
         query = db.execute(
@@ -132,10 +193,9 @@ def h2h():
             except:
                 ZeroDivisionError
 
-            series_winner_name, series_split, tied =\
-                get_series_split(df)
-            num_regular_matchups, num_playoff_matchups =\
-                get_matchup_breakdown(df)
+            series_winner_name, series_split, tied = get_series_split(df)
+            num_regular_matchups, num_playoff_matchups = get_matchup_breakdown(
+                df)
             streak_holder, streak_count = get_streak_head_to_head(df)
             df.index += 1
             p = inflect.engine()
@@ -150,12 +210,13 @@ def h2h():
                 ORDER BY {MEMBER_ID} asc
                 """, (member_one_id, member_two_id)
             ).fetchall()
-            if member_one_id < member_two_id:
-                team_A_name = f"{query[0]['first_name']} {query[0]['last_name']}"
-                team_B_name = f"{query[1]['first_name']} {query[1]['last_name']}"
-            else:
-                team_A_name = f"{query[0]['first_name']} {query[1]['last_name']}"
-                team_B_name = f"{query[1]['first_name']} {query[0]['last_name']}"
+            if len(query) == 2:
+                if member_one_id < member_two_id:
+                    team_A_name = f"{query[0]['first_name']} {query[0]['last_name']}"
+                    team_B_name = f"{query[1]['first_name']} {query[1]['last_name']}"
+                else:
+                    team_A_name = f"{query[0]['first_name']} {query[1]['last_name']}"
+                    team_B_name = f"{query[1]['first_name']} {query[0]['last_name']}"
         db.close()
     if form.validate_on_submit():
         return redirect(url_for("h2h", member_one_id=form.data["leagueMemberOne"], member_two_id=form.data["leagueMemberTwo"]))
@@ -444,6 +505,47 @@ def game_qualities():
                            df=df.to_html(classes="table table-striped"))
 
 
+@ app.route("/archives/season_summary", methods=["GET", "POST"])
+def season_summary():
+
+    form = SeasonSelector()
+    args = request.args
+    year, standings = None, None
+
+    standings = pd.DataFrame()
+
+    try:
+        year = args.get("year")
+    except AttributeError as e:
+        print("Something went wrong getting parameters", e)
+
+    if year:
+        db = get_db()
+        query = db.execute(
+            f"""
+            SELECT team_A_score, team_B_score, season, week, matchup_length, playoffs,
+            t2.first_name as team_A_first_name, t2.last_name as team_A_last_name, t3.first_name as team_B_first_name, t3.last_name as team_B_last_name
+            FROM game
+            INNER JOIN member t2
+            ON t2.member_id = team_A_id
+            INNER JOIN member t3
+            ON t3.member_id = team_B_id
+            WHERE season=?
+            """, (year,)
+        ).fetchall()
+
+        standings, ranks = get_standings(query)
+        x = get_playoffs(query, ranks)
+
+    if form.validate_on_submit():
+        return redirect(url_for("season_summary", year=form.data["year"]))
+
+    return render_template("season_summary.html",
+                           form=form,
+                           year=year,
+                           standings=standings.to_html(classes="table table-striped"))
+
+
 @ app.route("/tools/create_member", methods=["GET", "POST"])
 def create_member():
     form = CreateMember()
@@ -478,7 +580,7 @@ def create_member():
     return render_template("create_member.html", form=form)
 
 
-@app.route("/tools/create_game", methods=["GET", "POST"])
+@ app.route("/tools/create_game", methods=["GET", "POST"])
 def create_game():
     form = CreateGame()
     if form.validate_on_submit():
@@ -508,7 +610,7 @@ def create_game():
             db.execute(
                 f"""
                 INSERT INTO game
-                ({TEAM_A_SCORE}, {TEAM_B_SCORE}, {SEASON}, {WEEK}, 
+                ({TEAM_A_SCORE}, {TEAM_B_SCORE}, {SEASON}, {WEEK},
                 {MATCHUP_LENGTH}, {PLAYOFFS}, {TEAM_A_ID}, {TEAM_B_ID})
                 VALUES(?, ?, ?, ?, ?, ?, ?, ?)
                 """,
@@ -524,7 +626,7 @@ def create_game():
     return render_template("create_game.html", form=form)
 
 
-@app.route("/apis/add_all_members", methods=["GET", "POST"])
+@ app.route("/apis/add_all_members", methods=["GET", "POST"])
 def add_league_members():
 
     db = get_db()
@@ -553,7 +655,7 @@ def add_league_members():
     return jsonify(members)
 
 
-@app.route("/apis/add_all_games", methods=["GET", "POST"])
+@ app.route("/apis/add_all_games", methods=["GET", "POST"])
 def add_games():
     db = get_db()
 

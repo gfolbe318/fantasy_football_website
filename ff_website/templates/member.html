@@ -1,0 +1,124 @@
+<script src="/static/js/modify_tables.js"></script>
+
+{% extends "layout.html" %} {% block content %}
+<div class="container-fluid content">
+  <div class="row">
+    <div class="col-lg-5 col-md-12">
+      <img
+        src="{{url_for('static', filename='img/gmf.jpg')}}"
+        class="user_img d-block mx-auto"
+      />
+    </div>
+    <div class="col-lg-7 col-md-12" id="bio">
+      <h1>{{name}}</h1>
+      <ul class="bio-group">
+        <li class="bio-elem"><b>Year Joined:&nbsp;</b>{{year_joined}}</li>
+        <li class="bio-elem"><b>Most Recent Season:&nbsp;</b>{{last_year}}</li>
+        <li class="bio-elem"><b>Championships:&nbsp;</b>2 (2011, 2019)</li>
+        <li class="bio-elem">
+          <b>Playoff Appearances:&nbsp;</b>{{playoff_appearances}}
+        </li>
+      </ul>
+    </div>
+  </div>
+  <hr class="separator" />
+  <h2>Fast Facts</h2>
+  <hr class="separator" />
+  <div class="row justify-content-center text-center align-items-center">
+    {% for card in cards %}
+    <div class="col-lg-3 col-md-4">
+      <div class="card mb-4">
+        <div class="card-body">
+          <h2 class="card-title">{{card.value}}</h2>
+          <p class="card-text">{{card.text}}</p>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <hr class="separator" />
+  <h2>Season Summaries</h2>
+  <hr class="separator" />
+  <div class="row">
+    <div class="col-12">
+      <div class="table-responsive justify-content-center">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col">Season</th>
+              <th scope="col">Final Record</th>
+              <th scope="col">TPF</th>
+              <th scope="col">TPA</th>
+              <th scope="col">Playoffs</th>
+              <th scope="col">Reg. Season Finish</th>
+              <th scope="col">Ovr. Finish</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">2020</th>
+              <td>12-3</td>
+              <td>1200</td>
+              <td>1500</td>
+              <td>Yes</td>
+              <td>5th</td>
+              <td>5th</td>
+            </tr>
+            <tr>
+              <th scope="row">2020</th>
+              <td>12-3</td>
+              <td>1200</td>
+              <td>1500</td>
+              <td>Yes</td>
+              <td>5th</td>
+              <td>5th</td>
+            </tr>
+            <tr>
+              <th scope="row">2020</th>
+              <td>12-3</td>
+              <td>1200</td>
+              <td>1500</td>
+              <td>Yes</td>
+              <td>5th</td>
+              <td>5th</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <hr class="separator" />
+  <h2>List of Seasons</h2>
+  <hr class="separator" />
+  <div class="row">
+    <div class="col-12">
+      <div class="container">
+        <div class="panel-group" id="accordion">
+          {% for key, value in seasons.items() %}
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4 class="panel-title">
+                <a
+                  class="accordion-toggle"
+                  data-toggle="collapse"
+                  href="#collapse{{key}}"
+                >
+                  {{key}}
+                </a>
+              </h4>
+            </div>
+            <div id="collapse{{key}}" class="panel-collapse collapse">
+              <div class="panel-body">
+                <div class="table-responsive justify-content-center">
+                  {{value|safe}}
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

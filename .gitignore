@@ -4,7 +4,7 @@ __pycache__/
 ff_website/static/css/bootstrap.*
 ff_website/static/css/bootstrap-grid.*
 ff_website/static/css/bootstrap-reboot.*
-ff_website/static/js/*
+ff_website/static/js/bootstrap.*
 venv/
 instance/
 ff_website.egg-info/
