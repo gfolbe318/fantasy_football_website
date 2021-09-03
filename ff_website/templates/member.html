@@ -14,7 +14,7 @@
       <ul class="bio-group">
         <li class="bio-elem"><b>Year Joined:&nbsp;</b>{{year_joined}}</li>
         <li class="bio-elem"><b>Most Recent Season:&nbsp;</b>{{last_year}}</li>
-        <li class="bio-elem"><b>Championships:&nbsp;</b>2 (2011, 2019)</li>
+        <li class="bio-elem"><b>Championships:&nbsp;</b>{{championships}}</li>
         <li class="bio-elem">
           <b>Playoff Appearances:&nbsp;</b>{{playoff_appearances}}
         </li>
@@ -42,48 +42,7 @@
   <div class="row">
     <div class="col-12">
       <div class="table-responsive justify-content-center">
-        <table class="table table-striped">
-          <thead>
-            <tr>
-              <th scope="col">Season</th>
-              <th scope="col">Final Record</th>
-              <th scope="col">TPF</th>
-              <th scope="col">TPA</th>
-              <th scope="col">Playoffs</th>
-              <th scope="col">Reg. Season Finish</th>
-              <th scope="col">Ovr. Finish</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th scope="row">2020</th>
-              <td>12-3</td>
-              <td>1200</td>
-              <td>1500</td>
-              <td>Yes</td>
-              <td>5th</td>
-              <td>5th</td>
-            </tr>
-            <tr>
-              <th scope="row">2020</th>
-              <td>12-3</td>
-              <td>1200</td>
-              <td>1500</td>
-              <td>Yes</td>
-              <td>5th</td>
-              <td>5th</td>
-            </tr>
-            <tr>
-              <th scope="row">2020</th>
-              <td>12-3</td>
-              <td>1200</td>
-              <td>1500</td>
-              <td>Yes</td>
-              <td>5th</td>
-              <td>5th</td>
-            </tr>
-          </tbody>
-        </table>
+        {{summaries|safe}}
       </div>
     </div>
   </div>

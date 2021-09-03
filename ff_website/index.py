@@ -3,12 +3,11 @@ import pandas as pd
 import inflect
 
 from flask import flash, redirect, render_template, url_for, jsonify, request
-from pandas.core.frame import DataFrame
 
 from ff_website import app
 from ff_website.apis import get_member_id
 from ff_website.constants import *
-from ff_website.db import get_db, init_db
+from ff_website.db import get_db
 from ff_website.forms import (CreateGame, CreateMember, GameQualities,
                               HeadToHead, SeasonSelector)
 
@@ -51,7 +50,7 @@ def members():
 
 
 @app.route("/member/<int:id>", methods=["GET", "POST"])
-def test(id):
+def get_member_info(id):
 
     class Card:
         def __init__(self, text, value):
@@ -72,7 +71,7 @@ def test(id):
 
     year_joined = member_info[YEAR_JOINED]
 
-    all_games = db.execute(
+    all_games_for_member = db.execute(
         """
             SELECT team_A_score, team_B_score, season, week, matchup_length, playoffs,
             t2.first_name as team_A_first_name, t2.last_name as team_A_last_name, t3.first_name as team_B_first_name, t3.last_name as team_B_last_name, t3.year_joined
@@ -85,17 +84,29 @@ def test(id):
         """, (id, id)
     ).fetchall()
 
-    last_year = all_games[-1][SEASON]
-    record, po_record = get_overall_record(all_games, name)
-    playoff_appearances = get_playoff_appearances(all_games)
+    all_games = db.execute(
+        """
+            SELECT team_A_score, team_B_score, season, week, matchup_length, playoffs,
+            t2.first_name as team_A_first_name, t2.last_name as team_A_last_name, t3.first_name as team_B_first_name, t3.last_name as team_B_last_name, t3.year_joined
+            FROM game
+            INNER JOIN member t2
+            ON t2.member_id = team_A_id
+            INNER JOIN member t3
+            ON t3.member_id = team_B_id
+        """
+    ).fetchall()
+
+    last_year = all_games_for_member[-1][SEASON]
+    record, po_record = get_overall_record(all_games_for_member, name)
+    playoff_appearances = get_playoff_appearances(all_games_for_member)
 
     total_points, longest_win_streak, longest_losing_streak, most_points, fewest_points = get_additional_stats(
-        all_games, name)
+        all_games_for_member, name)
 
     total_points_str = "{:.2f}".format(total_points)
-    avg_points_str = "{:.2f}".format(total_points/len(all_games))
+    avg_points_str = "{:.2f}".format(total_points/len(all_games_for_member))
 
-    cards.append(Card("Total Games", len(all_games)))
+    cards.append(Card("Total Games", len(all_games_for_member)))
     cards.append(Card("Overall Record", record))
     cards.append(Card("Playoff Record", po_record))
     cards.append(Card("Total Points", total_points_str))
@@ -105,14 +116,19 @@ def test(id):
     cards.append(Card("Longest Win Streak", longest_win_streak))
     cards.append(Card("Longest Losing Streak", longest_losing_streak))
 
-    seasons = get_schedules(all_games, name)
+    summaries = get_summaries(all_games, name)
+    championships = get_championships(summaries, name)
+    summaries_html = summaries.to_html(classes="table table-striped")
+    seasons = get_schedules(all_games_for_member, name)
 
     return render_template("member.html",
                            name=name,
                            year_joined=year_joined,
                            last_year=last_year,
                            playoff_appearances=playoff_appearances,
+                           championships=championships,
                            cards=cards,
+                           summaries=summaries_html,
                            seasons=seasons)
 
 

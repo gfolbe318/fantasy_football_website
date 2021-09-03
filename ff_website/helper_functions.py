@@ -1,5 +1,4 @@
-from ff_website.constants import PLAYOFFS, SEASON
-from numpy import add, dtype
+from ff_website.constants import PLAYOFFS, SEASON, TEAM_A_SCORE, TEAM_B_SCORE, WEEK
 import pandas as pd
 
 
@@ -316,3 +315,154 @@ def get_schedules(query, name):
         all_schedules[key] = styled.render()
 
     return all_schedules
+
+
+def get_rank_of_team(standings, name):
+    counter = 1
+    for index, _ in standings.iterrows():
+        if index == name:
+            return counter
+        counter += 1
+    return counter
+
+
+def get_playoffs(query):
+    playoffs = {}
+    for row in query:
+        if row[PLAYOFFS] == 1:
+            week = row[WEEK]
+
+            team_A_name = f"{row['team_A_first_name']} {row['team_A_last_name']}"
+            team_B_name = f"{row['team_B_first_name']} {row['team_B_last_name']}"
+
+            team_A_score = row[TEAM_A_SCORE]
+            team_B_score = row[TEAM_B_SCORE]
+
+            if team_A_score > team_B_score:
+                winning_team = team_A_name
+                winning_score = team_A_score
+                losing_team = team_B_name
+                losing_score = team_B_score
+
+            else:
+                winning_team = team_B_name
+                winning_score = team_B_score
+                losing_team = team_A_name
+                losing_score = team_A_score
+
+            if week not in playoffs:
+                playoffs[week] = [{
+                    "winning_team": winning_team,
+                    "winning_score": winning_score,
+                    "losing_team": losing_team,
+                    "losing_score": losing_score
+                }]
+            else:
+                playoffs[week].append({
+                    "winning_team": winning_team,
+                    "winning_score": winning_score,
+                    "losing_team": losing_team,
+                    "losing_score": losing_score
+                })
+    return playoffs
+
+
+def get_playoff_finish(playoffs, standings, name):
+    def ordinal(n): return "%d%s" % (
+        n, "tsnrhtdd"[(n//10 % 10 != 1)*(n % 10 < 4)*n % 10::4])
+
+    rank = ordinal(get_rank_of_team(standings, name))
+
+    num_rounds = len(playoffs)
+
+    finish = "DNQ"
+    round = 1
+    for _, results in playoffs.items():
+        for game in results:
+            if game["losing_team"] == name and round == 1 and num_rounds == 3:
+                finish = "Quarterfinals"
+            elif game["losing_team"] == name and round == 1 and num_rounds == 2:
+                finish = "Semifinals"
+
+            elif game["losing_team"] == name and round == 2 and num_rounds == 3:
+                finish = "Semifinals"
+
+            elif game["losing_team"] == name and round == 2 and num_rounds == 2:
+                finish = "Runner up"
+
+            elif game["losing_team"] == name and round == 3 and num_rounds == 3:
+                finish = "Runner up"
+
+            elif game["winning_team"] == name and round == 2 and num_rounds == 2:
+                finish = "Champion"
+
+            elif game["winning_team"] == name and round == 3 and num_rounds == 3:
+                finish = "Champion"
+
+        round += 1
+
+    return rank, finish
+
+
+def get_summaries(query, name):
+    split_queries = {}
+    for row in query:
+        year = row[SEASON]
+        if year not in split_queries:
+            split_queries[year] = [row]
+        else:
+            split_queries[year].append(row)
+
+    all_seasons = {}
+    all_playoffs = {}
+
+    for key, value in split_queries.items():
+        df, _ = get_standings(value)
+        playoffs = get_playoffs(value)
+        all_seasons[key] = df
+        all_playoffs[key] = playoffs
+
+    df = pd.DataFrame(columns=["Final Record", "TPF",
+                               "TPA", "Playoffs", "Overall Finish"])
+
+    final_record, tpf, tpa, playoffs, over_finish = None, None, None, None, None
+    for (year, standings), (_, playoffs) in zip(all_seasons.items(), all_playoffs.items()):
+        print(year, playoffs)
+        if name in standings.index.to_list():
+            wins = standings.at[name, "Wins"]
+            losses = standings.at[name, "Losses"]
+            final_record = f"{wins}-{losses}"
+            tpf = standings.at[name, "PF"]
+            tpa = standings.at[name, "PA"]
+            rank, finish = get_playoff_finish(
+                playoffs, standings, name)
+            if finish == "DNQ":
+                playoffs = "No"
+                over_finish = rank
+            else:
+                playoffs = "Yes"
+                over_finish = finish
+
+            df.loc[year] = [final_record, tpf, tpa, playoffs, over_finish]
+
+    return df
+
+
+def get_championships(summaries: pd.DataFrame, name):
+    championships = []
+    if name == "Garrett Folbe":
+        championships.append(2015)
+    for index, row in summaries.iterrows():
+        if row["Overall Finish"] == "Champion":
+            championships.append(index)
+
+    if len(championships) == 0:
+        return "None"
+    else:
+        ret = f"{len(championships)} ("
+        for index, year in enumerate(championships):
+            ret += str(year)
+            if index != len(championships) - 1:
+                ret += ", "
+        ret += ")"
+        return ret

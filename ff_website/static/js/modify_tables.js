@@ -3,11 +3,7 @@ window.onload = function(){
         $( this ).addClass("table table-sm")
     });
     $("#accordion td").each(function(){
-        $( this ).addClass("g")
+        $( this ).addClass("black-border")
     });
-    $("#accordion tr").each(function(){
-        $( this ).addClass("h")
-    });
-
 
 }
