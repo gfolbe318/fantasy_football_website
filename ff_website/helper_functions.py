@@ -46,6 +46,57 @@ def get_streak_head_to_head(df: pd.DataFrame):
     return streak_holder, streak_count
 
 
+def get_playoffs(query):
+    playoffs = {}
+    _, ranks = get_standings(query)
+    for row in query:
+        if row[PLAYOFFS] == 1:
+            week = row[WEEK]
+
+            team_A_name = f"{row['team_A_first_name']} {row['team_A_last_name']}"
+            team_B_name = f"{row['team_B_first_name']} {row['team_B_last_name']}"
+
+            team_A_score = row[TEAM_A_SCORE]
+            team_B_score = row[TEAM_B_SCORE]
+
+            if team_A_score > team_B_score:
+                winning_team = team_A_name
+                winning_score = team_A_score
+                winning_seed = ranks[team_A_name]
+                losing_team = team_B_name
+                losing_score = team_B_score
+                losing_seed = ranks[team_B_name]
+
+            else:
+                winning_team = team_B_name
+                winning_score = team_B_score
+                winning_seed = ranks[team_B_name]
+
+                losing_team = team_A_name
+                losing_score = team_A_score
+                losing_seed = ranks[team_A_name]
+
+            if week not in playoffs:
+                playoffs[week] = [{
+                    "winning_team": winning_team,
+                    "winning_score": winning_score,
+                    "winning_seed": winning_seed,
+                    "losing_team": losing_team,
+                    "losing_score": losing_score,
+                    "losing_seed": losing_seed
+                }]
+            else:
+                playoffs[week].append({
+                    "winning_team": winning_team,
+                    "winning_score": winning_score,
+                    "winning_seed": winning_seed,
+                    "losing_team": losing_team,
+                    "losing_score": losing_score,
+                    "losing_seed": losing_seed
+                })
+    return playoffs
+
+
 def get_league_members(query):
     names = set()
     for row in query:
@@ -99,26 +150,6 @@ def get_standings(query):
         i += 1
 
     return df, ranks
-
-
-def get_playoffs(query, ranks):
-
-    playoff_weeks = {}
-    for row in query:
-        if row["playoffs"] == 1:
-            team_A_score = row["team_A_score"]
-            team_B_score = row["team_B_score"]
-
-            team_A_name_key = f"{row['team_A_first_name']} {row['team_A_last_name']}"
-            team_B_name_key = f"{row['team_B_first_name']} {row['team_B_last_name']}"
-
-            team_A_rank = ranks[team_A_name_key]
-            team_B_rank = ranks[team_B_name_key]
-
-            f"{team_A_rank} {team_A_name_key}"
-            team_B_for_df = f"{ranks[team_B_name_key]} {team_B_name_key}"
-
-    print(playoff_weeks)
 
 
 def get_overall_record(query, name):
@@ -326,47 +357,6 @@ def get_rank_of_team(standings, name):
     return counter
 
 
-def get_playoffs(query):
-    playoffs = {}
-    for row in query:
-        if row[PLAYOFFS] == 1:
-            week = row[WEEK]
-
-            team_A_name = f"{row['team_A_first_name']} {row['team_A_last_name']}"
-            team_B_name = f"{row['team_B_first_name']} {row['team_B_last_name']}"
-
-            team_A_score = row[TEAM_A_SCORE]
-            team_B_score = row[TEAM_B_SCORE]
-
-            if team_A_score > team_B_score:
-                winning_team = team_A_name
-                winning_score = team_A_score
-                losing_team = team_B_name
-                losing_score = team_B_score
-
-            else:
-                winning_team = team_B_name
-                winning_score = team_B_score
-                losing_team = team_A_name
-                losing_score = team_A_score
-
-            if week not in playoffs:
-                playoffs[week] = [{
-                    "winning_team": winning_team,
-                    "winning_score": winning_score,
-                    "losing_team": losing_team,
-                    "losing_score": losing_score
-                }]
-            else:
-                playoffs[week].append({
-                    "winning_team": winning_team,
-                    "winning_score": winning_score,
-                    "losing_team": losing_team,
-                    "losing_score": losing_score
-                })
-    return playoffs
-
-
 def get_playoff_finish(playoffs, standings, name):
     def ordinal(n): return "%d%s" % (
         n, "tsnrhtdd"[(n//10 % 10 != 1)*(n % 10 < 4)*n % 10::4])
@@ -422,12 +412,11 @@ def get_summaries(query, name):
         all_seasons[key] = df
         all_playoffs[key] = playoffs
 
-    df = pd.DataFrame(columns=["Final Record", "TPF",
+    df = pd.DataFrame(columns=["Record", "TPF",
                                "TPA", "Playoffs", "Overall Finish"])
 
     final_record, tpf, tpa, playoffs, over_finish = None, None, None, None, None
     for (year, standings), (_, playoffs) in zip(all_seasons.items(), all_playoffs.items()):
-        print(year, playoffs)
         if name in standings.index.to_list():
             wins = standings.at[name, "Wins"]
             losses = standings.at[name, "Losses"]
@@ -466,3 +455,98 @@ def get_championships(summaries: pd.DataFrame, name):
                 ret += ", "
         ret += ")"
         return ret
+
+
+def get_week_results(query, running_games):
+    df = pd.DataFrame(columns=["Winning Team", "Losing Team", "Score"])
+    standings, _ = get_standings(running_games)
+    for row in query:
+        winning_team, losing_team, score = None, None, None
+
+        team_A_name = f"{row['team_A_first_name']} {row['team_A_last_name']}"
+        team_A_score = float(row["team_A_score"])
+        team_A_wins = standings.at[team_A_name, "Wins"]
+        team_A_losses = standings.at[team_A_name, "Losses"]
+        team_A_record = f"({team_A_wins}-{team_A_losses})"
+
+        team_B_name = f"{row['team_B_first_name']} {row['team_B_last_name']}"
+        team_B_score = float(row["team_B_score"])
+        team_B_wins = standings.at[team_B_name, "Wins"]
+        team_B_losses = standings.at[team_B_name, "Losses"]
+        team_B_record = f"({team_B_wins}-{team_B_losses})"
+
+        if team_A_score > team_B_score:
+            winning_team = f"{team_A_name} {team_A_record}"
+            losing_team = f"{team_B_name} {team_B_record}"
+            score = f"{team_A_score}-{team_B_score}"
+        else:
+            winning_team = f"{team_B_name} {team_B_record}"
+            losing_team = f"{team_A_name} {team_A_record}"
+            score = f"{team_B_score}-{team_A_score}"
+
+        df.loc[len(df.index)] = [winning_team, losing_team, score]
+    df.index += 1
+    return df
+
+
+def get_running_games(query, week):
+    """
+    This function is used to gather all games played up to the given week
+    We can then use this subset of games to calculate the standings at
+    the time of the game, which is used when displaying regular season results
+    """
+    subset = []
+    for row in query:
+        if row[WEEK] <= week:
+            subset.append(row)
+    return subset
+
+
+def get_all_week_results(query):
+    split_query = {}
+    for row in query:
+        if row[PLAYOFFS] == 0:
+            week = row[WEEK]
+            if week not in split_query:
+                split_query[week] = [row]
+            else:
+                split_query[week].append(row)
+
+    all_weeks = {}
+    for number, results in split_query.items():
+        subset = get_running_games(query, number)
+        df = get_week_results(results, subset)
+        df_html = df.to_html(classes="table-sm table-striped")
+        all_weeks[number] = df_html
+
+    return all_weeks
+
+
+def get_playoff_results_for_season_summary(query):
+    df = pd.DataFrame(columns=["Winning Team", "Losing Team", "Score"])
+
+    playoffs_raw = get_playoffs(query)
+    playoff_round_names = {}
+    weeks = list(playoffs_raw.keys())
+    if len(playoffs_raw) == 2:
+        playoff_round_names[weeks[0]] = "Semifinals"
+        playoff_round_names[weeks[1]] = "Championship"
+    else:
+        playoff_round_names[weeks[0]] = "Quarterfinals"
+        playoff_round_names[weeks[1]] = "Semifinals"
+        playoff_round_names[weeks[2]] = "Championship"
+
+    all_playoff_weeks = {}
+    for week, results in playoffs_raw.items():
+        df = pd.DataFrame(columns=["Winning Team", "Losing Team", "Score"])
+        for game in results:
+            winning_team = f"#{game['winning_seed']} {game['winning_team']}"
+            losing_team = f"#{game['losing_seed']} {game['losing_team']}"
+            score = f"{game['winning_score']}-{game['losing_score']}"
+            df.loc[len(df.index)] = [winning_team, losing_team, score]
+
+        df.index += 1
+        all_playoff_weeks[playoff_round_names[week]] = df.to_html(
+            classes="table-sm table-striped")
+
+    return all_playoff_weeks

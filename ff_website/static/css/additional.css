@@ -73,13 +73,13 @@ h1 {
   margin-bottom: 2rem;
 }
 
-@media (max-width: 500px) {
+@media (max-width: 550px) {
   .content {
     width: 100%;
   }
 }
 
-@media (min-width: 500px) and (max-width: 1000px) {
+@media (min-width: 550px) and (max-width: 1000px) {
   .content {
     width: 80%;
   }

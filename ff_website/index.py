@@ -526,7 +526,7 @@ def season_summary():
 
     form = SeasonSelector()
     args = request.args
-    year, standings = None, None
+    year, standings, all_weeks, playoffs = None, None, None, None
 
     standings = pd.DataFrame()
 
@@ -551,7 +551,10 @@ def season_summary():
         ).fetchall()
 
         standings, ranks = get_standings(query)
-        x = get_playoffs(query, ranks)
+
+        playoffs = get_playoff_results_for_season_summary(query)
+
+        all_weeks = get_all_week_results(query)
 
     if form.validate_on_submit():
         return redirect(url_for("season_summary", year=form.data["year"]))
@@ -559,6 +562,8 @@ def season_summary():
     return render_template("season_summary.html",
                            form=form,
                            year=year,
+                           all_weeks=all_weeks,
+                           playoffs=playoffs,
                            standings=standings.to_html(classes="table table-striped"))
 
 
