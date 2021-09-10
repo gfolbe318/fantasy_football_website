@@ -513,11 +513,11 @@ def get_all_week_results(query):
                 split_query[week].append(row)
 
     all_weeks = {}
-    for number, results in split_query.items():
-        subset = get_running_games(query, number)
+    for week_number, results in split_query.items():
+        subset = get_running_games(query, week_number)
         df = get_week_results(results, subset)
         df_html = df.to_html(classes="table-sm table-striped")
-        all_weeks[number] = df_html
+        all_weeks[week_number] = df_html
 
     return all_weeks
 
@@ -550,3 +550,39 @@ def get_playoff_results_for_season_summary(query):
             classes="table-sm table-striped")
 
     return all_playoff_weeks
+
+
+def get_roto(query):
+    league_members = get_league_members(query)
+    points_df = pd.DataFrame(index=league_members)
+    weeks = set()
+    for row in query:
+        if row[PLAYOFFS] == 0:
+            week = row[WEEK]
+            key = f"Week {week}"
+
+            if key not in weeks:
+                points_df[key] = 0.0
+                weeks.add(key)
+
+            team_A_name = f"{row['team_A_first_name']} {row['team_A_last_name']}"
+            team_A_score = row[TEAM_A_SCORE]
+            points_df.at[team_A_name, key] = team_A_score
+
+            team_B_name = f"{row['team_B_first_name']} {row['team_B_last_name']}"
+            team_B_score = row[TEAM_B_SCORE]
+            points_df.at[team_B_name, key] = team_B_score
+
+    roto_df = pd.DataFrame(index=league_members,
+                           columns=points_df.columns.to_list())
+    for key in (points_df.columns.to_list()):
+        points_temp = points_df.sort_values([key], ascending=True)
+        for i in range(len(league_members)):
+            member = points_temp.index.to_list()[i]
+            roto_df[key][member] = i
+
+    roto_df["Total"] = roto_df.iloc[:, :].sum(axis=1)
+    roto_df = roto_df.sort_values("Total", ascending=False)
+    roto_df["Total"] = roto_df["Total"].astype("int64")
+
+    return roto_df.to_html(classes="table table-striped")

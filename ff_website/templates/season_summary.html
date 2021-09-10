@@ -58,16 +58,20 @@
       </div>
     </div>
   </div>
+  {% if year %}
   <div class="col-12">
+    <hr class="separator" />
+    <h2>Standings</h2>
+    <hr class="separator" />
     <div class="table-responsive justify-content-center">
-      {% if year %}
-      <hr class="separator" />
-      <h2>Standings</h2>
-      <hr class="separator" />
-      <div class="table-responsive justify-content-center">
-        {{standings|safe}}
-      </div>
+      {{standings|safe}}
     </div>
+  </div>
+  <div class="col-12">
+    <hr class="separator" />
+    <h2>Rotisserie Results</h2>
+    <hr class="separator" />
+    <div class="table-responsive justify-content-center">{{roto|safe}}</div>
   </div>
   <hr class="separator" />
   <h2>Regular Season Results</h2>
