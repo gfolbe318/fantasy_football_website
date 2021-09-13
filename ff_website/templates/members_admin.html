@@ -1,0 +1,24 @@
+{% extends "layout.html" %}{% block content %}
+
+<div class="container-fluid content">
+  <div class="row text-center">
+    {% for card in data %}
+    <div class="col-lg-3 col-md-4">
+      <div class="card mb-2 ml-2 mr-2 mt-2">
+        <img
+          class="card-img-top"
+          src="{{url_for('static', filename='img/avatars/')}}{{card.img_filepath}}"
+        />
+        <div class="card-body">
+          <p class="card-text">{{card.first_name}}&nbsp;{{card.last_name}}</p>
+          <a href="{{ url_for('update_member', member_id=card.member_id) }}">
+            <button class="btn btn-primary">Edit league member</button>
+          </a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock content %}

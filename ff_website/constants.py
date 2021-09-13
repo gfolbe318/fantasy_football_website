@@ -4,6 +4,7 @@ league_IDs = {
     "2020": "50890012"
 }
 
+CURRENT_SEASON = 2021
 
 # db keys
 MEMBER_ID = "member_id"
@@ -11,6 +12,7 @@ FIRST_NAME = "first_name"
 LAST_NAME = "last_name"
 YEAR_JOINED = "year_joined"
 ACTIVE = "active"
+IMG_FILEPATH = "img_filepath"
 GAME_ID = "game_id"
 TEAM_A_SCORE = "team_A_score"
 TEAM_B_SCORE = "team_B_score"

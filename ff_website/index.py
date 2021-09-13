@@ -25,7 +25,8 @@ def hello():
         {
             "title": "Archives",
             "img_file": url_for("static", filename="img/archives.png"),
-            "description": "Browse through members of previous seasons, pull up historical results, and compare league members head to head."
+            "description": "Browse through members of previous seasons, pull up historical results, and compare league members head to head.",
+            "link": url_for("archives_home")
         },
         {
             "title": "Hall of Fame",
@@ -35,7 +36,8 @@ def hello():
         {
             "title": "League Office",
             "img_file": url_for("static", filename="img/espn.png"),
-            "description": "Visit our official home page on ESPN for your complete fantasy football experience."
+            "description": "Visit our official home page on ESPN for your complete fantasy football experience.",
+            "link": "https://fantasy.espn.com/football/league?leagueId=50890012"
         }
     ]
 
@@ -47,6 +49,82 @@ def members():
     photo = "static/img/gmf.jpg"
     l = [photo for _ in range(12)]
     return render_template("league_members.html",  photos=l)
+
+
+@app.route("/tools", methods=["GET", "POST"])
+def tools():
+    return render_template("tools.html")
+
+
+@app.route("/tools/list_all_members", methods=["GET", "POST"])
+def list_members():
+    db = get_db()
+    all_members = db.execute(
+        """
+        SELECT * FROM member
+        """
+    ).fetchall()
+    db.close()
+    data = [
+        {
+            MEMBER_ID: i[0],
+            FIRST_NAME: i[1],
+            LAST_NAME: i[2],
+            YEAR_JOINED: i[3],
+            ACTIVE: i[4],
+            IMG_FILEPATH: i[5]
+
+        } for i in all_members
+    ]
+    return render_template("members_admin.html", data=data)
+
+
+@app.route("/tools/update_member/<int:member_id>", methods=["GET", "POST"])
+def update_member(member_id):
+    db = get_db()
+    info = db.execute(
+        """
+        SELECT * from member WHERE
+        member_id=?
+        """, (member_id,)
+    ).fetchone()
+
+    first_name = info[FIRST_NAME]
+    last_name = info[LAST_NAME]
+    year_joined = info[YEAR_JOINED]
+    status = info[ACTIVE]
+    form = CreateMember(firstName=first_name,
+                        lastName=last_name,
+                        initialYear=str(year_joined),
+                        activeMember=str(status))
+
+    if form.validate_on_submit():
+        if form.firstName.data == first_name and form.lastName.data == last_name and form.initialYear.data == str(year_joined) and form.activeMember.data == str(status):
+            flash('Member not changed.', 'warning')
+            return redirect(url_for('list_members'))
+        else:
+            new_first_name = form.firstName.data
+            new_last_name = form.lastName.data
+            new_year_joined = int(form.initialYear.data)
+            new_status = int(form.activeMember.data)
+            db.execute(
+                f"""
+                UPDATE member
+                SET {FIRST_NAME}=?, {LAST_NAME}=?, {YEAR_JOINED}=?, {ACTIVE}=?
+                WHERE {MEMBER_ID}=?
+                """, (new_first_name, new_last_name, new_year_joined, new_status, member_id)
+            )
+            db.commit()
+            db.close()
+            flash('Member updated!', 'success')
+            return redirect(url_for('tools'))
+
+    return render_template("update_member.html",
+                           form=form,
+                           first_name=first_name,
+                           last_name=last_name,
+                           year_joined=year_joined,
+                           status=status)
 
 
 @app.route("/member/<int:id>", methods=["GET", "POST"])
@@ -68,6 +146,7 @@ def get_member_info(id):
         """, (id,)
     ).fetchone()
     name = f"{member_info[FIRST_NAME]} {member_info[LAST_NAME]}"
+    img_filepath = member_info[IMG_FILEPATH]
 
     year_joined = member_info[YEAR_JOINED]
 
@@ -123,6 +202,7 @@ def get_member_info(id):
 
     return render_template("member.html",
                            name=name,
+                           img_filepath=img_filepath,
                            year_joined=year_joined,
                            last_year=last_year,
                            playoff_appearances=playoff_appearances,
@@ -142,7 +222,7 @@ def h2h():
 
     # Initialize variables that will be returned on successful submission of the form
     # If we do not make the variables None-types, the template cannot be rendered
-    team_A_name, team_B_name, series_winner_name, num_matchups, num_times, series_split, tied, num_playoff_matchups, num_regular_matchups, streak_count, streak_holder = None, None, None, None, None, None, None, None, None, None, None
+    team_A_name, team_B_name, team_A_img, team_B_img, series_winner_name, num_matchups, num_times, series_split, tied, num_playoff_matchups, num_regular_matchups, streak_count, streak_holder = None, None, None, None, None, None, None, None, None, None, None, None, None
 
     args = request.args
     form = HeadToHead()
@@ -168,7 +248,8 @@ def h2h():
         query = db.execute(
             f"""
             SELECT team_A_score, team_B_score, season, week, matchup_length, playoffs,
-            t2.first_name as team_A_first_name, t2.last_name as team_A_last_name, t3.first_name as team_B_first_name, t3.last_name as team_B_last_name
+            t2.first_name as team_A_first_name, t2.last_name as team_A_last_name, t2.img_filepath as team_A_img_filepath, 
+            t3.first_name as team_B_first_name, t3.last_name as team_B_last_name, t3.img_filepath as team_B_img_filepath
             FROM game
             INNER JOIN member t2
             ON t2.member_id = team_A_id
@@ -181,6 +262,9 @@ def h2h():
         for row in query:
             team_A_score = row["team_A_score"]
             team_B_score = row["team_B_score"]
+            team_A_img = row["team_A_img_filepath"]
+            team_B_img = row["team_B_img_filepath"]
+
             total_points += (float(team_A_score) + float(team_B_score))
 
             season = row["season"]
@@ -221,19 +305,24 @@ def h2h():
             # order to keep track of which name gets returned first
             query = db.execute(
                 f"""
-                SELECT {MEMBER_ID}, {FIRST_NAME}, {LAST_NAME} from member
+                SELECT {MEMBER_ID}, {FIRST_NAME}, {LAST_NAME}, {IMG_FILEPATH} from member
                 WHERE {MEMBER_ID}=? OR {MEMBER_ID}=?
-                ORDER BY {MEMBER_ID} asc
+                ORDER BY {MEMBER_ID} asc,
                 """, (member_one_id, member_two_id)
             ).fetchall()
             if len(query) == 2:
                 if member_one_id < member_two_id:
                     team_A_name = f"{query[0]['first_name']} {query[0]['last_name']}"
                     team_B_name = f"{query[1]['first_name']} {query[1]['last_name']}"
+                    team_A_img = query[0]["team_A_img_filepath"]
+                    team_B_img = query[1]["team_B_img_filepath"]
                 else:
-                    team_A_name = f"{query[0]['first_name']} {query[1]['last_name']}"
-                    team_B_name = f"{query[1]['first_name']} {query[0]['last_name']}"
+                    team_A_name = f"{query[1]['first_name']} {query[1]['last_name']}"
+                    team_B_name = f"{query[0]['first_name']} {query[0]['last_name']}"
+                    team_A_img = query[1]["team_A_img_filepath"]
+                    team_B_img = query[0]["team_B_img_filepath"]
         db.close()
+        print(team_A_img)
     if form.validate_on_submit():
         return redirect(url_for("h2h", member_one_id=form.data["leagueMemberOne"], member_two_id=form.data["leagueMemberTwo"]))
 
@@ -241,6 +330,8 @@ def h2h():
                            form=form,
                            team_A_name=team_A_name,
                            team_B_name=team_B_name,
+                           team_A_img=team_A_img,
+                           team_B_img=team_B_img,
                            num_matchups=num_matchups,
                            num_times=num_times,
                            series_winner_name=series_winner_name,
@@ -647,7 +738,7 @@ def create_game():
     return render_template("create_game.html", form=form)
 
 
-@ app.route("/apis/add_all_members", methods=["GET", "POST"])
+@app.route("/tools/add_all_members", methods=["GET", "POST"])
 def add_league_members():
 
     db = get_db()
@@ -665,18 +756,18 @@ def add_league_members():
         db.execute(
             """
             INSERT INTO member(
-                first_name, last_name, year_joined, active)
-                VALUES (?, ?, ?, ?)
+                first_name, last_name, year_joined, active, img_filepath)
+                VALUES (?, ?, ?, ?, ?)
             """,
             (member[FIRST_NAME], member[LAST_NAME],
-             member[YEAR_JOINED], member[ACTIVE])
+             member[YEAR_JOINED], member[ACTIVE], member[IMG_FILEPATH])
         )
     db.commit()
 
     return jsonify(members)
 
 
-@ app.route("/apis/add_all_games", methods=["GET", "POST"])
+@ app.route("/tools/add_all_games", methods=["GET", "POST"])
 def add_games():
     db = get_db()
 

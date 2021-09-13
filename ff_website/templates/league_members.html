@@ -1,16 +1,17 @@
 {% extends "layout.html" %} {% block content %}
 <div class="container-fluid content">
   <div class="row">
-    <h1>Current members</h1>
+    <hr class="separator" />
+    <h1>Current Members</h1>
+    <hr class="separator" />
   </div>
   <div class="row">
     {% for photo in photos %}
-    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 buffer">
+    <div class="col-md-6 col-sm-12 buffer">
       <img class="avi" src="{{photo}}" />
-      <p class="name">Garrett</p>
+      <h3 class="name">Garrett<h3>
     </div>
     {% endfor %}
   </div>
-  <div class="row">Hey</div>
 </div>
 {% endblock content %}

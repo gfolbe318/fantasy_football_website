@@ -1,80 +1,106 @@
 [
     {
+        "member_id": 1,
         "first_name": "Garrett",
         "last_name": "Folbe",
-        "year_joined": 2016,
-        "active": true
+        "year_joined": 2015,
+        "active": 1,
+        "img_filepath": "default.png"
     },
     {
+        "member_id": 2,
         "first_name": "Alex",
         "last_name": "Ross",
-        "year_joined": 2017,
-        "active": true
+        "year_joined": 2016,
+        "active": 1,
+        "img_filepath": "default.png"
     },
     {
+        "member_id": 3,
         "first_name": "Noah",
         "last_name": "Nathan",
         "year_joined": 2011,
-        "active": true
+        "active": 1,
+        "img_filepath": "default.png"
     },
     {
+        "member_id": 4,
         "first_name": "Brad",
         "last_name": "Silverman",
-        "year_joined": 2017,
-        "active": true
+        "year_joined": 2016,
+        "active": 1,
+        "img_filepath": "default.png"
     },
     {
+        "member_id": 5,
         "first_name": "Merrick",
         "last_name": "Weingarten",
         "year_joined": 2011,
-        "active": true
+        "active": 1,
+        "img_filepath": "default.png"
     },
     {
+        "member_id": 6,
         "first_name": "Jonah",
         "last_name": "Lopas",
         "year_joined": 2011,
-        "active": true
+        "active": 1,
+        "img_filepath": "default.png"
     },
     {
+        "member_id": 7,
         "first_name": "Jason",
         "last_name": "Silverstone",
         "year_joined": 2011,
-        "active": true
+        "active": 1,
+        "img_filepath": "default.png"
     },
     {
+        "member_id": 8,
         "first_name": "Merrick",
         "last_name": "Bank",
         "year_joined": 2018,
-        "active": true
+        "active": 1,
+        "img_filepath": "default.png"
     },
     {
+        "member_id": 9,
         "first_name": "CJ",
         "last_name": "Drogosch",
         "year_joined": 2016,
-        "active": true
+        "active": 1,
+        "img_filepath": "default.png"
     },
     {
+        "member_id": 10,
         "first_name": "Daniel",
         "last_name": "Banooni",
         "year_joined": 2015,
-        "active": true
+        "active": 1,
+        "img_filepath": "default.png"
     },
     {
+        "member_id": 11,
         "first_name": "Jarrett",
         "last_name": "Black",
         "year_joined": 2015,
-        "active": true
+        "active": 1,
+        "img_filepath": "default.png"
     },
     {
+        "member_id": 12,
         "first_name": "Daniel",
         "last_name": "Michaels",
         "year_joined": 2020,
-        "active": true
+        "active": 1,
+        "img_filepath": "default.png"
     },
     {
+        "member_id": 13,
         "first_name": "Dylan",
         "last_name": "Wittenberg",
         "year_joined": 2017,
-        "active": false
+        "active": 0,
+        "img_filepath": "default.png"
     }
 ]

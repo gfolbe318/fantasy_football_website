@@ -2,6 +2,11 @@ from ff_website.db import get_db, init_db
 from ff_website import app
 from ff_website.constants import *
 
+"""
+These are helper functions that are only used in a controlled context, such as uploading 
+data en masse. Do not use for any other context.
+"""
+
 
 def get_all_members():
     """

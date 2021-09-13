@@ -4,7 +4,8 @@ CREATE TABLE IF NOT EXISTS member
     first_name TEXT NOT NULL,
     last_name TEXT NOT NULL,
     year_joined INTEGER NOT NULL,
-    active INTEGER NOT NULL
+    active INTEGER NOT NULL,
+    img_filepath TEXT NOT NULL
 );
 
 

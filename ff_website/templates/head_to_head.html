@@ -77,7 +77,9 @@
   {% if team_A_name %}
   <div class="row">
     <div class="col-12">
+      <hr class="separator" />
       <h1>Head to Head Results</h1>
+      <hr class="separator" />
     </div>
   </div>
   <div class="row text-center">
@@ -85,7 +87,7 @@
       <div class="card float-right h2h-card">
         <img
           class="card-img-top small-pic"
-          src="{{url_for('static', filename='img/gmf.jpg')}}"
+          src="{{url_for('static', filename='img/avatars/')}}{{team_A_img}}"
         />
         <div class="card-body">
           <p class="card-text">{{team_A_name}}</p>
@@ -96,7 +98,7 @@
       <div class="card float-left h2h-card">
         <img
           class="card-img-top small-pic"
-          src="{{url_for('static', filename='img/gmf.jpg')}}"
+          src="{{url_for('static', filename='img/avatars/')}}{{team_B_img}}"
         />
         <div class="card-body">
           <p class="card-text">{{team_B_name}}</p>
