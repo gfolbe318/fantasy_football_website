@@ -1,15 +1,21 @@
 {% extends "layout.html" %} {% block content %}
 <div class="container-fluid content">
-  <div class="row">
+  <div class="row text-center">
     <hr class="separator" />
     <h1>Current Members</h1>
     <hr class="separator" />
   </div>
-  <div class="row">
-    {% for photo in photos %}
-    <div class="col-md-6 col-sm-12 buffer">
-      <img class="avi" src="{{photo}}" />
-      <h3 class="name">Garrett<h3>
+  <div class="row text-center justify-content-center">
+    {% for card in cards %}
+    <div class="col-lg-6 col-md-8">
+      <a href="{{url_for('get_member_info', member_id=card.member_id) }}">
+        <div class="card mb-2 ml-2 mr-2 mt-2">
+          <img class="card-img-top" src="{{card.img_filepath}}" />
+          <div class="card-body">
+            <h4>{{card.name}}</h4>
+          </div>
+        </div>
+      </a>
     </div>
     {% endfor %}
   </div>

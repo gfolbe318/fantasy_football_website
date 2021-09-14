@@ -24,17 +24,6 @@ body {
   vertical-align: middle;
 }
 
-.avi {
-  min-height: 10rem;
-  min-width: 10rem;
-
-  max-height: 90%;
-  max-width: 90%;
-  margin: auto;
-  display: block;
-  border-radius: 2rem;
-}
-
 #members {
   width: 80%;
   margin: auto;

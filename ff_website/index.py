@@ -48,9 +48,23 @@ def hello():
 
 @app.route("/members", methods=["GET", "POST"])
 def members():
-    photo = "static/img/gmf.jpg"
-    l = [photo for _ in range(12)]
-    return render_template("league_members.html",  photos=l)
+    db = get_db()
+    data = db.execute(
+        f"""
+        SELECT * FROM member
+        WHERE {ACTIVE}=?
+        """, (1,)
+    ).fetchall()
+    cards = []
+    for member in data:
+        cards.append({
+            MEMBER_ID: member[MEMBER_ID],
+            "name": f"{member[FIRST_NAME]} {member[LAST_NAME]}",
+            IMG_FILEPATH: url_for(
+                'static', filename=f"img/avatars/{member[IMG_FILEPATH]}")
+        })
+
+    return render_template("league_members.html", cards=cards)
 
 
 @app.route("/tools", methods=["GET", "POST"])
@@ -185,8 +199,8 @@ def delete_member(member_id):
     return redirect(url_for('tools'))
 
 
-@ app.route("/member/<int:id>", methods=["GET", "POST"])
-def get_member_info(id):
+@ app.route("/member/<int:member_id>", methods=["GET", "POST"])
+def get_member_info(member_id):
 
     class Card:
         def __init__(self, text, value):
@@ -201,7 +215,7 @@ def get_member_info(id):
         """
         SELECT * FROM member
         WHERE member_id=?
-        """, (id,)
+        """, (member_id,)
     ).fetchone()
     name = f"{member_info[FIRST_NAME]} {member_info[LAST_NAME]}"
     img_filepath = member_info[IMG_FILEPATH]
@@ -218,7 +232,7 @@ def get_member_info(id):
             INNER JOIN member t3
             ON t3.member_id = team_B_id
             WHERE team_A_id=? OR team_B_id=?
-        """, (id, id)
+        """, (member_id, member_id)
     ).fetchall()
 
     all_games = db.execute(
@@ -737,15 +751,17 @@ def create_member():
             photo = form.data["image"]
             first_name = form.data["firstName"]
             last_name = form.data["lastName"]
-            extension = os.path.splitext(photo.filename)[1]
-            file_name = f"{first_name}_{last_name}{extension}"
-            full_file_path = os.path.join(
-                app.root_path, Path('static/img/avatars/', file_name)
-            )
-            output_size = (800, 800)
-            i = Image.open(photo)
-            i = i.resize(output_size)
-            i.save(full_file_path)
+            file_name = "default.png"
+            if photo:
+                extension = os.path.splitext(photo.filename)[1]
+                file_name = f"{first_name}_{last_name}{extension}"
+                full_file_path = os.path.join(
+                    app.root_path, Path('static/img/avatars/', file_name)
+                )
+                output_size = (800, 800)
+                i = Image.open(photo)
+                i = i.resize(output_size)
+                i.save(full_file_path)
 
             db.execute(
                 f"""
