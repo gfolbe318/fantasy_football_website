@@ -33,7 +33,7 @@ def get_years_helper(start):
 
 
 def get_weeks():
-    return [("", "Select a week...")] + [(x, x) for x in range(1, 15)] + [("PS", "PostSeason")]
+    return [("", "Select a week...")] + [(x, x) for x in range(1, 18)]
 
 
 class HeadToHead(FlaskForm):
@@ -108,11 +108,6 @@ class CreateMember(FlaskForm):
 
 class CreateGame(FlaskForm):
 
-    def validate_week(self, postSeason):
-        if (self.week.data == "PS" and postSeason.data == "0") or \
-                (self.week.data != "PS" and postSeason.data == "1"):
-            raise ValidationError("Mismatch in week")
-
     def valid_names_one(self, teamA):
         if self.teamBName.data == teamA.data:
             raise ValidationError("League members must be different")
@@ -147,6 +142,6 @@ class CreateGame(FlaskForm):
     playoffs = SelectField("Matchup Format",
                            choices=[("", "Select a Matchup Format..."),
                                     (0, "Regular Season"), (1, "Post Season")],
-                           validators=[DataRequired(), validate_week])
+                           validators=[DataRequired()])
 
     submit = SubmitField("Submit")

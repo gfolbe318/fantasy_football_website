@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Garrett</title>
+    <title>Fantasy Football</title>
     <link
       rel="stylesheet"
       type="text/css"
@@ -37,6 +37,7 @@
       crossorigin="anonymous"
     ></script>
     <script src="/static/js/bootstrap.min.js"></script>
+    <link rel="shortcut icon" href="#" />
   </head>
   <body>
     <nav
@@ -61,6 +62,11 @@
               <a class="nav-link" href="{{ url_for('hello') }}">Home</a>
             </li>
             <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('current_season') }}"
+                >Current Season</a
+              >
+            </li>
+            <li class="nav-item">
               <a class="nav-link" href="{{ url_for('members') }}">Members</a>
             </li>
             <li class="nav-item">
@@ -70,9 +76,6 @@
             </li>
             <li class="nav-item">
               <a class="nav-link" href="{{ url_for('tools') }}">Tools</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Link</a>
             </li>
           </ul>
         </div>

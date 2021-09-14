@@ -3,6 +3,7 @@ import os
 from pathlib import Path
 
 import inflect
+from numpy import mat
 import pandas as pd
 from flask import flash, jsonify, redirect, render_template, request, url_for
 from PIL import Image
@@ -104,12 +105,12 @@ def list_members():
     db.close()
     data = [
         {
-            MEMBER_ID: i[0],
-            FIRST_NAME: i[1],
-            LAST_NAME: i[2],
-            YEAR_JOINED: i[3],
-            ACTIVE: i[4],
-            IMG_FILEPATH: i[5]
+            MEMBER_ID: i[MEMBER_ID],
+            FIRST_NAME: i[FIRST_NAME],
+            LAST_NAME: i[LAST_NAME],
+            YEAR_JOINED: i[YEAR_JOINED],
+            ACTIVE: i[ACTIVE],
+            IMG_FILEPATH: i[IMG_FILEPATH]
 
         } for i in all_members
     ]
@@ -136,7 +137,6 @@ def update_member(member_id):
                         activeMember=str(status))
 
     if form.validate_on_submit():
-        print(form.image.data)
         if form.firstName.data == first_name and form.lastName.data == last_name and form.initialYear.data == str(year_joined) and form.activeMember.data == str(status) and form.image.data == None:
             flash('Member not changed.', 'warning')
             return redirect(url_for('list_members'))
@@ -183,7 +183,6 @@ def update_member(member_id):
 
 @app.route("/tools/delete_member/<int:member_id>", methods=["GET", "POST"])
 def delete_member(member_id):
-    print("Here")
     db = get_db()
     query = db.execute(
         f"""
@@ -236,7 +235,114 @@ def delete_member(member_id):
     return redirect(url_for('tools'))
 
 
-@ app.route("/member/<int:member_id>", methods=["GET", "POST"])
+@app.route("/tools/list_all_games", methods=["GET", "POST"])
+def list_games():
+    db = get_db()
+    all_games = db.execute(
+        """
+        SELECT * FROM game
+        """
+    ).fetchall()
+    df = pd.DataFrame(columns=["id", "Season", "Week", "Playoffs",
+                               "Team_A_id", "Team_A_score", "Team_B_id", "Team_B_score", "Edit", "Delete"])
+
+    for index, element in enumerate(all_games):
+        df.loc[index] = [
+            element[GAME_ID],
+            element[SEASON],
+            element[WEEK],
+            element[PLAYOFFS],
+            element[TEAM_A_ID],
+            element[TEAM_A_SCORE],
+            element[TEAM_B_ID],
+            element[TEAM_B_SCORE],
+            "Placeholder",
+            "Placeholder"
+        ]
+
+    print(df)
+
+    return render_template("games_admin.html", df=df)
+
+
+@app.route("/tools/update_game/<int:game_id>", methods=["GET", "POST"])
+def update_game(game_id):
+    db = get_db()
+    info = db.execute(
+        """
+        SELECT * from game WHERE
+        game_id=?
+        """, (game_id,)
+    ).fetchone()
+    season = info[SEASON]
+    week = info[WEEK]
+    team_A_id = info[TEAM_A_ID]
+    team_A_score = info[TEAM_A_SCORE]
+    team_B_id = info[TEAM_B_ID]
+    team_B_score = info[TEAM_B_SCORE]
+    playoffs = info[PLAYOFFS]
+    matchup_length = info[MATCHUP_LENGTH]
+    form = CreateGame(season=season,
+                      week=week,
+                      teamAName=team_A_id,
+                      teamAScore=team_A_score,
+                      teamBName=team_B_id,
+                      teamBScore=team_B_score,
+                      playoffs=playoffs,
+                      matchupLength=matchup_length)
+
+    if form.validate_on_submit():
+        if form.season.data == str(season) and \
+                form.week.data == str(week) and \
+                form.teamAName.data == str(team_A_id) and \
+                form.teamAScore.data == team_A_score and \
+                form.teamBName.data == str(team_B_id) and \
+                form.teamBScore.data == team_B_score and \
+                form.playoffs.data == str(playoffs) and \
+                form.matchupLength.data == str(matchup_length):
+            flash('Game not changed.', 'warning')
+            return redirect(url_for('tools'))
+        else:
+            new_week = form.week.data
+            new_season = form.season.data
+            new_team_A_name = form.teamAName.data
+            new_team_A_score = form.teamAScore.data
+            new_team_B_name = form.teamBName.data
+            new_team_B_score = form.teamBScore.data
+            new_playoffs = form.playoffs.data
+            new_matchup_length = form.matchupLength.data
+
+            db.execute(
+                f"""
+                UPDATE game
+                SET {WEEK}=?, {SEASON}=?, {TEAM_A_ID}=?, {TEAM_A_SCORE}=?, {TEAM_B_ID}=?, {TEAM_B_SCORE}=?, {PLAYOFFS}=?, {MATCHUP_LENGTH}=?
+                WHERE {GAME_ID}=?
+                """, (new_week, new_season, new_team_A_name, new_team_A_score, new_team_B_name, new_team_B_score, new_playoffs, new_matchup_length, game_id)
+            )
+            db.commit()
+            db.close()
+            flash('Game updated!', 'success')
+            return redirect(url_for('tools'))
+
+    return render_template("update_game.html", form=form)
+
+
+@app.route("/tools/delete_game/<int:game_id>", methods=["GET", "POST"])
+def delete_game(game_id):
+    db = get_db()
+    db.execute(
+        """
+        DELETE FROM game
+        WHERE game_id=?
+        """, (game_id,)
+    )
+    db.commit()
+    db.close()
+    flash('Game deleted!', 'danger')
+    return redirect(url_for('tools'))
+
+
+@app.route("/member/<int:member_id>", methods=["GET", "POST"])
 def get_member_info(member_id):
 
     class Card:
@@ -925,3 +1031,24 @@ def add_games():
         db.commit()
 
     return jsonify(games)
+
+
+@app.route("/current_season", methods=["GET", "POST"])
+def current_season():
+    db = get_db()
+    query = db.execute(
+        f"""
+            SELECT team_A_score, team_B_score, season, week, matchup_length, playoffs,
+            t2.first_name as team_A_first_name, t2.last_name as team_A_last_name, t3.first_name as team_B_first_name, t3.last_name as team_B_last_name
+            FROM game
+            INNER JOIN member t2
+            ON t2.member_id = team_A_id
+            INNER JOIN member t3
+            ON t3.member_id = team_B_id
+            WHERE season=?
+            """, (CURRENT_SEASON,)
+    ).fetchall()
+
+    print(query)
+
+    return render_template("current_season.html")
