@@ -4,7 +4,12 @@
     <div class="col-12">
       <div class="form-body">
         <div class="content-section">
-          <form novalidate="novalidate" method="POST" autocomplete="off">
+          <form
+            novalidate="novalidate"
+            method="POST"
+            autocomplete="off"
+            enctype="multipart/form-data"
+          >
             <legend>Update an existing league member</legend>
             <fieldset class="form-group">
               <input
@@ -61,6 +66,16 @@
                 </div>
                 {% else %} {{ form.activeMember(class="form-control
                 form-control-md") }} {% endif %}
+              </div>
+              <div class="form-group">
+                {{ form.image.label }} {% if form.image.errors %} {{
+                form.image(class="form-control form-control-md is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.image.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+                {% else %} {{ form.image }} {% endif %}
               </div>
               <div class="form-group submit-button">
                 {{ form.submit(class="btn btn-outline-info")}}

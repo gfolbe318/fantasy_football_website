@@ -1,9 +1,45 @@
-{% extends "layout.html" %}{% block content %}
+{% extends "layout.html" %}{% block content %} {% for member in data %}
+<div
+  class="modal fade"
+  id="modal{{member.member_id}}"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">
+          Are you sure you want to delete league member
+          {{member.first_name}}&nbsp;{{member.last_name}}?
+        </h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          No, go back.
+        </button>
+        <a href="{{ url_for('delete_member', member_id=member.member_id)}}">
+          <button type="button" class="btn btn-primary">Yes</button>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
 
 <div class="container-fluid content">
   <div class="row text-center">
     {% for card in data %}
-    <div class="col-lg-3 col-md-4">
+    <div class="col-lg-4 col-md-6">
       <div class="card mb-2 ml-2 mr-2 mt-2">
         <img
           class="card-img-top"
@@ -11,9 +47,24 @@
         />
         <div class="card-body">
           <p class="card-text">{{card.first_name}}&nbsp;{{card.last_name}}</p>
-          <a href="{{ url_for('update_member', member_id=card.member_id) }}">
-            <button class="btn btn-primary">Edit league member</button>
-          </a>
+          <ul class="list-group list-group-flush">
+            <li class="list-group list-group-item">
+              <a
+                href="{{ url_for('update_member', member_id=card.member_id) }}"
+              >
+                <button class="btn btn-primary">Edit league member</button>
+              </a>
+            </li>
+            <li class="list-group list-group-item">
+              <button
+                class="btn btn-danger"
+                data-toggle="modal"
+                data-target="#modal{{card.member_id}}"
+              >
+                Delete league member
+              </button>
+            </li>
+          </ul>
         </div>
       </div>
     </div>

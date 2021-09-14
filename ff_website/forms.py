@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from flask_wtf import FlaskForm
+from flask_wtf.file import FileField,  FileRequired
 from wtforms import FloatField, SelectField, StringField, SubmitField
 from wtforms.fields.core import BooleanField, FloatField
 from wtforms.validators import DataRequired, ValidationError
@@ -94,6 +95,7 @@ class CreateMember(FlaskForm):
         "Year Joined", choices=years, validators=[DataRequired()])
     firstName = StringField("First Name", validators=[DataRequired()])
     lastName = StringField("Last Name", validators=[DataRequired()])
+    image = FileField("Avatar")
     activeMember = SelectField("Activity Status...",
                                choices=[("", "Select a status"),
                                         (1, "Active"),

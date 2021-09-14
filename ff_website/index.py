@@ -1,8 +1,11 @@
 import json
-import pandas as pd
-import inflect
+import os
+from pathlib import Path
 
-from flask import flash, redirect, render_template, url_for, jsonify, request
+import inflect
+import pandas as pd
+from flask import flash, jsonify, redirect, render_template, request, url_for
+from PIL import Image
 
 from ff_website import app
 from ff_website.apis import get_member_id
@@ -10,7 +13,6 @@ from ff_website.constants import *
 from ff_website.db import get_db
 from ff_website.forms import (CreateGame, CreateMember, GameQualities,
                               HeadToHead, SeasonSelector)
-
 from ff_website.helper_functions import *
 
 
@@ -99,7 +101,8 @@ def update_member(member_id):
                         activeMember=str(status))
 
     if form.validate_on_submit():
-        if form.firstName.data == first_name and form.lastName.data == last_name and form.initialYear.data == str(year_joined) and form.activeMember.data == str(status):
+        print(form.image.data)
+        if form.firstName.data == first_name and form.lastName.data == last_name and form.initialYear.data == str(year_joined) and form.activeMember.data == str(status) and form.image.data == None:
             flash('Member not changed.', 'warning')
             return redirect(url_for('list_members'))
         else:
@@ -107,12 +110,28 @@ def update_member(member_id):
             new_last_name = form.lastName.data
             new_year_joined = int(form.initialYear.data)
             new_status = int(form.activeMember.data)
+
+            photo = form.data["image"]
+            file_name = "default.png"
+            if photo:
+                first_name = form.data["firstName"]
+                last_name = form.data["lastName"]
+                extension = os.path.splitext(photo.filename)[1]
+                file_name = f"{first_name}_{last_name}{extension}"
+                full_file_path = os.path.join(
+                    app.root_path, Path('static/img/avatars/', file_name)
+                )
+                output_size = (800, 800)
+                i = Image.open(photo)
+                i = i.resize(output_size)
+                i.save(full_file_path)
+
             db.execute(
                 f"""
                 UPDATE member
-                SET {FIRST_NAME}=?, {LAST_NAME}=?, {YEAR_JOINED}=?, {ACTIVE}=?
+                SET {FIRST_NAME}=?, {LAST_NAME}=?, {YEAR_JOINED}=?, {ACTIVE}=?, {IMG_FILEPATH}=?
                 WHERE {MEMBER_ID}=?
-                """, (new_first_name, new_last_name, new_year_joined, new_status, member_id)
+                """, (new_first_name, new_last_name, new_year_joined, new_status, file_name, member_id)
             )
             db.commit()
             db.close()
@@ -127,7 +146,46 @@ def update_member(member_id):
                            status=status)
 
 
-@app.route("/member/<int:id>", methods=["GET", "POST"])
+@app.route("/tools/delete_member/<int:member_id>", methods=["GET", "POST"])
+def delete_member(member_id):
+    print("Here")
+    db = get_db()
+    query = db.execute(
+        f"""
+        SELECT {FIRST_NAME}, {LAST_NAME}
+        FROM member
+        WHERE {MEMBER_ID}=?
+        """, (member_id,)
+    ).fetchall()
+    first_name = query[0][FIRST_NAME]
+    last_name = query[0][LAST_NAME]
+    jpg_path = os.path.join(app.root_path, "static", "img", "avatars",
+                            f"{first_name}_{last_name}.JPG")
+    png_path = os.path.join(app.root_path, "static", "img", "avatars",
+                            f"{first_name}_{last_name}.PNG")
+
+    try:
+        os.remove(jpg_path)
+    except OSError:
+        print("Error while deleting file")
+    try:
+        os.remove(png_path)
+    except OSError:
+        print("Error while deleting file")
+
+    db.execute(
+        """
+        DELETE FROM member
+        WHERE member_id=?
+        """, (member_id,)
+    )
+    db.commit()
+    db.close()
+    flash('Member deleted!', 'danger')
+    return redirect(url_for('tools'))
+
+
+@ app.route("/member/<int:id>", methods=["GET", "POST"])
 def get_member_info(id):
 
     class Card:
@@ -248,7 +306,7 @@ def h2h():
         query = db.execute(
             f"""
             SELECT team_A_score, team_B_score, season, week, matchup_length, playoffs,
-            t2.first_name as team_A_first_name, t2.last_name as team_A_last_name, t2.img_filepath as team_A_img_filepath, 
+            t2.first_name as team_A_first_name, t2.last_name as team_A_last_name, t2.img_filepath as team_A_img_filepath,
             t3.first_name as team_B_first_name, t3.last_name as team_B_last_name, t3.img_filepath as team_B_img_filepath
             FROM game
             INNER JOIN member t2
@@ -665,7 +723,7 @@ def create_member():
         db = get_db()
         query = db.execute(
             f"""
-            SELECT {MEMBER_ID}, {LAST_NAME} FROM member
+            SELECT {MEMBER_ID} FROM member
             WHERE {FIRST_NAME}=? AND {LAST_NAME}=?
             """,
             (form.data["firstName"], form.data["lastName"])
@@ -676,18 +734,30 @@ def create_member():
             form.lastName.errors.append(
                 "A member of this name already exists")
         else:
+            photo = form.data["image"]
+            first_name = form.data["firstName"]
+            last_name = form.data["lastName"]
+            extension = os.path.splitext(photo.filename)[1]
+            file_name = f"{first_name}_{last_name}{extension}"
+            full_file_path = os.path.join(
+                app.root_path, Path('static/img/avatars/', file_name)
+            )
+            output_size = (800, 800)
+            i = Image.open(photo)
+            i = i.resize(output_size)
+            i.save(full_file_path)
+
             db.execute(
                 f"""
                 INSERT INTO member
-                ({FIRST_NAME}, {LAST_NAME}, {YEAR_JOINED}, {ACTIVE})
-                VALUES(?, ?, ?, ?)
-                """, (form.data["firstName"], form.data["lastName"],
-                      form.data["initialYear"], form.data["activeMember"])
+                ({FIRST_NAME}, {LAST_NAME}, {YEAR_JOINED}, {ACTIVE}, {IMG_FILEPATH})
+                VALUES(?, ?, ?, ?, ?)
+                """, (first_name, last_name, form.data["initialYear"], form.data["activeMember"], file_name)
             )
             db.commit()
             db.close()
             flash('Member created!', 'success')
-            return redirect(url_for('create_member'))
+            return redirect(url_for('tools'))
 
     return render_template("create_member.html", form=form)
 
@@ -738,7 +808,7 @@ def create_game():
     return render_template("create_game.html", form=form)
 
 
-@app.route("/tools/add_all_members", methods=["GET", "POST"])
+@ app.route("/tools/add_all_members", methods=["GET", "POST"])
 def add_league_members():
 
     db = get_db()
