@@ -194,17 +194,33 @@ def delete_member(member_id):
     ).fetchall()
     first_name = query[0][FIRST_NAME]
     last_name = query[0][LAST_NAME]
-    jpg_path = os.path.join(app.root_path, "static", "img", "avatars",
-                            f"{first_name}_{last_name}.JPG")
-    png_path = os.path.join(app.root_path, "static", "img", "avatars",
-                            f"{first_name}_{last_name}.PNG")
+
+    # This is the ugliest code I've ever written. If everyone ever reads it, I apologize.
+    jpg_path_uc = os.path.join(app.root_path, "static", "img", "avatars",
+                               f"{first_name}_{last_name}.JPG")
+    jpg_path_lc = os.path.join(app.root_path, "static", "img", "avatars",
+                               f"{first_name}_{last_name}.jpg")
+
+    png_path_uc = os.path.join(app.root_path, "static", "img", "avatars",
+                               f"{first_name}_{last_name}.PNG")
+
+    png_path_lc = os.path.join(app.root_path, "static", "img", "avatars",
+                               f"{first_name}_{last_name}.png")
 
     try:
-        os.remove(jpg_path)
+        os.remove(jpg_path_lc)
     except OSError:
         print("Error while deleting file")
     try:
-        os.remove(png_path)
+        os.remove(jpg_path_uc)
+    except OSError:
+        print("Error while deleting file")
+    try:
+        os.remove(png_path_lc)
+    except OSError:
+        print("Error while deleting file")
+    try:
+        os.remove(png_path_uc)
     except OSError:
         print("Error while deleting file")
 
