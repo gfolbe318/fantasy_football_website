@@ -64,7 +64,28 @@ def members():
                 'static', filename=f"img/avatars/{member[IMG_FILEPATH]}")
         })
 
-    return render_template("league_members.html", cards=cards)
+    return render_template("league_members.html", title="Current Members", cards=cards)
+
+
+@app.route("/archives/inactive_members", methods=["GET", "POST"])
+def inactive_members():
+    db = get_db()
+    data = db.execute(
+        f"""
+        SELECT * FROM member
+        WHERE {ACTIVE}=?
+        """, (0,)
+    ).fetchall()
+    cards = []
+    for member in data:
+        cards.append({
+            MEMBER_ID: member[MEMBER_ID],
+            "name": f"{member[FIRST_NAME]} {member[LAST_NAME]}",
+            IMG_FILEPATH: url_for(
+                'static', filename=f"img/avatars/{member[IMG_FILEPATH]}")
+        })
+
+    return render_template("league_members.html", title="Inactive Members", cards=cards)
 
 
 @app.route("/tools", methods=["GET", "POST"])
