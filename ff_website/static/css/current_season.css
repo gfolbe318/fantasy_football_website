@@ -5,9 +5,9 @@
 .thumbnail {
   height: 100%;
   width: 100%;
-  max-width: 100px;
-  max-height: 100px;
+  max-width: 75px;
+  max-height: 75px;
   border: 2px solid lightgray;
-  border-radius: 5px;
+  border-radius: 0.5rem;
   margin: 0;
 }

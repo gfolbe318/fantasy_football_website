@@ -1065,3 +1065,207 @@ def current_season_standings():
                            standings=standings_html,
                            roto=roto_html,
                            matchups=matchups)
+
+
+@app.route("/current_season/payouts", methods=["GET", "POST"])
+def current_season_payouts():
+    db = get_db()
+    db.execute(
+        f"""
+            SELECT team_A_score, team_B_score, season, week, matchup_length, playoffs,
+            t2.first_name as team_A_first_name, t2.last_name as team_A_last_name, t3.first_name as team_B_first_name, t3.last_name as team_B_last_name
+            FROM game
+            INNER JOIN member t2
+            ON t2.member_id = team_A_id
+            INNER JOIN member t3
+            ON t3.member_id = team_B_id
+            WHERE season=?
+            """, (CURRENT_SEASON,)
+    ).fetchall()
+
+    dollars = {
+        "League Winner": 500,
+        "League Runner Up": 250,
+        "Roto Winner": 175,
+        "Roto 2nd Place": 125,
+        "Roto 3rd Place": 75,
+        "#1 seed in playoffs": 60,
+        "#2 seed in playoffs": 60,
+        "#3 seed in playoffs": 60,
+        "#4 seed in playoffs": 60,
+        "#5 seed in playoffs": 60,
+        "#6 seed in playoffs": 60,
+        "Roto 4th Place": 25,
+        "Roto 5th Place": 25,
+        "Roto 6th Place": 25,
+        "Roto 7th Place": 25,
+        "Roto 8th Place": 25,
+        "Roto 9th Place": 25,
+        "Highest Single Game Score": 25,
+        "Week 1 winner": 10,
+        "Week 2 winner": 10,
+        "Week 3 winner": 10,
+        "Week 4 winner": 10,
+        "Week 5 winner": 10,
+        "Week 6 winner": 10,
+        "Week 7 winner": 10,
+        "Week 8 winner": 10,
+        "Week 9 winner": 10,
+        "Week 10 winner": 10,
+        "Week 11 winner": 10,
+        "Week 12 winner": 10,
+        "Week 13 winner": 10,
+        "Week 14 winner": 10,
+    }
+
+    payouts = pd.DataFrame(index=list(dollars.keys()), columns=[
+                           "League Member", "Value", "Payout"])
+
+    payouts["Payout"] = list(dollars.values())
+
+    db = get_db()
+    query = db.execute(
+        f"""
+            SELECT team_A_score, team_B_score, season, week, matchup_length, playoffs,
+            t2.first_name as team_A_first_name, t2.last_name as team_A_last_name, t3.first_name as team_B_first_name, t3.last_name as team_B_last_name
+            FROM game
+            INNER JOIN member t2
+            ON t2.member_id = team_A_id
+            INNER JOIN member t3
+            ON t3.member_id = team_B_id
+            WHERE season=?
+            """, (CURRENT_SEASON,)
+    ).fetchall()
+
+    roto = get_roto(query)
+    playoffs = get_playoffs(query)
+    flag = ""
+    if playoffs:
+        weeks = list(playoffs.keys())
+        weeks.sort()
+        last_week = weeks[-1]
+        if len(playoffs[last_week]) > 1:
+            payouts.at["League Winner", "League Member"] = "--"
+            payouts.at["League Runner Up", "League Member"] = "--"
+        else:
+            payouts.at["League Winner",
+                       "League Member"] = playoffs[last_week][0]["winning_team"]
+            payouts.at["League Runner Up",
+                       "League Member"] = playoffs[last_week][0]["losing_team"]
+
+    else:
+        flag = "*"
+        payouts.at["#1 seed in playoffs", "League Member"] = "--"
+        payouts.at["#2 seed in playoffs", "League Member"] = "--"
+        payouts.at["#3 seed in playoffs", "League Member"] = "--"
+        payouts.at["#4 seed in playoffs", "League Member"] = "--"
+        payouts.at["#5 seed in playoffs", "League Member"] = "--"
+        payouts.at["#6 seed in playoffs", "League Member"] = "--"
+
+    roto_w_ranks = roto.reset_index().rename(columns={"index": "Member"})
+    payouts.at["Roto Winner",
+               "League Member"] = roto_w_ranks.at[0, "Member"] + flag
+    payouts.at["Roto 2nd Place",
+               "League Member"] = roto_w_ranks.at[1, "Member"] + flag
+    payouts.at["Roto 3rd Place",
+               "League Member"] = roto_w_ranks.at[2, "Member"] + flag
+    payouts.at["Roto 4th Place",
+               "League Member"] = roto_w_ranks.at[3, "Member"] + flag
+    payouts.at["Roto 5th Place",
+               "League Member"] = roto_w_ranks.at[4, "Member"] + flag
+    payouts.at["Roto 6th Place",
+               "League Member"] = roto_w_ranks.at[5, "Member"] + flag
+    payouts.at["Roto 7th Place",
+               "League Member"] = roto_w_ranks.at[6, "Member"] + flag
+    payouts.at["Roto 8th Place",
+               "League Member"] = roto_w_ranks.at[7, "Member"] + flag
+    payouts.at["Roto 9th Place",
+               "League Member"] = roto_w_ranks.at[8, "Member"] + flag
+
+    payouts.at["Roto Winner", "Value"] = str(
+        roto_w_ranks.at[0, "Total"]) + flag
+    payouts.at["Roto 2nd Place", "Value"] = str(
+        roto_w_ranks.at[1, "Total"]) + flag
+    payouts.at["Roto 3rd Place", "Value"] = str(
+        roto_w_ranks.at[2, "Total"]) + flag
+    payouts.at["Roto 4th Place", "Value"] = str(
+        roto_w_ranks.at[3, "Total"]) + flag
+    payouts.at["Roto 5th Place", "Value"] = str(
+        roto_w_ranks.at[4, "Total"]) + flag
+    payouts.at["Roto 6th Place", "Value"] = str(
+        roto_w_ranks.at[5, "Total"]) + flag
+    payouts.at["Roto 7th Place", "Value"] = str(
+        roto_w_ranks.at[6, "Total"]) + flag
+    payouts.at["Roto 8th Place", "Value"] = str(
+        roto_w_ranks.at[7, "Total"]) + flag
+    payouts.at["Roto 9th Place", "Value"] = str(
+        roto_w_ranks.at[8, "Total"]) + flag
+
+    week_winners = get_week_winners(query, 14)
+    payouts.at["Week 1 winner", "League Member"] = week_winners[0][0]
+    payouts.at["Week 1 winner", "Value"] = week_winners[0][1]
+
+    payouts.at["Week 2 winner", "League Member"] = week_winners[1][0]
+    payouts.at["Week 2 winner", "Value"] = week_winners[1][1]
+
+    payouts.at["Week 3 winner", "League Member"] = week_winners[2][0]
+    payouts.at["Week 3 winner", "Value"] = week_winners[2][1]
+
+    payouts.at["Week 4 winner", "League Member"] = week_winners[3][0]
+    payouts.at["Week 4 winner", "Value"] = week_winners[3][1]
+
+    payouts.at["Week 5 winner", "League Member"] = week_winners[4][0]
+    payouts.at["Week 5 winner", "Value"] = week_winners[4][1]
+
+    payouts.at["Week 6 winner", "League Member"] = week_winners[5][0]
+    payouts.at["Week 6 winner", "Value"] = week_winners[5][1]
+
+    payouts.at["Week 7 winner", "League Member"] = week_winners[6][0]
+    payouts.at["Week 7 winner", "Value"] = week_winners[6][1]
+
+    payouts.at["Week 8 winner", "League Member"] = week_winners[7][0]
+    payouts.at["Week 8 winner", "Value"] = week_winners[7][1]
+
+    payouts.at["Week 9 winner", "League Member"] = week_winners[8][0]
+    payouts.at["Week 9 winner", "Value"] = week_winners[8][1]
+
+    payouts.at["Week 10 winner", "League Member"] = week_winners[9][0]
+    payouts.at["Week 10 winner", "Value"] = week_winners[9][1]
+
+    payouts.at["Week 11 winner", "League Member"] = week_winners[10][0]
+    payouts.at["Week 11 winner", "Value"] = week_winners[10][1]
+
+    payouts.at["Week 12 winner", "League Member"] = week_winners[11][0]
+    payouts.at["Week 12 winner", "Value"] = week_winners[11][1]
+
+    payouts.at["Week 13 winner", "League Member"] = week_winners[12][0]
+    payouts.at["Week 13 winner", "Value"] = week_winners[12][1]
+
+    payouts.at["Week 14 winner", "League Member"] = week_winners[13][0]
+    payouts.at["Week 14 winner", "Value"] = week_winners[13][1]
+
+    member_high_score, value = get_overall_highest(query)
+    payouts.at["Highest Single Game Score",
+               "League Member"] = str(member_high_score) + flag
+    payouts.at["Highest Single Game Score", "Value"] = str(value) + flag
+
+    payouts = payouts.fillna("--")
+
+    league_members = get_league_members(query)
+    owed = {}
+    for member in league_members:
+        owed[member] = 0
+    for _, value in payouts.iterrows():
+        winner = value["League Member"].strip("*")
+        if winner != "--":
+            owed[winner] += int(value["Payout"])
+
+    owed = {k: v for k, v in sorted(
+        owed.items(), key=lambda item: item[1], reverse=True)}
+    print(owed)
+
+    return render_template("current_season_payouts.html",
+                           payouts=payouts.to_html(
+                               classes="table table-striped"),
+                           owed=owed,
+                           cards=CURRENT_SEASON_CARDS)

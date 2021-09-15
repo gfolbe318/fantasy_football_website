@@ -621,3 +621,57 @@ def get_projected_playoff_teams(standings: pd.DataFrame, ranks, roto: pd.DataFra
             name += "*"
         ret.append(name)
     return ret
+
+
+def get_highest_score_from_week(scores):
+    highest_score = 0
+    member = ""
+    for name, score in scores.items():
+        if score > highest_score:
+            highest_score = score
+            member = name
+    return member, highest_score
+
+
+def get_week_winners(query, num_weeks):
+    split_weeks = {}
+    for row in query:
+        week = row[WEEK]
+        team_A_name = f"{row['team_A_first_name']} {row['team_A_last_name']}"
+        team_B_name = f"{row['team_B_first_name']} {row['team_B_last_name']}"
+        if week not in split_weeks:
+            split_weeks[week] = {
+                team_A_name: row[TEAM_A_SCORE],
+                team_B_name: row[TEAM_B_SCORE]
+            }
+        else:
+            split_weeks[week][team_A_name] = row[TEAM_A_SCORE]
+            split_weeks[week][team_B_name] = row[TEAM_B_SCORE]
+
+    week_winners = []
+    for week, value in split_weeks.items():
+        week_winners.append(get_highest_score_from_week(value))
+    while len(week_winners) < num_weeks:
+        week_winners.append(("--", "--"))
+
+    return week_winners
+
+
+def get_overall_highest(query):
+    high_score, member = 0, ""
+    for row in query:
+        team_A_name = f"{row['team_A_first_name']} {row['team_A_last_name']}"
+        team_A_score = row[TEAM_A_SCORE]
+
+        team_B_name = f"{row['team_B_first_name']} {row['team_B_last_name']}"
+        team_B_score = row[TEAM_B_SCORE]
+
+        if team_A_score > high_score:
+            high_score = team_A_score
+            member = team_A_name
+
+        if team_B_score > high_score:
+            high_score = team_B_score
+            member = team_B_name
+
+    return member, high_score

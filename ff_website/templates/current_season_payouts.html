@@ -1,0 +1,50 @@
+{% extends "layout.html" %} {%block content%}
+<div class="container-fluid content">
+  <div class="row justify-content-center">
+    <div class="col-6-lg col-8-md col-12-sm">
+      <div class="row">
+        {% for card in cards %}
+        <div class="col">
+          <a href="{{url_for(card.link)}}">
+            <img
+              src="{{url_for('static', filename=card.filename)}}"
+              class="thumbnail"
+            />
+          </a>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  <hr class="separator" />
+  <h1>2021 Payouts</h1>
+  <hr class="separator" />
+  <div class="row">
+    <div class="col-12 season_intro">
+      <p class="text-justify">
+        Thanks to our accountant Brad, we have a payout system that is very
+        simple and not at all overkill! On this page, you can see a table
+        holding the payouts, their values, and current league member who has
+        claimed them. Rows marked with an asterisk indicate that the payout has
+        not yet been completed, and rather reflect the current frontrunner. For
+        a reminder of the current standings, head over to the
+        <a href="{{url_for('current_season_standings')}}">standings page</a>.
+      </p>
+      <p>Currently, the following payouts are owed:</p>
+      <ul>
+        {% for name, value in owed.items() %}
+        <li><b>{{name}}:</b>&nbsp;${{value}}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="row text-center justify-content-center">
+    <div class="col-12">
+      <hr class="separator" />
+      <h2>Payout Table</h2>
+      <hr class="separator" />
+      <div class="table-responsive">{{payouts|safe}}</div>
+    </div>
+  </div>
+</div>
+{%endblock content %}

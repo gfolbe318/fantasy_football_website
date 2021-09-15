@@ -45,7 +45,7 @@ CURRENT_SEASON_CARDS = [
         "name": "Payouts",
         "filename": 'img/payouts.png',
         "description": "See how the league pot is being divided",
-        "link": 'current_season_standings'
+        "link": 'current_season_payouts'
     },
     {
         "name": "Analytics",
