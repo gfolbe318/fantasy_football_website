@@ -1,11 +1,27 @@
 {% extends "layout.html" %}{% block content %}
 <div class="container-fluid content">
-  <hr class="separator" />
-  <h1>Current 2021 Season</h1>
-  <hr class="separator" />
-  <div class="row">
-    <h2>Standings</h2>
+  <div class="row justify-content-center">
+    <div class="col-lg-12 col-md-12">
+      <div class="row text-center justify-content-center">
+        {% for card in cards %}
+        <div class="col-lg-4 col-md-6 col-sm-12 d-flex align-items-stretch">
+          <div class="card mb-4 ml-2 mr-2 mt-4">
+            <a href="{{url_for(card.link)}}">
+              <img
+                class="card-img-top"
+                src="{{url_for('static', filename=card.filename)}}"
+              />
+            </a>
+            <div class="card-body">
+              <hr class="separator" />
+              <h4 class="card-title">{{card.name}}</h4>
+              <p class="card-text">{{card.description}}</p>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
   </div>
 </div>
-
 {% endblock content %}

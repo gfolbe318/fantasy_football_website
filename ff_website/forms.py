@@ -12,6 +12,8 @@ from ff_website.constants import FIRST_NAME, LAST_NAME, MEMBER_ID
 
 def get_all_members_helper():
 
+    # TODO: This needs to change. Get league members dynamically with a script
+
     placeholder = [("", "Please select a member...")]
 
     all_members = get_all_members()

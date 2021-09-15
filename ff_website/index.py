@@ -3,7 +3,6 @@ import os
 from pathlib import Path
 
 import inflect
-from numpy import mat
 import pandas as pd
 from flask import flash, jsonify, redirect, render_template, request, url_for
 from PIL import Image
@@ -259,8 +258,6 @@ def list_games():
             "Placeholder",
             "Placeholder"
         ]
-
-    print(df)
 
     return render_template("games_admin.html", df=df)
 
@@ -537,7 +534,6 @@ def h2h():
                     team_A_img = query[1]["team_A_img_filepath"]
                     team_B_img = query[0]["team_B_img_filepath"]
         db.close()
-        print(team_A_img)
     if form.validate_on_submit():
         return redirect(url_for("h2h", member_one_id=form.data["leagueMemberOne"], member_two_id=form.data["leagueMemberTwo"]))
 
@@ -835,6 +831,7 @@ def season_summary():
     year, standings, all_weeks, roto, playoffs = None, None, None, None, None
 
     standings = pd.DataFrame()
+    roto = pd.DataFrame()
 
     try:
         year = args.get("year")
@@ -868,7 +865,7 @@ def season_summary():
                            form=form,
                            year=year,
                            all_weeks=all_weeks,
-                           roto=roto,
+                           roto=roto.to_html(classes="table table-striped"),
                            playoffs=playoffs,
                            standings=standings.to_html(classes="table table-striped"))
 
@@ -1035,6 +1032,11 @@ def add_games():
 
 @app.route("/current_season", methods=["GET", "POST"])
 def current_season():
+    return render_template("current_season.html", cards=CURRENT_SEASON_CARDS)
+
+
+@app.route("/current_season/standings", methods=["GET", "POST"])
+def current_season_standings():
     db = get_db()
     query = db.execute(
         f"""
@@ -1049,6 +1051,17 @@ def current_season():
             """, (CURRENT_SEASON,)
     ).fetchall()
 
-    print(query)
+    standings, ranks = get_standings(query)
+    standings_html = standings.to_html(classes="table table-striped")
 
-    return render_template("current_season.html")
+    roto = get_roto(query)
+    roto_html = roto.to_html(classes="table table-striped")
+
+    matchups = get_projected_playoff_teams(
+        standings, ranks, roto, 6, 1)
+
+    return render_template("current_season_standings.html",
+                           cards=CURRENT_SEASON_CARDS,
+                           standings=standings_html,
+                           roto=roto_html,
+                           matchups=matchups)

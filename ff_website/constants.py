@@ -33,3 +33,42 @@ AWAY_SCORE = "away_score"
 
 member_data = "ff_website\data\\all_members.json"
 games_data = "ff_website\data\\all_games.json"
+
+CURRENT_SEASON_CARDS = [
+    {
+        "name": "Standings",
+        "filename": 'img/standings.png',
+        "description": "View the current standings, roto, and playoff picture",
+        "link": 'current_season_standings'
+    },
+    {
+        "name": "Payouts",
+        "filename": 'img/payouts.png',
+        "description": "See how the league pot is being divided",
+        "link": 'current_season_standings'
+    },
+    {
+        "name": "Analytics",
+        "filename": 'img/analytics.png',
+        "description": "Take a closer look at how your team compares to the rest",
+        "link": 'current_season_standings'
+    },
+    {
+        "name": "Report of The Week",
+        "filename": 'img/report.png',
+        "description": "Coming to you live from Lincoln, it's Jart's Report of the Week",
+        "link": 'current_season_standings'
+    },
+    {
+        "name": "Power Rankings",
+        "filename": 'img/power_rankings.png',
+        "description": "Unofficial official rankings",
+        "link": 'current_season_standings'
+    },
+    {
+        "name": "Announcements",
+        "filename": 'img/announcements.png',
+        "description": "Announcements from the comissioner as well as for the website",
+        "link": 'current_season_standings'
+    }
+]

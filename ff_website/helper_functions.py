@@ -1,4 +1,4 @@
-from ff_website.constants import PLAYOFFS, SEASON, TEAM_A_SCORE, TEAM_B_SCORE, WEEK
+from ff_website.constants import CURRENT_SEASON, PLAYOFFS, SEASON, TEAM_A_SCORE, TEAM_B_SCORE, WEEK
 import pandas as pd
 
 
@@ -425,12 +425,16 @@ def get_summaries(query, name):
             tpa = standings.at[name, "PA"]
             rank, finish = get_playoff_finish(
                 playoffs, standings, name)
-            if finish == "DNQ":
-                playoffs = "No"
-                over_finish = rank
+            if year == CURRENT_SEASON:
+                over_finish = "--"
+                playoffs = "--"
             else:
-                playoffs = "Yes"
-                over_finish = finish
+                if finish == "DNQ":
+                    playoffs = "No"
+                    over_finish = rank
+                else:
+                    playoffs = "Yes"
+                    over_finish = finish
 
             df.loc[year] = [final_record, tpf, tpa, playoffs, over_finish]
 
@@ -585,4 +589,35 @@ def get_roto(query):
     roto_df = roto_df.sort_values("Total", ascending=False)
     roto_df["Total"] = roto_df["Total"].astype("int64")
 
-    return roto_df.to_html(classes="table table-striped")
+    return roto_df
+
+
+def get_projected_playoff_teams(standings: pd.DataFrame, ranks, roto: pd.DataFrame, num_total, num_roto):
+    """
+
+    Args:
+        standings (pd.DataFrame): [h2h standings]
+        ranks (Dict): [Rank of each member in the standings]
+        roto (pd.DataFrame): [roto standings]
+        num_total ([type]): [number of total teams in playoffs]
+        num_roto ([type]): [number of roto teams into playoffs]
+
+    Returns:
+        A list of playoff teams merged betweet roto and h2h
+    """
+
+    playoff_teams = list(standings.index)[:num_total-num_roto]
+    roto_index = list(roto.index)
+    for member in roto_index:
+        if member not in playoff_teams:
+            playoff_teams.append(member)
+            if len(playoff_teams) == num_total:
+                break
+
+    ret = []
+    for member in playoff_teams:
+        name = f"#{ranks[member]} {member}"
+        if ranks[member] > num_total:
+            name += "*"
+        ret.append(name)
+    return ret

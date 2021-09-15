@@ -1,0 +1,65 @@
+{% extends "layout.html" %} {% block content %}
+<div class="container-fluid content">
+  <div class="row">
+    {% for card in cards %}
+    <div class="col">
+      <a href="{{url_for(card.link)}}">
+        <img
+          src="{{url_for('static', filename=card.filename)}}"
+          class="thumbnail"
+        />
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+  <hr class="separator" />
+  <h1>2021 Standings</h1>
+  <hr class="separator" />
+  <div class="season_intro">
+    <p>
+      This year, we have elected a system where the playoff teams will be
+      selected based off of a combination of the traditional head to head
+      standings and roto results. The top 5 teams from the head to head
+      standings will be seeded in the order, and the 6th seed will be awared to
+      the highest scoring roto team who did not finish in the top of the head to
+      head standings. If the playoffs started today, the current matchups would
+      be as follows:
+    </p>
+    <p><b>First Round Byes:</b></p>
+    <ul>
+      <li>{{matchups[0]}}</li>
+    </ul>
+    <ul>
+      <li>{{matchups[1]}}</li>
+    </ul>
+    <p><b>Quarterfinal Matchups:</b></p>
+    <ul>
+      <li>{{matchups[2]}}&nbsp;vs&nbsp;{{matchups[5]}}</li>
+    </ul>
+    <ul>
+      <li>{{matchups[3]}}&nbsp;vs&nbsp;{{matchups[4]}}</li>
+    </ul>
+    <small
+      ><i> "*" indicates a team qualified for the playoffs via roto.</i>
+    </small>
+  </div>
+  <hr class="separator" />
+  <h2>Head to Head Standings</h2>
+  <hr class="separator" />
+  <div class="row text-center justify-content-center">
+    <div class="col-12">
+      <div class="table-responsive justify-content-center">
+        {{standings|safe}}
+      </div>
+    </div>
+  </div>
+  <hr class="separator" />
+  <h2>Roto Results</h2>
+  <hr class="separator" />
+  <div class="row">
+    <div class="col-12">
+      <div class="table-responsive justify-content-center">{{roto|safe}}</div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
