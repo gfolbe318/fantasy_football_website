@@ -104,7 +104,9 @@ def get_league_members(query):
         team_B_name = f"{row['team_B_first_name']} {row['team_B_last_name']}"
         names.add(team_A_name)
         names.add(team_B_name)
-    return list(names)
+    names_list = list(names)
+    names_list.sort()
+    return names_list
 
 
 def get_standings(query):
@@ -357,10 +359,11 @@ def get_rank_of_team(standings, name):
     return counter
 
 
-def get_playoff_finish(playoffs, standings, name):
-    def ordinal(n): return "%d%s" % (
-        n, "tsnrhtdd"[(n//10 % 10 != 1)*(n % 10 < 4)*n % 10::4])
+def ordinal(n):
+    return "%d%s" % (n, "tsnrhtdd"[(n//10 % 10 != 1)*(n % 10 < 4)*n % 10::4])
 
+
+def get_playoff_finish(playoffs, standings, name):
     rank = ordinal(get_rank_of_team(standings, name))
 
     num_rounds = len(playoffs)
@@ -556,7 +559,7 @@ def get_playoff_results_for_season_summary(query):
     return all_playoff_weeks
 
 
-def get_roto(query):
+def gen_points_df(query):
     league_members = get_league_members(query)
     points_df = pd.DataFrame(index=league_members)
     weeks = set()
@@ -576,6 +579,14 @@ def get_roto(query):
             team_B_name = f"{row['team_B_first_name']} {row['team_B_last_name']}"
             team_B_score = row[TEAM_B_SCORE]
             points_df.at[team_B_name, key] = team_B_score
+    return points_df
+
+
+def get_roto(query):
+    points_df = gen_points_df(query)
+    standings, _ = get_standings(query)
+
+    league_members = get_league_members(query)
 
     roto_df = pd.DataFrame(index=league_members,
                            columns=points_df.columns.to_list())
@@ -586,7 +597,10 @@ def get_roto(query):
             roto_df[key][member] = i
 
     roto_df["Total"] = roto_df.iloc[:, :].sum(axis=1)
-    roto_df = roto_df.sort_values("Total", ascending=False)
+    standings, _ = get_standings(query)
+    roto_df["PF"] = standings["PF"]
+
+    roto_df = roto_df.sort_values(["Total", "PF"], ascending=False)
     roto_df["Total"] = roto_df["Total"].astype("int64")
 
     return roto_df
@@ -675,3 +689,139 @@ def get_overall_highest(query):
             member = team_B_name
 
     return member, high_score
+
+
+def get_league_schedules(query):
+    schedules_dict = {}
+    for row in query:
+        team_A_name = f"{row['team_A_first_name']} {row['team_A_last_name']}"
+        team_B_name = f"{row['team_B_first_name']} {row['team_B_last_name']}"
+
+        if team_A_name not in schedules_dict:
+            schedules_dict[team_A_name] = [team_B_name]
+        else:
+            schedules_dict[team_A_name].append(team_B_name)
+
+        if team_B_name not in schedules_dict:
+            schedules_dict[team_B_name] = [team_A_name]
+        else:
+            schedules_dict[team_B_name].append(team_A_name)
+    schedules_df = pd.DataFrame(schedules_dict)
+    schedules_df["weeks"] = [f"Week {i + 1}" for i in range(len(schedules_df))]
+    schedules_df = schedules_df.set_index(["weeks"])
+    return schedules_df
+
+
+def get_roto_against(query):
+    roto_df = get_roto(query)
+    schedules = get_league_schedules(query)
+
+    # Drop the "Total" and "TPF" Columns
+    columns = list(roto_df.columns)[:-2]
+    rows = get_league_members(query)
+
+    roto_against = pd.DataFrame(columns=columns, index=rows)
+
+    for row in rows:
+        for i in range(len(columns)):
+            key = "Week " + str(i + 1)
+            opponent = schedules.loc[key, row]
+            roto_against.loc[row, key] = roto_df.loc[opponent, key]
+
+    roto_against["Total"] = roto_against.iloc[:, :].sum(axis=1)
+    roto_against["PA"] = get_standings(query)[0]["PA"]
+    roto_against = roto_against.sort_values(
+        ["Total", "PA"], ascending=False)
+    roto_against = roto_against.convert_dtypes({"Total": "int64"})
+    return roto_against
+
+
+def get_head_to_head(query):
+    points = gen_points_df(query)
+    league_members = get_league_members(query)
+    head2head = pd.DataFrame(columns=league_members, index=league_members)
+    for a in league_members:
+        for b in league_members:
+            if a == b:
+                head2head[b][a] = "--"
+            else:
+                wins = 0
+                losses = 0
+                for col in points.columns:
+                    if points[col][a] > points[col][b]:
+                        wins += 1
+                    else:
+                        losses += 1
+                head2head[b][a] = str(wins) + "-" + str(losses)
+    return head2head
+
+
+def gen_wins_and_losses(query):
+    wins_losses_dict = {}
+    for row in query:
+        team_A_name = f"{row['team_A_first_name']} {row['team_A_last_name']}"
+        team_A_score = row[TEAM_A_SCORE]
+
+        team_B_name = f"{row['team_B_first_name']} {row['team_B_last_name']}"
+        team_B_score = row[TEAM_B_SCORE]
+
+        team_A_result = "W" if team_A_score > team_B_score else "L"
+        team_B_result = "W" if team_B_score > team_A_score else "L"
+
+        if team_A_name not in wins_losses_dict:
+            wins_losses_dict[team_A_name] = [team_A_result]
+        else:
+            wins_losses_dict[team_A_name].append(team_A_result)
+
+        if team_B_name not in wins_losses_dict:
+            wins_losses_dict[team_B_name] = [team_B_result]
+        else:
+            wins_losses_dict[team_B_name].append(team_B_result)
+
+    wins_losses_df = pd.DataFrame(wins_losses_dict)
+    wins_losses_df["Week"] = [
+        f"Week {i + 1}" for i in range(len(wins_losses_df.index))]
+    wins_losses_df = wins_losses_df.set_index(["Week"])
+    return wins_losses_df
+
+
+def update_interval(member, roto_points, result, intervals):
+    column = "Top 3 Scorer"
+    if roto_points <= 2:
+        column = "Bottom 3 Scorer"
+    elif roto_points <= 5:
+        column = "Scored 7th-9th"
+    elif roto_points <= 8:
+        column = "Scored 4th-6th"
+
+    record = intervals.loc[member, column]
+    wins, losses = record.split("-")
+
+    if result == "W":
+        new_wins = str(int(wins) + 1)
+        new_losses = losses
+    else:
+        new_wins = wins
+        new_losses = str(int(losses) + 1)
+    intervals.loc[member, column] = f"{new_wins}-{new_losses}"
+    return intervals
+
+
+def get_intervals(query):
+    roto = get_roto(query)
+    wins_and_losses = gen_wins_and_losses(query)
+
+    columns = ["Top 3 Scorer", "Scored 4th-6th",
+               "Scored 7th-9th", "Bottom 3 Scorer"]
+    league_members = get_league_members(query)
+    intervals = pd.DataFrame(columns=columns, index=league_members)
+    intervals = intervals.fillna("0-0")
+    for member in league_members:
+        for week in roto.columns[:-2]:
+            print(week)
+            roto_points = roto.loc[member, week]
+            result = wins_and_losses.loc[week, member]
+            intervals = update_interval(member, roto_points, result, intervals)
+
+    print(intervals)
+    return intervals

@@ -51,7 +51,7 @@ CURRENT_SEASON_CARDS = [
         "name": "Analytics",
         "filename": 'img/analytics.png',
         "description": "Take a closer look at how your team compares to the rest",
-        "link": 'current_season_standings'
+        "link": 'current_season_analytics'
     },
     {
         "name": "Report of The Week",

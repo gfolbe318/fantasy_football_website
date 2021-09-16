@@ -5,7 +5,7 @@
         "last_name": "Folbe",
         "year_joined": 2015,
         "active": 1,
-        "img_filepath": "default.png"
+        "img_filepath": "Garrett_Folbe.jpg"
     },
     {
         "member_id": 2,
@@ -13,7 +13,7 @@
         "last_name": "Ross",
         "year_joined": 2016,
         "active": 1,
-        "img_filepath": "default.png"
+        "img_filepath": "Alex_Ross.jpg"
     },
     {
         "member_id": 3,
@@ -21,7 +21,7 @@
         "last_name": "Nathan",
         "year_joined": 2011,
         "active": 1,
-        "img_filepath": "default.png"
+        "img_filepath": "Noah_Nathan.PNG"
     },
     {
         "member_id": 4,
@@ -29,7 +29,7 @@
         "last_name": "Silverman",
         "year_joined": 2016,
         "active": 1,
-        "img_filepath": "default.png"
+        "img_filepath": "Brad_Silverman.jpg"
     },
     {
         "member_id": 5,
@@ -37,7 +37,7 @@
         "last_name": "Weingarten",
         "year_joined": 2011,
         "active": 1,
-        "img_filepath": "default.png"
+        "img_filepath": "Merrick_Weingarten.jpg"
     },
     {
         "member_id": 6,
@@ -45,7 +45,7 @@
         "last_name": "Lopas",
         "year_joined": 2011,
         "active": 1,
-        "img_filepath": "default.png"
+        "img_filepath": "Jonah_Lopas.PNG"
     },
     {
         "member_id": 7,
@@ -53,7 +53,7 @@
         "last_name": "Silverstone",
         "year_joined": 2011,
         "active": 1,
-        "img_filepath": "default.png"
+        "img_filepath": "Jason_Silverstone.jpg"
     },
     {
         "member_id": 8,
@@ -61,7 +61,7 @@
         "last_name": "Bank",
         "year_joined": 2018,
         "active": 1,
-        "img_filepath": "default.png"
+        "img_filepath": "Merrick_Bank.jpg"
     },
     {
         "member_id": 9,
@@ -69,7 +69,7 @@
         "last_name": "Drogosch",
         "year_joined": 2016,
         "active": 1,
-        "img_filepath": "default.png"
+        "img_filepath": "CJ_Drogosch.jpg"
     },
     {
         "member_id": 10,
@@ -77,7 +77,7 @@
         "last_name": "Banooni",
         "year_joined": 2015,
         "active": 1,
-        "img_filepath": "default.png"
+        "img_filepath": "Daniel_Banooni.jpg"
     },
     {
         "member_id": 11,
@@ -85,7 +85,7 @@
         "last_name": "Black",
         "year_joined": 2015,
         "active": 1,
-        "img_filepath": "default.png"
+        "img_filepath": "Jarrett_Black.jpg"
     },
     {
         "member_id": 12,
@@ -93,7 +93,7 @@
         "last_name": "Michaels",
         "year_joined": 2020,
         "active": 1,
-        "img_filepath": "default.png"
+        "img_filepath": "Daniel_Michaels.jpg"
     },
     {
         "member_id": 13,

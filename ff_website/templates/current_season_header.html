@@ -1,0 +1,18 @@
+<div class="container-fluid content">
+  <div class="row justify-content-center">
+    <div class="col-6-lg col-8-md col-12-sm">
+      <div class="row">
+        {% for card in cards %}
+        <div class="col">
+          <a href="{{url_for(card.link)}}">
+            <img
+              src="{{url_for('static', filename=card.filename)}}"
+              class="thumbnail"
+            />
+          </a>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
