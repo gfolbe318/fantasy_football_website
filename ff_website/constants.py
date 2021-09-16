@@ -63,7 +63,7 @@ CURRENT_SEASON_CARDS = [
         "name": "Power Rankings",
         "filename": 'img/power_rankings.png',
         "description": "Unofficial official rankings",
-        "link": 'current_season_standings'
+        "link": 'current_season_power_rankings'
     },
     {
         "name": "Announcements",

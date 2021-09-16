@@ -1,13 +1,13 @@
 from datetime import datetime
 
 from flask_wtf import FlaskForm
-from flask_wtf.file import FileField,  FileRequired
+from flask_wtf.file import FileField
 from wtforms import FloatField, SelectField, StringField, SubmitField
-from wtforms.fields.core import BooleanField, FloatField
+from wtforms.fields.core import FloatField
 from wtforms.validators import DataRequired, ValidationError
 
 from ff_website.apis import get_all_members
-from ff_website.constants import FIRST_NAME, LAST_NAME, MEMBER_ID
+from ff_website.constants import CURRENT_SEASON, FIRST_NAME, LAST_NAME, MEMBER_ID
 
 
 def get_all_members_helper():
@@ -25,12 +25,10 @@ def get_all_members_helper():
     return members
 
 
-def get_years_helper(start):
+def get_years_helper(start, stop):
 
     placeholder = [("", "Select a year...")]
-
-    current_year = datetime.now().year
-    years = placeholder + [(x, x) for x in range(start, current_year + 1)]
+    years = placeholder + [(x, x) for x in range(start, stop+1)]
     return years
 
 
@@ -91,7 +89,7 @@ class SeasonSelector(FlaskForm):
 
 
 class CreateMember(FlaskForm):
-    years = get_years_helper(2011)
+    years = get_years_helper(2011, CURRENT_SEASON - 1)
 
     initialYear = SelectField(
         "Year Joined", choices=years, validators=[DataRequired()])
@@ -128,7 +126,7 @@ class CreateGame(FlaskForm):
     teamBName = SelectField(
         "Team B Name", choices=members, validators=[DataRequired(), valid_names_two])
 
-    years = get_years_helper(2017)
+    years = get_years_helper(2017, CURRENT_SEASON)
     season = SelectField("Season", choices=years,
                          validators=[DataRequired()])
 
@@ -145,5 +143,41 @@ class CreateGame(FlaskForm):
                            choices=[("", "Select a Matchup Format..."),
                                     (0, "Regular Season"), (1, "Post Season")],
                            validators=[DataRequired()])
+
+    submit = SubmitField("Submit")
+
+
+class CreatePowerRankings(FlaskForm):
+    members = get_all_members_helper()
+    years = get_years_helper(2017, CURRENT_SEASON)
+    weeks = get_weeks()
+
+    year = SelectField("Season", choices=years, validators=[DataRequired()])
+    week = SelectField("Week", choices=weeks, validators=[DataRequired()])
+
+    team_one = SelectField(
+        "#1", choices=members, validators=[DataRequired()])
+    team_two = SelectField(
+        "#2", choices=members, validators=[DataRequired()])
+    team_three = SelectField(
+        "#3", choices=members, validators=[DataRequired()])
+    team_four = SelectField(
+        "#4", choices=members, validators=[DataRequired()])
+    team_five = SelectField(
+        "#5", choices=members, validators=[DataRequired()])
+    team_six = SelectField(
+        "#6", choices=members, validators=[DataRequired()])
+    team_seven = SelectField(
+        "#7", choices=members, validators=[DataRequired()])
+    team_eight = SelectField(
+        "#8", choices=members, validators=[DataRequired()])
+    team_nine = SelectField(
+        "#9", choices=members, validators=[DataRequired()])
+    team_ten = SelectField(
+        "#10", choices=members, validators=[DataRequired()])
+    team_eleven = SelectField(
+        "#11", choices=members, validators=[DataRequired()])
+    team_twelve = SelectField(
+        "#12", choices=members, validators=[DataRequired()])
 
     submit = SubmitField("Submit")

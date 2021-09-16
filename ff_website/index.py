@@ -1,6 +1,7 @@
 import json
 import os
 from pathlib import Path
+from flask_wtf import file
 
 import inflect
 import pandas as pd
@@ -11,7 +12,7 @@ from ff_website import app
 from ff_website.apis import get_member_id
 from ff_website.constants import *
 from ff_website.db import get_db
-from ff_website.forms import (CreateGame, CreateMember, GameQualities,
+from ff_website.forms import (CreateGame, CreateMember, CreatePowerRankings, GameQualities,
                               HeadToHead, SeasonSelector)
 from ff_website.helper_functions import *
 
@@ -1030,6 +1031,89 @@ def add_games():
     return jsonify(games)
 
 
+@app.route("/tools/create_power_rankings", methods=["GET", "POST"])
+def create_power_rankings():
+    db = get_db()
+    actives_query = db.execute(
+        f"""
+        SELECT {MEMBER_ID} FROM member
+        WHERE {ACTIVE}=?
+        """, (1,)
+    ).fetchall()
+
+    form = CreatePowerRankings(year=CURRENT_SEASON)
+    if form.validate_on_submit():
+        team_one = form.team_one.data
+        team_two = form.team_two.data
+        team_three = form.team_three.data
+        team_four = form.team_four.data
+        team_five = form.team_five.data
+        team_six = form.team_six.data
+        team_seven = form.team_seven.data
+        team_eight = form.team_eight.data
+        team_nine = form.team_nine.data
+        team_ten = form.team_ten.data
+        team_eleven = form.team_eleven.data
+        team_twelve = form.team_twelve.data
+        submitted = [team_one, team_two, team_three, team_four, team_five, team_six,
+                     team_seven, team_eight, team_nine, team_ten, team_eleven, team_twelve]
+
+        submitted_set = set(submitted)
+        actives_set = set([str(row[MEMBER_ID]) for row in actives_query])
+
+        missing = actives_set - submitted_set
+        if len(missing) == 0:
+            year = form.year.data
+            week = form.week.data
+            file_name = f"power_rankings_{year}_{week}.json"
+
+            query = db.execute(
+                f"""
+                SELECT {MEMBER_ID}, {FIRST_NAME}, {LAST_NAME}
+                FROM member
+                """
+            ).fetchall()
+            names_dict = {}
+            for row in query:
+                name = row[FIRST_NAME] + " " + row[LAST_NAME]
+                names_dict[row[MEMBER_ID]] = name
+
+            object = {
+                "year": year,
+                "week": week,
+                "rankings": [names_dict[int(i)] for i in submitted]
+            }
+
+            file_path = os.path.join(
+                app.root_path, "data", "power_rankings", year)
+            print(file_path)
+            os.makedirs(file_path, exist_ok=True)
+            json.dump(object, open(os.path.join(file_path, file_name), "w"))
+            db.close()
+            flash('Power Rankings Created!', 'success')
+            return redirect(url_for('tools'))
+
+        else:
+            query = db.execute(
+                f"""
+                SELECT {FIRST_NAME}, {LAST_NAME} FROM member
+                WHERE {MEMBER_ID} IN {tuple(missing)}
+                """
+            ).fetchall()
+            names = [name[FIRST_NAME] + " " + name[LAST_NAME]
+                     for name in query]
+            names_str = ""
+            for i, name in enumerate(names):
+                names_str += name
+                if i != len(names):
+                    names_str += ", "
+            form.submit.errors.append(
+                "Can't create power rankings. The following members aren't present: " + names_str)
+
+    db.close()
+    return render_template("create_power_rankings.html", form=form)
+
+
 @app.route("/current_season", methods=["GET", "POST"])
 def current_season():
     return render_template("current_season.html", cards=CURRENT_SEASON_CARDS)
@@ -1242,3 +1326,18 @@ def current_season_analytics():
                            head_to_head=head_to_head.to_html(
                                classes="table table-striped"),
                            intervals=intervals.to_html(classes="table table-striped"))
+
+
+@app.route("/current_season/report", methods=["GET", "POST"])
+def current_season_report():
+    return render_template("current_season_report.html", cards=CURRENT_SEASON_CARDS)
+
+
+@app.route("/current_season/power_rankings", methods=["GET", "POST"])
+def current_season_power_rankings():
+    return render_template("current_season_power_rankings.html", cards=CURRENT_SEASON_CARDS)
+
+
+@app.route("/current_season/announcements", methods=["GET", "POST"])
+def current_season_announcements():
+    return render_template("current_season_report.html", cards=CURRENT_SEASON_CARDS)

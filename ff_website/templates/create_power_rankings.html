@@ -1,0 +1,216 @@
+{% extends "layout.html" %}{% block content %}
+
+<div class="container-fluid content">
+  <div class="row justify-content-center">
+    <div class="col-12">
+      <div class="form-body">
+        <div class="content-section">
+          <form
+            novalidate="novalidate"
+            method="POST"
+            autocomplete="off"
+            enctype="multipart/form-data"
+          >
+            <legend>Create a new power rankings</legend>
+            <fieldset class="form-group">
+              <input
+                type="hidden"
+                name="csrf_token"
+                value="{{ csrf_token() }}"
+              />
+              <div class="row">
+                <div class="col-6">
+                  <div class="form-group">
+                    {{ form.week.label(class="form-control-md") }} {% if
+                    form.week.errors %} {{ form.week(class="form-control
+                    form-control-md is-invalid") }}
+                    <div class="invalid-feedback">
+                      {% for error in form.week.errors %}
+                      <span>{{ error }}</span>
+                      {% endfor %}
+                    </div>
+                    {% else %} {{ form.week(class="form-control
+                    form-control-md") }} {% endif %}
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-group">
+                    {{ form.year.label(class="form-control-md") }} {% if
+                    form.year.errors %} {{ form.year(class="form-control
+                    form-control-md is-invalid") }}
+                    <div class="invalid-feedback">
+                      {% for error in form.year.errors %}
+                      <span>{{ error }}</span>
+                      {% endfor %}
+                    </div>
+                    {% else %} {{ form.year(class="form-control
+                    form-control-md") }} {% endif %}
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                {{ form.team_one.label(class="form-control-md") }} {% if
+                form.team_one.errors %} {{ form.team_one(class="form-control
+                form-control-md is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.team_one.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+                {% else %} {{ form.team_one(class="form-control
+                form-control-md") }} {% endif %}
+              </div>
+              <div class="form-group">
+                {{ form.team_two.label(class="form-control-md") }} {% if
+                form.team_two.errors %} {{ form.team_two(class="form-control
+                form-control-md is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.team_two.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+                {% else %} {{ form.team_two(class="form-control
+                form-control-md") }} {% endif %}
+              </div>
+              <div class="form-group">
+                {{ form.team_three.label(class="form-control-md") }} {% if
+                form.team_three.errors %} {{ form.team_three(class="form-control
+                form-control-md is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.team_three.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+                {% else %} {{ form.team_three(class="form-control
+                form-control-md") }} {% endif %}
+              </div>
+              <div class="form-group">
+                {{ form.team_four.label(class="form-control-md") }} {% if
+                form.team_four.errors %} {{ form.team_four(class="form-control
+                form-control-md is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.team_four.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+                {% else %} {{ form.team_four(class="form-control
+                form-control-md") }} {% endif %}
+              </div>
+              <div class="form-group">
+                {{ form.team_five.label(class="form-control-md") }} {% if
+                form.team_five.errors %} {{ form.team_five(class="form-control
+                form-control-md is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.team_five.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+                {% else %} {{ form.team_five(class="form-control
+                form-control-md") }} {% endif %}
+              </div>
+              <div class="form-group">
+                {{ form.team_six.label(class="form-control-md") }} {% if
+                form.team_six.errors %} {{ form.team_six(class="form-control
+                form-control-md is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.team_six.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+                {% else %} {{ form.team_six(class="form-control
+                form-control-md") }} {% endif %}
+              </div>
+              <div class="form-group">
+                {{ form.team_seven.label(class="form-control-md") }} {% if
+                form.team_seven.errors %} {{ form.team_seven(class="form-control
+                form-control-md is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.team_seven.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+                {% else %} {{ form.team_seven(class="form-control
+                form-control-md") }} {% endif %}
+              </div>
+              <div class="form-group">
+                {{ form.team_eight.label(class="form-control-md") }} {% if
+                form.team_eight.errors %} {{ form.team_eight(class="form-control
+                form-control-md is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.team_eight.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+                {% else %} {{ form.team_eight(class="form-control
+                form-control-md") }} {% endif %}
+              </div>
+              <div class="form-group">
+                {{ form.team_nine.label(class="form-control-md") }} {% if
+                form.team_nine.errors %} {{ form.team_nine(class="form-control
+                form-control-md is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.team_nine.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+                {% else %} {{ form.team_nine(class="form-control
+                form-control-md") }} {% endif %}
+              </div>
+              <div class="form-group">
+                {{ form.team_ten.label(class="form-control-md") }} {% if
+                form.team_ten.errors %} {{ form.team_ten(class="form-control
+                form-control-md is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.team_ten.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+                {% else %} {{ form.team_ten(class="form-control
+                form-control-md") }} {% endif %}
+              </div>
+              <div class="form-group">
+                {{ form.team_eleven.label(class="form-control-md") }} {% if
+                form.team_eleven.errors %} {{
+                form.team_eleven(class="form-control form-control-md
+                is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.team_eleven.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+                {% else %} {{ form.team_eleven(class="form-control
+                form-control-md") }} {% endif %}
+              </div>
+              <div class="form-group">
+                {{ form.team_twelve.label(class="form-control-md") }} {% if
+                form.team_twelve.errors %} {{
+                form.team_twelve(class="form-control form-control-md
+                is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.team_twelve.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+                {% else %} {{ form.team_twelve(class="form-control
+                form-control-md") }} {% endif %}
+              </div>
+              <div class="form-group submit-button">
+                {% if form.submit.errors %} {{ form.submit(class="form-control
+                btn btn-outline-info is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.submit.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+                {% else %} {{ form.submit(class="form-control btn
+                btn-outline-info") }} {% endif %}
+              </div>
+            </fieldset>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
