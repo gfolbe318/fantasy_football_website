@@ -16,5 +16,74 @@
       </div>
     </div>
   </div>
+  <hr class="separator" />
+  <h1>Power Rankings</h1>
+  <hr class="separator" />
+  <div class="row season_intro">
+    <div class="col-12">
+      <p>
+        Check back weekly for an updated edition of Jonah's power rankings.
+        Previous iterations of the rankings are avaiable at the bottom of the
+        rankings. The change represents the difference in the member's ranking
+        from the previous power rankings (even if that ranking was more a week
+        ago).
+      </p>
+      <p>
+        <u><b>Week {{week}} Power Rankings</b></u>
+      </p>
+      <ol>
+        {% for member, info in current_info.items() %}
+        <li>
+          {{member}}&nbsp; {% if info.change < 0 %} (&nbsp;<span
+            class="triangle-down"
+          ></span
+          >{{info.change}}) {% elif info.change > 0 %} (&nbsp;<span
+            class="triangle-up"
+          ></span
+          >{{info.change}}) {% endif %}
+        </li>
+        {% endfor %}
+      </ol>
+    </div>
+  </div>
+  <div class="row justify-content-center">
+    <div class="col-12">
+      <div class="form-body">
+        <div class="content-section">
+          <form
+            novalidate="novalidate"
+            method="POST"
+            autocomplete="off"
+            enctype="multipart/form-data"
+          >
+            <fieldset class="form-group">
+              <input
+                type="hidden"
+                name="csrf_token"
+                value="{{ csrf_token() }}"
+              />
+              <div class="form-group">
+                {{ form.week.label(class="form-control-md") }} {% if
+                form.week.errors %} {{ form.week(class="form-control
+                form-control-md is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.week.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+                {% else %} {{ form.week(class="form-control form-control-md") }}
+                {% endif %}
+              </div>
+              <div class="form-group submit-button">
+                {{ form.submit(class="btn btn-outline-info")}}
+              </div>
+            </fieldset>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+<script src="/static/js/add_power_rank_weeks.js"></script>
+
 {% endblock content %}

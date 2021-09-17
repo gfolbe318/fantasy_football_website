@@ -1,5 +1,8 @@
 from ff_website.constants import CURRENT_SEASON, PLAYOFFS, SEASON, TEAM_A_SCORE, TEAM_B_SCORE, WEEK
 import pandas as pd
+import os
+import json
+from collections import OrderedDict
 
 
 def get_series_split(df: pd.DataFrame):
@@ -823,5 +826,37 @@ def get_intervals(query):
             result = wins_and_losses.loc[week, member]
             intervals = update_interval(member, roto_points, result, intervals)
 
-    print(intervals)
     return intervals
+
+
+def parse_rankings_filename(filename):
+    # input resembles: power_rankings_week_n.json
+
+    base_path = str(os.path.basename(filename))
+    parts = base_path.split("_")
+    n_json = parts[-1]
+    week = n_json.split(".")[0]
+    return week
+
+
+def load_power_rankings(filename):
+    data = json.load(open(filename, "r"))
+    info = OrderedDict()
+    for index, member in enumerate(data["rankings"]):
+        info[member] = {
+            "rank": index + 1,
+            "change": 0
+        }
+    return info
+
+
+def get_power_rankings_infos(filenames, week):
+    for index, filename in enumerate(filenames):
+        if week == parse_rankings_filename(filename):
+            current_data = load_power_rankings(filename)
+            if index == 0:
+                previous_data = None
+            else:
+                previous_data = load_power_rankings(filenames[index - 1])
+
+    return current_data, previous_data

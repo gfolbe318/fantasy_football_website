@@ -181,3 +181,11 @@ class CreatePowerRankings(FlaskForm):
         "#12", choices=members, validators=[DataRequired()])
 
     submit = SubmitField("Submit")
+
+
+class selectPowerRankWeek(FlaskForm):
+    weeks = [("", "Select a week to view")] + \
+        [(week, f"Week {week}") for week in range(1, 15)]
+    week = SelectField("Select a week to view", choices=weeks,
+                       validators=[DataRequired()])
+    submit = SubmitField("View")

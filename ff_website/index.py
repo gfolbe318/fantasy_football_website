@@ -1,7 +1,8 @@
+import glob
 import json
 import os
 from pathlib import Path
-from flask_wtf import file
+from collections import OrderedDict
 
 import inflect
 import pandas as pd
@@ -12,8 +13,8 @@ from ff_website import app
 from ff_website.apis import get_member_id
 from ff_website.constants import *
 from ff_website.db import get_db
-from ff_website.forms import (CreateGame, CreateMember, CreatePowerRankings, GameQualities,
-                              HeadToHead, SeasonSelector)
+from ff_website.forms import (CreateGame, CreateMember, CreatePowerRankings,
+                              GameQualities, HeadToHead, SeasonSelector, selectPowerRankWeek)
 from ff_website.helper_functions import *
 
 
@@ -1065,7 +1066,7 @@ def create_power_rankings():
         if len(missing) == 0:
             year = form.year.data
             week = form.week.data
-            file_name = f"power_rankings_{year}_{week}.json"
+            file_name = f"power_rankings_week_{week}.json"
 
             query = db.execute(
                 f"""
@@ -1086,7 +1087,6 @@ def create_power_rankings():
 
             file_path = os.path.join(
                 app.root_path, "data", "power_rankings", year)
-            print(file_path)
             os.makedirs(file_path, exist_ok=True)
             json.dump(object, open(os.path.join(file_path, file_name), "w"))
             db.close()
@@ -1094,12 +1094,22 @@ def create_power_rankings():
             return redirect(url_for('tools'))
 
         else:
-            query = db.execute(
-                f"""
-                SELECT {FIRST_NAME}, {LAST_NAME} FROM member
-                WHERE {MEMBER_ID} IN {tuple(missing)}
-                """
-            ).fetchall()
+            # This fixes the bug where a single member was missed from power rankings
+            if len(missing) == 1:
+                elem = list(missing)[0]
+                query = db.execute(
+                    f"""
+                    SELECT {FIRST_NAME}, {LAST_NAME} FROM member
+                    WHERE {MEMBER_ID}=?
+                    """, (elem,)
+                ).fetchall()
+            else:
+                query = db.execute(
+                    f"""
+                    SELECT {FIRST_NAME}, {LAST_NAME} FROM member
+                    WHERE {MEMBER_ID} IN {tuple(missing)}
+                    """
+                ).fetchall()
             names = [name[FIRST_NAME] + " " + name[LAST_NAME]
                      for name in query]
             names_str = ""
@@ -1108,7 +1118,8 @@ def create_power_rankings():
                 if i != len(names):
                     names_str += ", "
             form.submit.errors.append(
-                "Can't create power rankings. The following members aren't present: " + names_str)
+                "The following members aren't present: " + names_str)
+            flash('Power Rankings Failed to Create!', 'danger')
 
     db.close()
     return render_template("create_power_rankings.html", form=form)
@@ -1335,9 +1346,53 @@ def current_season_report():
 
 @app.route("/current_season/power_rankings", methods=["GET", "POST"])
 def current_season_power_rankings():
-    return render_template("current_season_power_rankings.html", cards=CURRENT_SEASON_CARDS)
+    base_path = os.path.join(
+        app.root_path, "data", "power_rankings", str(CURRENT_SEASON))
+    power_rankings_path = str(base_path) + "/*"
+    reports = glob.glob(power_rankings_path)
+
+    args = request.args
+    try:
+        week_of_current_report = args.get("week")
+    except AttributeError as e:
+        print("Something went wrong getting parameters!", e)
+
+    if week_of_current_report == None:
+        current_report_file = reports[-1]
+        week_of_current_report = parse_rankings_filename(current_report_file)
+
+    current_info, previous_info = get_power_rankings_infos(
+        reports, week_of_current_report)
+
+    if previous_info:
+        for member in current_info.keys():
+            current_info[member]["change"] = previous_info[member]["rank"] - \
+                current_info[member]["rank"]
+
+    form = selectPowerRankWeek()
+    if form.validate_on_submit():
+        return redirect(url_for('current_season_power_rankings', week=form.week.data))
+    return render_template("current_season_power_rankings.html",
+                           week=week_of_current_report,
+                           current_info=current_info,
+                           form=form,
+                           cards=CURRENT_SEASON_CARDS)
 
 
 @app.route("/current_season/announcements", methods=["GET", "POST"])
 def current_season_announcements():
     return render_template("current_season_report.html", cards=CURRENT_SEASON_CARDS)
+
+
+@app.route("/apis/power_rankings_available", methods=["GET", "POST"])
+def get_power_rankings_available():
+    base_path = os.path.join(
+        app.root_path, "data", "power_rankings", str(CURRENT_SEASON))
+    power_rankings_path = str(base_path) + "/*"
+    reports = glob.glob(power_rankings_path)
+    data = {}
+    for report in reports:
+        week = parse_rankings_filename(report)
+        data[str(week)] = f"Week {week}"
+
+    return jsonify(data)

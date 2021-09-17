@@ -97,10 +97,6 @@ hr {
   text-align: center;
 }
 
-a {
-  text-decoration: none;
-}
-
 h1,
 h2,
 h3,
@@ -109,4 +105,8 @@ h5,
 h6 {
   text-align: center;
   justify-content: center;
+}
+
+.mx-auto.d-sm-flex.d-block.flex-sm-nowrap {
+  text-align: center;
 }
