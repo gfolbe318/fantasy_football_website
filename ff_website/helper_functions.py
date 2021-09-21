@@ -1,8 +1,22 @@
-from ff_website.constants import CURRENT_SEASON, PLAYOFFS, SEASON, TEAM_A_SCORE, TEAM_B_SCORE, WEEK
+from logging import lastResort
+from ff_website.constants import CURRENT_SEASON, PLAYOFFS, SEASON, TEAM_A_SCORE, TEAM_B_SCORE, WEEK, YEAR_JOINED
 import pandas as pd
 import os
 import json
 from collections import OrderedDict
+import heapq
+
+
+class Record(object):
+    def __init__(self, name, value):
+        self.name = name
+        self.value = value
+
+    def __repr__(self):
+        return f"{self.name}: {self.value}"
+
+    def __lt__(self, other):
+        return self.value > other.value
 
 
 def get_series_split(df: pd.DataFrame):
@@ -112,13 +126,16 @@ def get_league_members(query):
     return names_list
 
 
-def get_standings(query):
+def get_standings(query, include_playoffs=False):
     league_members = get_league_members(query)
 
     df = pd.DataFrame(
         columns=["Wins", "Losses", "PF", "PA"],
         index=league_members
     ).fillna(0.0)
+
+    if not include_playoffs:
+        query = [x for x in query if x[PLAYOFFS] == 0]
 
     for row in query:
         team_A_score = row["team_A_score"]
@@ -129,20 +146,19 @@ def get_standings(query):
 
         winning_team = team_A_name if team_A_score > team_B_score else team_B_name
 
-        if not row["playoffs"]:
-            df.at[team_A_name, "PF"] += team_A_score
-            df.at[team_A_name, "PA"] += team_B_score
+        df.at[team_A_name, "PF"] += team_A_score
+        df.at[team_A_name, "PA"] += team_B_score
 
-            df.at[team_B_name, "PF"] += team_B_score
-            df.at[team_B_name, "PA"] += team_A_score
+        df.at[team_B_name, "PF"] += team_B_score
+        df.at[team_B_name, "PA"] += team_A_score
 
-            if winning_team == team_A_name:
-                df.at[team_A_name, "Wins"] += 1
-                df.at[team_B_name, "Losses"] += 1
+        if winning_team == team_A_name:
+            df.at[team_A_name, "Wins"] += 1
+            df.at[team_B_name, "Losses"] += 1
 
-            else:
-                df.at[team_B_name, "Wins"] += 1
-                df.at[team_A_name, "Losses"] += 1
+        else:
+            df.at[team_B_name, "Wins"] += 1
+            df.at[team_A_name, "Losses"] += 1
 
     df = df.sort_values(["Wins", "PF"], ascending=False)
     df["Wins"] = df["Wins"].astype("int64")
@@ -187,7 +203,7 @@ def get_overall_record(query, name):
             if row["playoffs"] == 1:
                 po_losses += 1
 
-    return f"{wins}-{losses}", f"{po_wins}-{po_losses}"
+    return f"{wins}-{losses}", f"{po_wins}-{po_losses}", wins, losses, po_wins, po_losses
 
 
 def get_additional_stats(query, name):
@@ -252,7 +268,7 @@ def get_additional_stats(query, name):
     if current_losing_streak > longest_losing_streak:
         longest_losing_streak = current_losing_streak
 
-    return total_points, longest_win_streak, longest_losing_streak, most_points, fewest_points
+    return round(total_points, 2), longest_win_streak, longest_losing_streak, most_points, fewest_points
 
 
 def get_playoff_appearances(query):
@@ -451,6 +467,8 @@ def get_championships(summaries: pd.DataFrame, name):
     championships = []
     if name == "Garrett Folbe":
         championships.append(2015)
+    if name == "Jonah Lopas":
+        championships.append(2016)
     for index, row in summaries.iterrows():
         if row["Overall Finish"] == "Champion":
             championships.append(index)
@@ -821,7 +839,6 @@ def get_intervals(query):
     intervals = intervals.fillna("0-0")
     for member in league_members:
         for week in roto.columns[:-2]:
-            print(week)
             roto_points = roto.loc[member, week]
             result = wins_and_losses.loc[week, member]
             intervals = update_interval(member, roto_points, result, intervals)
@@ -860,3 +877,173 @@ def get_power_rankings_infos(filenames, week):
                 previous_data = load_power_rankings(filenames[index - 1])
 
     return current_data, previous_data
+
+
+def get_top_roto_scorers(tracker, roto_in: pd.DataFrame):
+    columns = list(roto_in.columns)[:-2]
+    for column in columns:
+        winner = pd.to_numeric(roto_in[column]).idxmax()
+        if winner not in tracker:
+            tracker[winner] = 1
+        else:
+            tracker[winner] += 1
+    return tracker
+
+
+def get_top_three(input):
+    if len(input) == 0:
+        return []
+    heapq.heapify(input)
+    unique = OrderedDict()
+    flag = True
+    top_three = []
+
+    while flag:
+        x = heapq.heappop(input)
+        if len(unique) == 3 and x.value not in unique:
+            flag = False
+            break
+        else:
+            top_three.append(x)
+            if x.value not in unique:
+                unique[x.value] = [x.name]
+            else:
+                unique[x.value].append(x.name)
+
+    record_holders = []
+    index = 1
+    for key, value in unique.items():
+        if len(value) == 1:
+            record_holders.append(f"{index}. <b>{key}</b> - {value[0]}")
+        else:
+            for member in value:
+                record_holders.append(f"T-{index}. <b>{key}</b> - {member}")
+        index += 1
+
+    return record_holders
+
+
+def hall_of_fame_helper(query):
+    most_points_all_time = []
+    most_points_single_season_excl_playoffs = []
+    most_ppg_all_time = []
+    most_wins_overall = []
+    most_wins_single_season_excl_playoffs = []
+    most_wins_single_season_incl_playoffs = []
+    most_playoff_wins = []
+    longest_win_streak = []
+    most_roto_points_all_time = []
+    most_top_scoring_weeks = []
+
+    league_members = get_league_members(query)
+    for member in league_members:
+        total_points, streak, _, _, _ = get_additional_stats(
+            query, member)
+
+        _, _, wins, _, po_wins, _ = get_overall_record(query, member)
+
+        most_wins_overall.append(Record(member, wins))
+        most_playoff_wins.append(Record(member, po_wins))
+        most_points_all_time.append(Record(member, total_points))
+        longest_win_streak.append(Record(member, streak))
+
+    split_seasons_query = {}
+    for row in query:
+        year = row[SEASON]
+        if year not in split_seasons_query:
+            split_seasons_query[year] = [row]
+        else:
+            split_seasons_query[year].append(row)
+
+    ppg_helper = {}
+    all_time_roto_helper = {}
+    roto_top_scorer_helper = {}
+    champions = {2015: "Garrett Folbe",
+                 2016: "Jonah Lopas"}
+
+    for key, value in split_seasons_query.items():
+        standings_playoffs, _ = get_standings(value, True)
+        standings_reg, _ = get_standings(value)
+        roto = get_roto(value)
+
+        playoffs = get_playoffs(value)
+        if playoffs:
+            playoff_weeks = list(playoffs.keys())
+            playoff_weeks.sort()
+            champ_week = playoff_weeks[-1]
+            if len(playoffs[champ_week]) == 1:
+                champions[key] = playoffs[champ_week][0]["winning_team"]
+
+        for index, row in standings_playoffs.iterrows():
+            most_wins_single_season_incl_playoffs.append(
+                Record(f"{index} ({key})", int(row["Wins"])))
+
+            if index not in ppg_helper:
+                ppg_helper[index] = {
+                    "Total": row["PF"],
+                    "Games": row["Wins"] + row["Losses"]
+                }
+            else:
+                ppg_helper[index]["Total"] += row["PF"]
+                ppg_helper[index]["Games"] += (row["Wins"] + row["Losses"])
+
+        for index, row in standings_reg.iterrows():
+            most_wins_single_season_excl_playoffs.append(
+                Record(f"{index} ({key})", int(row["Wins"])))
+            most_points_single_season_excl_playoffs.append(
+                Record(f"{index} ({key})", round(row["PF"], 2))
+            )
+
+        for index, row in roto.iterrows():
+            if index not in all_time_roto_helper:
+                all_time_roto_helper[index] = row["Total"]
+            else:
+                all_time_roto_helper[index] += row["Total"]
+
+        roto_top_scorer_helper = get_top_roto_scorers(
+            roto_top_scorer_helper, roto)
+
+    for key, value in all_time_roto_helper.items():
+        most_roto_points_all_time.append(Record(f"{key}", int(value)))
+
+    for key, value in ppg_helper.items():
+        most_ppg_all_time.append(Record(f"{key}", round(
+            value["Total"] / value["Games"], 2)))
+
+    for key, value in roto_top_scorer_helper.items():
+        most_top_scoring_weeks.append(Record(f"{key}", int(value)))
+
+    top_3_most_points_all_time = get_top_three(most_points_all_time)
+
+    top_3_most_points_single_season_excl_playoffs = get_top_three(
+        most_points_single_season_excl_playoffs)
+
+    top_3_most_ppg_all_time = get_top_three(most_ppg_all_time)
+
+    top_3_most_wins_overall = get_top_three(most_wins_overall)
+
+    top_3_most_wins_single_season_excl_playoffs = get_top_three(
+        most_wins_single_season_excl_playoffs)
+
+    top_3_most_wins_single_season_incl_playoffs = get_top_three(
+        most_wins_single_season_incl_playoffs)
+
+    top_3_most_playoff_wins = get_top_three(most_playoff_wins)
+
+    top_3_longest_win_streak = get_top_three(longest_win_streak)
+
+    top_3_most_roto_points_all_time = get_top_three(most_roto_points_all_time)
+
+    top_3_most_top_scoring_weeks = get_top_three(most_top_scoring_weeks)
+
+    return top_3_most_points_all_time, \
+        top_3_most_points_single_season_excl_playoffs, \
+        top_3_most_ppg_all_time, \
+        top_3_most_wins_overall, \
+        top_3_most_wins_single_season_excl_playoffs, \
+        top_3_most_wins_single_season_incl_playoffs, \
+        top_3_most_playoff_wins, \
+        top_3_longest_win_streak, \
+        top_3_most_roto_points_all_time, \
+        top_3_most_top_scoring_weeks, \
+        champions

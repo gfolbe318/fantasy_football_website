@@ -1,0 +1,101 @@
+{% extends "layout.html" %} {% block content %}
+<div class="container-fluid content">
+  <hr class="separator" />
+  <h1>Hall of Fame</h1>
+  <hr class="separator" />
+  <div class="row season_intro">
+    <div class="col-12">
+      <p>
+        Welcome to the hall of fame - where champions are honored and excellence
+        is celebrated. Here, you can view the current record holders of various
+        metrics, as well as champions dating back to 2015 (coincidentally when
+        Garrett joined the league).
+      </p>
+      <hr class="separator" />
+      <h2>Champions</h2>
+      <hr class="separator" />
+      <div class="row justify-content-center">
+        <div class="col-lg-10 col-sm-12">
+          <div class="row justify-content-center">
+            {% for champion in champions %}
+            <div class="col-lg-4 col-sm-6 d-flex align-items-stretch">
+              <div class="card mb-2 mr-2 mt-2 m-l-2">
+                <img class="card-img-top" src="{{champion.img_src}}" />
+                <div class="card-body">
+                  <h2>{{champion.year}}</h2>
+                  <h5 class="season_intro text-center">{{champion.name}}</h5>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      <hr class="separator" />
+      <h2>Records</h2>
+      <hr class="separator" />
+      <p><b>Most points scored all time</b></p>
+      <ul class="records-list">
+        {% for elem in top_3_most_points_all_time %}
+        <li>{{elem|safe}}</li>
+        {% endfor %}
+      </ul>
+      <p><b>Most points per game all time</b></p>
+      <ul class="records-list">
+        {% for elem in top_3_most_ppg_all_time %}
+        <li>{{elem|safe}}</li>
+        {% endfor %}
+      </ul>
+      <p><b>Most points scored in a single season (excluding playoffs)</b></p>
+      <ul class="records-list">
+        {% for elem in top_3_most_points_single_season_excl_playoffs %}
+        <li>{{elem|safe}}</li>
+        {% endfor %}
+      </ul>
+      <p><b>Most wins overall (including playoffs)</b></p>
+      <ul class="records-list">
+        {% for elem in top_3_most_wins_overall %}
+        <li>{{elem|safe}}</li>
+        {% endfor %}
+      </ul>
+      <p><b>Most wins in a single season (excluding playoffs)</b></p>
+      <ul class="records-list">
+        {% for elem in top_3_most_wins_single_season_excl_playoffs %}
+        <li>{{elem|safe}}</li>
+        {% endfor %}
+      </ul>
+      <p><b>Most wins in a single season (including playoffs)</b></p>
+      <ul class="records-list">
+        {% for elem in top_3_most_wins_single_season_incl_playoffs %}
+        <li>{{elem|safe}}</li>
+        {% endfor %}
+      </ul>
+      <p><b>Most playoff wins all time</b></p>
+      <ul class="records-list">
+        {% for elem in top_3_most_playoff_wins %}
+        <li>{{elem|safe}}</li>
+        {% endfor %}
+      </ul>
+      <p><b>Longest win streak all time</b></p>
+      <ul class="records-list">
+        {% for elem in top_3_longest_win_streak %}
+        <li>{{elem|safe}}</li>
+        {% endfor %}
+      </ul>
+      <p><b>Most roto points scored all time</b></p>
+      <ul class="records-list">
+        {% for elem in top_3_most_roto_points_all_time %}
+        <li>{{elem|safe}}</li>
+        {% endfor %}
+      </ul>
+      <p><b>Most top scoring weeks all time</b></p>
+      <ul class="records-list">
+        {% for elem in top_3_most_top_scoring_weeks %}
+        <li>{{elem|safe}}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}

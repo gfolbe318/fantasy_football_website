@@ -390,7 +390,8 @@ def get_member_info(member_id):
     ).fetchall()
 
     last_year = all_games_for_member[-1][SEASON]
-    record, po_record = get_overall_record(all_games_for_member, name)
+    record, po_record, _, _, _, _ = get_overall_record(
+        all_games_for_member, name)
     playoff_appearances = get_playoff_appearances(all_games_for_member)
 
     total_points, longest_win_streak, longest_losing_streak, most_points, fewest_points = get_additional_stats(
@@ -1396,3 +1397,62 @@ def get_power_rankings_available():
         data[str(week)] = f"Week {week}"
 
     return jsonify(data)
+
+
+@app.route("/hall_of_fame",  methods=["GET", "POST"])
+def hall_of_fame():
+
+    db = get_db()
+    query = db.execute(
+        f"""
+            SELECT team_A_score, team_B_score, season, week, matchup_length, playoffs,
+            t2.first_name as team_A_first_name, t2.last_name as team_A_last_name, t3.first_name as team_B_first_name, t3.last_name as team_B_last_name
+            FROM game
+            INNER JOIN member t2
+            ON t2.member_id = team_A_id
+            INNER JOIN member t3
+            ON t3.member_id = team_B_id
+            """
+    ).fetchall()
+    top_3_most_points_all_time, \
+        top_3_most_points_single_season_excl_playoffs, \
+        top_3_most_ppg_all_time, \
+        top_3_most_wins_overall, \
+        top_3_most_wins_single_season_excl_playoffs, \
+        top_3_most_wins_single_season_incl_playoffs, \
+        top_3_most_playoff_wins, \
+        top_3_longest_win_streak, \
+        top_3_most_roto_points_all_time, \
+        top_3_most_top_scoring_weeks, \
+        champions = hall_of_fame_helper(query)
+
+    champion_cards = []
+    for year, champion in champions.items():
+        first_name, last_name = champion.split(" ")
+        query = db.execute(
+            f"""
+            SELECT {IMG_FILEPATH} from member
+            WHERE {FIRST_NAME}=? AND {LAST_NAME}=?
+            """, (first_name, last_name)
+        ).fetchone()
+        img_src = query[IMG_FILEPATH]
+
+        champion_cards.append({
+            "name": champion,
+            "year": year,
+            "img_src": url_for('static', filename=f"img/avatars/{img_src}")
+        })
+
+    return render_template("hall_of_fame.html",
+                           top_3_most_points_all_time=top_3_most_points_all_time,
+                           top_3_most_ppg_all_time=top_3_most_ppg_all_time,
+                           top_3_most_points_single_season_excl_playoffs=top_3_most_points_single_season_excl_playoffs,
+                           top_3_most_wins_overall=top_3_most_wins_overall,
+                           top_3_most_wins_single_season_excl_playoffs=top_3_most_wins_single_season_excl_playoffs,
+                           top_3_most_wins_single_season_incl_playoffs=top_3_most_wins_single_season_incl_playoffs,
+                           top_3_most_playoff_wins=top_3_most_playoff_wins,
+                           top_3_longest_win_streak=top_3_longest_win_streak,
+                           top_3_most_roto_points_all_time=top_3_most_roto_points_all_time,
+                           top_3_most_top_scoring_weeks=top_3_most_top_scoring_weeks,
+                           champions=champion_cards
+                           )
