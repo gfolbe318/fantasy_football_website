@@ -19,5 +19,18 @@
     </div>
     {% endfor %}
   </div>
+  <div class="row">
+    <div class="col-12 text-center">
+      {% if title == "Current Members" %}
+      <a href="{{url_for('inactive_members')}}">
+        <button class="btn btn-dark mt-3 mb-3">View Inactive Members</button>
+      </a>
+      {% else %}
+      <a href="{{url_for('members')}}">
+        <button class="btn btn-dark mt-3 mb-3">View Active Members</button>
+      </a>
+      {% endif %}
+    </div>
+  </div>
 </div>
 {% endblock content %}
