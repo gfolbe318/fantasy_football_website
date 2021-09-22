@@ -9,25 +9,59 @@
 
 <div id="home">
   <div class="landing-text">
-    <h1>BOOTSTRAP</h1>
-  </div>
-</div>
-<div class="container-fluid content-home">
-  <div class="row">
-    {% for l in ql %}
-    <div class="col-xl-3 col-md-6 col-sm-12 ql">
-      <div class="row">
-        <img src="{{l.img_file}}" class="ql-img mx-auto" />
-      </div>
+    <div class="container-fluid">
       <div class="row justify-content-center">
-        <h5>{{l.title}}</h5>
-      </div>
-      <div class="row text-center justify-content-center">
-        <hr />
-        <p>{{l.description}}</p>
+        <div class="col-lg-4 col-md-8 col-sm-11 homepage-box">
+          <h1 class="boom">Fantasy Football Reference</h1>
+          <br />
+          <a href="{{url_for('current_season')}}">
+            <button class="btn btn-outline-primary">View Current Season</button>
+          </a>
+        </div>
       </div>
     </div>
-    {% endfor %}
+  </div>
+</div>
+<div class="container-fluid content-home justify-content-center">
+  <div class="row justify-content-center">
+    <div class="col-lg-8 col-md-12 text-center">
+      <hr class="separator" />
+      <h2>Welcome</h2>
+      <hr class="separator" />
+      <p class="homepage_intro">
+        Welcome to the official home of the best fantasy football league in the
+        world. This website aims to keep the history of our league in a single
+        place, as well as track information that isn't provided by ESPN. Take a
+        look around and enjoy.
+      </p>
+    </div>
+  </div>
+  <div class="row justify-content-center">
+    <div class="col-lg-8 col-md-12">
+      <hr class="separator" />
+      <h2>Quick Links</h2>
+      <hr class="separator" />
+    </div>
+  </div>
+  <div class="row justify-content-center">
+    <div class="col-lg-10 col-md-12">
+      <div class="row">
+        {% for l in ql %}
+        <div class="col-lg-3 col-sm-6 d-flex align-items-stretch text-center">
+          <div class="card card-helper mb-2 mt-2 ml-2 mr-2">
+            <a href="{{l.link}}">
+              <img class="card-img-top" src="{{l.img_file}}" />
+            </a>
+            <div class="card-body">
+              <h4>{{l.title}}</h4>
+              <hr class="separator" />
+              <p>{{l.description}}</p>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
   </div>
 </div>
 {% endblock content %}

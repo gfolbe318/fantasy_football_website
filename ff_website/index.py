@@ -2,7 +2,6 @@ import glob
 import json
 import os
 from pathlib import Path
-from collections import OrderedDict
 
 import inflect
 import pandas as pd
@@ -14,7 +13,8 @@ from ff_website.apis import get_member_id
 from ff_website.constants import *
 from ff_website.db import get_db
 from ff_website.forms import (CreateGame, CreateMember, CreatePowerRankings,
-                              GameQualities, HeadToHead, SeasonSelector, selectPowerRankWeek)
+                              GameQualities, HeadToHead, SeasonSelector,
+                              selectPowerRankWeek)
 from ff_website.helper_functions import *
 
 
@@ -22,9 +22,10 @@ from ff_website.helper_functions import *
 def hello():
     links = [
         {
-            "title": "Current Season",
-            "img_file": url_for("static", filename="img/current_season.png"),
-            "description": "Find more information on this current season, including: standings, statistics, and more."
+            "title": "League Members",
+            "img_file": url_for("static", filename="img/league_members.png"),
+            "description": "Find more information on this current season, including: standings, statistics, and more.",
+            "link": url_for("members")
         },
         {
             "title": "Archives",
@@ -35,7 +36,8 @@ def hello():
         {
             "title": "Hall of Fame",
             "img_file": url_for("static", filename="img/hall_of_fame.png"),
-            "description": "View the names of the enshrined members of our league who have etched their names in the history books."
+            "description": "View the names of the enshrined members of our league who have etched their names in the history books.",
+            "link": url_for("hall_of_fame")
         },
         {
             "title": "League Office",
