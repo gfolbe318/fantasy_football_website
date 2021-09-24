@@ -57,6 +57,7 @@ def members():
         f"""
         SELECT * FROM member
         WHERE {ACTIVE}=?
+        ORDER BY {LAST_NAME} ASC
         """, (1,)
     ).fetchall()
     cards = []
@@ -78,6 +79,7 @@ def inactive_members():
         f"""
         SELECT * FROM member
         WHERE {ACTIVE}=?
+        ORDER BY {LAST_NAME} ASC
         """, (0,)
     ).fetchall()
     cards = []
@@ -106,17 +108,7 @@ def list_members():
         """
     ).fetchall()
     db.close()
-    data = [
-        {
-            MEMBER_ID: i[MEMBER_ID],
-            FIRST_NAME: i[FIRST_NAME],
-            LAST_NAME: i[LAST_NAME],
-            YEAR_JOINED: i[YEAR_JOINED],
-            ACTIVE: i[ACTIVE],
-            IMG_FILEPATH: i[IMG_FILEPATH]
-
-        } for i in all_members
-    ]
+    data = jsonify_members(all_members)
     return render_template("members_admin.html", data=data)
 
 
@@ -439,7 +431,7 @@ def h2h():
 
     # Initialize variables that will be returned on successful submission of the form
     # If we do not make the variables None-types, the template cannot be rendered
-    team_A_name, team_B_name, team_A_img, team_B_img, series_winner_name, num_matchups, num_times, series_split, tied, num_playoff_matchups, num_regular_matchups, streak_count, streak_holder = None, None, None, None, None, None, None, None, None, None, None, None, None
+    member_one_name, member_two_name, member_one_img, member_two_img, series_winner_name, num_matchups, num_times, series_split, tied, num_playoff_matchups, num_regular_matchups, streak_count, streak_holder = None, None, None, None, None, None, None, None, None, None, None, None, None
 
     args = request.args
     form = HeadToHead()
@@ -465,8 +457,8 @@ def h2h():
         query = db.execute(
             f"""
             SELECT team_A_score, team_B_score, season, week, matchup_length, playoffs,
-            t2.first_name as team_A_first_name, t2.last_name as team_A_last_name, t2.img_filepath as team_A_img_filepath,
-            t3.first_name as team_B_first_name, t3.last_name as team_B_last_name, t3.img_filepath as team_B_img_filepath
+            t2.first_name as team_A_first_name, t2.last_name as team_A_last_name, t2.img_filepath as team_A_img_filepath, t2.member_id as member_A_id,
+            t3.first_name as team_B_first_name, t3.last_name as team_B_last_name, t3.img_filepath as team_B_img_filepath, t3.member_id as member_B_id
             FROM game
             INNER JOIN member t2
             ON t2.member_id = team_A_id
@@ -477,25 +469,36 @@ def h2h():
                   member_two_id, member_one_id)
         ).fetchall()
         for row in query:
-            team_A_score = row["team_A_score"]
-            team_B_score = row["team_B_score"]
-            team_A_img = row["team_A_img_filepath"]
-            team_B_img = row["team_B_img_filepath"]
+            if str(row["member_A_id"]) == str(member_one_id):
+                member_one_img = row["team_A_img_filepath"]
+                member_one_score = row["team_A_score"]
+                member_one_name = f"{row['team_A_first_name']} {row['team_A_last_name']}"
 
-            total_points += (float(team_A_score) + float(team_B_score))
+                member_two_img = row["team_B_img_filepath"]
+                member_two_name = f"{row['team_B_first_name']} {row['team_B_last_name']}"
+                member_two_score = row["team_B_score"]
+
+            else:
+                member_one_img = row["team_B_img_filepath"]
+                member_one_score = row["team_B_score"]
+                member_one_name = f"{row['team_B_first_name']} {row['team_B_last_name']}"
+
+                member_two_img = row["team_A_img_filepath"]
+                member_two_name = f"{row['team_A_first_name']} {row['team_A_last_name']}"
+                member_two_score = row["team_A_score"]
+
+            total_points += (float(member_one_score) + float(member_two_score))
 
             season = row["season"]
             week = row["week"]
             matchup_length = row["matchup_length"]
             playoffs = row["playoffs"]
-            team_A_name = f"{row['team_A_first_name']} {row['team_A_last_name']}"
-            team_B_name = f"{row['team_B_first_name']} {row['team_B_last_name']}"
 
-            winning_team = team_A_name if team_A_score > team_B_score else team_B_name
-            losing_team = team_A_name if team_A_score < team_B_score else team_B_name
+            winning_team = member_one_name if member_one_score > member_two_score else member_two_name
+            losing_team = member_one_name if member_one_score < member_two_score else member_two_name
 
-            winning_score = team_A_score if team_A_score > team_B_score else team_B_score
-            losing_score = team_A_score if team_A_score < team_B_score else team_B_score
+            winning_score = member_one_score if member_one_score > member_two_score else member_two_score
+            losing_score = member_one_score if member_one_score < member_two_score else member_two_score
             margin_of_victory += (float(winning_score) - float(losing_score))
 
             asterisk = "*" if matchup_length == 2 else ""
@@ -524,30 +527,33 @@ def h2h():
                 f"""
                 SELECT {MEMBER_ID}, {FIRST_NAME}, {LAST_NAME}, {IMG_FILEPATH} from member
                 WHERE {MEMBER_ID}=? OR {MEMBER_ID}=?
-                ORDER BY {MEMBER_ID} asc,
                 """, (member_one_id, member_two_id)
             ).fetchall()
             if len(query) == 2:
-                if member_one_id < member_two_id:
-                    team_A_name = f"{query[0]['first_name']} {query[0]['last_name']}"
-                    team_B_name = f"{query[1]['first_name']} {query[1]['last_name']}"
-                    team_A_img = query[0]["team_A_img_filepath"]
-                    team_B_img = query[1]["team_B_img_filepath"]
+                if str(query[0][MEMBER_ID]) == str(member_one_id):
+                    member_one_img = query[0][IMG_FILEPATH]
+                    member_one_name = f"{query[0][FIRST_NAME]} {query[0][LAST_NAME]}"
+
+                    member_two_img = query[1][IMG_FILEPATH]
+                    member_two_name = f"{query[1][FIRST_NAME]} {query[1][LAST_NAME]}"
+
                 else:
-                    team_A_name = f"{query[1]['first_name']} {query[1]['last_name']}"
-                    team_B_name = f"{query[0]['first_name']} {query[0]['last_name']}"
-                    team_A_img = query[1]["team_A_img_filepath"]
-                    team_B_img = query[0]["team_B_img_filepath"]
+                    member_one_img = query[1][IMG_FILEPATH]
+                    member_one_name = f"{query[1][FIRST_NAME]} {query[1][LAST_NAME]}"
+
+                    member_two_img = query[0][IMG_FILEPATH]
+                    member_two_name = f"{query[0][FIRST_NAME]} {query[0][LAST_NAME]}"
+
         db.close()
     if form.validate_on_submit():
+        print(form.data)
         return redirect(url_for("h2h", member_one_id=form.data["leagueMemberOne"], member_two_id=form.data["leagueMemberTwo"]))
-
     return render_template("head_to_head.html",
                            form=form,
-                           team_A_name=team_A_name,
-                           team_B_name=team_B_name,
-                           team_A_img=team_A_img,
-                           team_B_img=team_B_img,
+                           team_A_name=member_one_name,
+                           team_B_name=member_two_name,
+                           team_A_img=member_one_img,
+                           team_B_img=member_two_img,
                            num_matchups=num_matchups,
                            num_times=num_times,
                            series_winner_name=series_winner_name,
@@ -1387,20 +1393,6 @@ def current_season_announcements():
     return render_template("current_season_report.html", cards=CURRENT_SEASON_CARDS)
 
 
-@app.route("/apis/power_rankings_available", methods=["GET", "POST"])
-def get_power_rankings_available():
-    base_path = os.path.join(
-        app.root_path, "data", "power_rankings", str(CURRENT_SEASON))
-    power_rankings_path = str(base_path) + "/*"
-    reports = glob.glob(power_rankings_path)
-    data = {}
-    for report in reports:
-        week = parse_rankings_filename(report)
-        data[str(week)] = f"Week {week}"
-
-    return jsonify(data)
-
-
 @app.route("/hall_of_fame",  methods=["GET", "POST"])
 def hall_of_fame():
 
@@ -1458,3 +1450,54 @@ def hall_of_fame():
                            top_3_most_top_scoring_weeks=top_3_most_top_scoring_weeks,
                            champions=champion_cards
                            )
+
+
+@app.route("/apis/power_rankings_available", methods=["GET", "POST"])
+def get_power_rankings_available():
+    base_path = os.path.join(
+        app.root_path, "data", "power_rankings", str(CURRENT_SEASON))
+    power_rankings_path = str(base_path) + "/*"
+    reports = glob.glob(power_rankings_path)
+    data = {}
+    for report in reports:
+        week = parse_rankings_filename(report)
+        data[str(week)] = f"Week {week}"
+
+    return jsonify(data)
+
+
+@app.route("/apis/all_members", methods=["GET", "POST"])
+def get_all_members():
+    args = request.args
+    active_arg = int(args.get("active"))
+    db = get_db()
+
+    if active_arg == 0:
+        query = db.execute(
+            f"""
+            SELECT * FROM member
+            WHERE {ACTIVE}=?
+            ORDER BY {LAST_NAME} asc
+            """, (0,)
+        )
+
+    elif active_arg == 1:
+        query = db.execute(
+            f"""
+            SELECT * FROM member
+            WHERE {ACTIVE}=?
+            ORDER BY {LAST_NAME} asc
+            """, (1,)
+        )
+
+    else:
+        query = db.execute(
+            f"""
+            SELECT * FROM member
+            ORDER BY {LAST_NAME} asc
+            """
+        )
+
+    response = jsonify_members(query)
+
+    return jsonify(response)

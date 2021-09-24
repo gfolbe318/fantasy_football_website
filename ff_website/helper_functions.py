@@ -1,5 +1,5 @@
 from logging import lastResort
-from ff_website.constants import CURRENT_SEASON, PLAYOFFS, SEASON, TEAM_A_SCORE, TEAM_B_SCORE, WEEK, YEAR_JOINED
+from ff_website.constants import *
 import pandas as pd
 import os
 import json
@@ -17,6 +17,22 @@ class Record(object):
 
     def __lt__(self, other):
         return self.value > other.value
+
+
+def jsonify_members(query):
+    data = [
+        {
+            MEMBER_ID: i[MEMBER_ID],
+            FIRST_NAME: i[FIRST_NAME],
+            LAST_NAME: i[LAST_NAME],
+            YEAR_JOINED: i[YEAR_JOINED],
+            ACTIVE: i[ACTIVE],
+            IMG_FILEPATH: i[IMG_FILEPATH]
+
+        } for i in query
+    ]
+
+    return data
 
 
 def get_series_split(df: pd.DataFrame):

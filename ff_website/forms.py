@@ -12,17 +12,10 @@ from ff_website.constants import CURRENT_SEASON, FIRST_NAME, LAST_NAME, MEMBER_I
 
 def get_all_members_helper():
 
-    # TODO: This needs to change. Get league members dynamically with a script
+    x = [("", "Please select a member...")]
+    x.extend([(i, f"Loading Player Name...") for i in range(20)])
 
-    placeholder = [("", "Please select a member...")]
-
-    all_members = get_all_members()
-    members = placeholder + [
-        (f"{member[MEMBER_ID]}",
-         f"{member[FIRST_NAME]} {member[LAST_NAME]}") for member in all_members
-    ]
-
-    return members
+    return x
 
 
 def get_years_helper(start, stop):
@@ -49,7 +42,7 @@ class HeadToHead(FlaskForm):
             raise ValidationError("League members must be different")
 
     leagueMemberOne = SelectField(
-        "League Member One", choices=members, validators=[DataRequired(), valid_names_one])
+        "League Member One", choices=members, validators=[DataRequired(), valid_names_one], coerce=str)
     leagueMemberTwo = SelectField(
         "League Member Two", choices=members, validators=[DataRequired(), valid_names_two])
 
