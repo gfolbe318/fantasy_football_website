@@ -335,6 +335,259 @@ def delete_game(game_id):
     return redirect(url_for('tools'))
 
 
+@ app.route("/tools/create_member", methods=["GET", "POST"])
+def create_member():
+    form = CreateMember()
+    if form.validate_on_submit():
+        db = get_db()
+        query = db.execute(
+            f"""
+            SELECT {MEMBER_ID} FROM member
+            WHERE {FIRST_NAME}=? AND {LAST_NAME}=?
+            """,
+            (form.data["firstName"], form.data["lastName"])
+        ).fetchone()
+        if query:
+            form.firstName.errors.append(
+                "A member of this name already exists")
+            form.lastName.errors.append(
+                "A member of this name already exists")
+        else:
+            photo = form.data["image"]
+            first_name = form.data["firstName"]
+            last_name = form.data["lastName"]
+            file_name = "default.png"
+            if photo:
+                extension = os.path.splitext(photo.filename)[1]
+                file_name = f"{first_name}_{last_name}{extension}"
+                full_file_path = os.path.join(
+                    app.root_path, Path('static/img/avatars/', file_name)
+                )
+                output_size = (800, 800)
+                i = Image.open(photo)
+                i = i.resize(output_size)
+                i.save(full_file_path)
+
+            db.execute(
+                f"""
+                INSERT INTO member
+                ({FIRST_NAME}, {LAST_NAME}, {YEAR_JOINED}, {ACTIVE}, {IMG_FILEPATH})
+                VALUES(?, ?, ?, ?, ?)
+                """, (first_name, last_name, form.data["initialYear"], form.data["activeMember"], file_name)
+            )
+            db.commit()
+            db.close()
+            flash('Member created!', 'success')
+            return redirect(url_for('tools'))
+
+    return render_template("create_member.html", form=form)
+
+
+@ app.route("/tools/create_game", methods=["GET", "POST"])
+def create_game():
+    form = CreateGame()
+    if form.validate_on_submit():
+        db = get_db()
+        query = db.execute(
+            f"""
+            SELECT {TEAM_A_ID}, {TEAM_B_ID}, {WEEK}, {SEASON} FROM game
+            WHERE {TEAM_A_ID}=? AND {TEAM_B_ID}=? AND {WEEK}=? AND {SEASON}=?
+            """,
+            (form.data["teamAName"], form.data["teamBName"],
+             form.data["week"], form.data["season"])
+        ).fetchone()
+        if query:
+            form.teamAName.errors.append(
+                "A game with these two opponents already exists at the given date"
+            )
+            form.teamBName.errors.append(
+                "A game with these two opponents already exists at the given date"
+            )
+            form.week.errors.append(
+                "A game with these two opponents already exists at the given date"
+            )
+            form.season.errors.append(
+                "A game with these two opponents already exists at the given date"
+            )
+        else:
+            db.execute(
+                f"""
+                INSERT INTO game
+                ({TEAM_A_SCORE}, {TEAM_B_SCORE}, {SEASON}, {WEEK},
+                {MATCHUP_LENGTH}, {PLAYOFFS}, {TEAM_A_ID}, {TEAM_B_ID})
+                VALUES(?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (form.data["teamAScore"], form.data["teamBScore"], form.data["season"],
+                 form.data["week"], form.data["matchupLength"], form.data["playoffs"],
+                 form.data["teamAName"], form.data["teamBName"])
+            )
+            db.commit()
+            db.close()
+            flash('Game created!', 'success')
+            return redirect(url_for('create_game'))
+
+    return render_template("create_game.html", form=form)
+
+
+@ app.route("/tools/add_all_members", methods=["GET", "POST"])
+def add_league_members():
+
+    db = get_db()
+
+    # Clear table
+    db.execute(
+        """
+        DELETE FROM member
+        """
+    )
+
+    members = json.load(open(member_data, "r"))
+
+    for member in members:
+        db.execute(
+            """
+            INSERT INTO member(
+                first_name, last_name, year_joined, active, img_filepath)
+                VALUES (?, ?, ?, ?, ?)
+            """,
+            (member[FIRST_NAME], member[LAST_NAME],
+             member[YEAR_JOINED], member[ACTIVE], member[IMG_FILEPATH])
+        )
+    db.commit()
+
+    return jsonify(members)
+
+
+@ app.route("/tools/add_all_games", methods=["GET", "POST"])
+def add_games():
+    db = get_db()
+
+    # Clear table
+    db.execute(
+        """
+        DELETE FROM game
+        """
+    )
+    db.commit()
+    games = json.load(open(games_data, "r"))
+
+    for game in games:
+        first_name_home, last_name_home = game[HOME_TEAM].split(" ")
+        member_id_home = get_member_id(first_name_home, last_name_home)
+
+        first_name_away, last_name_away = game[AWAY_TEAM].split(" ")
+        member_id_away = get_member_id(first_name_away, last_name_away)
+
+        db = get_db()
+        db.execute(
+            f"""
+            INSERT INTO game(
+                {TEAM_A_SCORE}, {TEAM_B_SCORE}, {SEASON}, {WEEK},
+                {MATCHUP_LENGTH}, {PLAYOFFS}, {TEAM_A_ID}, {TEAM_B_ID}
+            ) VALUES(?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            (game[HOME_SCORE], game[AWAY_SCORE],
+             game[SEASON], game[WEEK], game[MATCHUP_LENGTH],
+             game[PLAYOFFS], member_id_home, member_id_away)
+        )
+        db.commit()
+
+    return jsonify(games)
+
+
+@app.route("/tools/create_power_rankings", methods=["GET", "POST"])
+def create_power_rankings():
+    db = get_db()
+    actives_query = db.execute(
+        f"""
+        SELECT {MEMBER_ID} FROM member
+        WHERE {ACTIVE}=?
+        """, (1,)
+    ).fetchall()
+
+    form = CreatePowerRankings(year=CURRENT_SEASON)
+    if form.validate_on_submit():
+        team_one = form.team_one.data
+        team_two = form.team_two.data
+        team_three = form.team_three.data
+        team_four = form.team_four.data
+        team_five = form.team_five.data
+        team_six = form.team_six.data
+        team_seven = form.team_seven.data
+        team_eight = form.team_eight.data
+        team_nine = form.team_nine.data
+        team_ten = form.team_ten.data
+        team_eleven = form.team_eleven.data
+        team_twelve = form.team_twelve.data
+        submitted = [team_one, team_two, team_three, team_four, team_five, team_six,
+                     team_seven, team_eight, team_nine, team_ten, team_eleven, team_twelve]
+
+        submitted_set = set(submitted)
+        actives_set = set([str(row[MEMBER_ID]) for row in actives_query])
+
+        missing = actives_set - submitted_set
+        if len(missing) == 0:
+            year = form.year.data
+            week = form.week.data
+            file_name = f"power_rankings_week_{week}.json"
+
+            query = db.execute(
+                f"""
+                SELECT {MEMBER_ID}, {FIRST_NAME}, {LAST_NAME}
+                FROM member
+                """
+            ).fetchall()
+            names_dict = {}
+            for row in query:
+                name = row[FIRST_NAME] + " " + row[LAST_NAME]
+                names_dict[row[MEMBER_ID]] = name
+
+            object = {
+                "year": year,
+                "week": week,
+                "rankings": [names_dict[int(i)] for i in submitted]
+            }
+
+            file_path = os.path.join(
+                app.root_path, "data", "power_rankings", year)
+            os.makedirs(file_path, exist_ok=True)
+            json.dump(object, open(os.path.join(file_path, file_name), "w"))
+            db.close()
+            flash('Power Rankings Created!', 'success')
+            return redirect(url_for('tools'))
+
+        else:
+            # This fixes the bug where a single member was missed from power rankings
+            if len(missing) == 1:
+                elem = list(missing)[0]
+                query = db.execute(
+                    f"""
+                    SELECT {FIRST_NAME}, {LAST_NAME} FROM member
+                    WHERE {MEMBER_ID}=?
+                    """, (elem,)
+                ).fetchall()
+            else:
+                query = db.execute(
+                    f"""
+                    SELECT {FIRST_NAME}, {LAST_NAME} FROM member
+                    WHERE {MEMBER_ID} IN {tuple(missing)}
+                    """
+                ).fetchall()
+            names = [name[FIRST_NAME] + " " + name[LAST_NAME]
+                     for name in query]
+            names_str = ""
+            for i, name in enumerate(names):
+                names_str += name
+                if i != len(names):
+                    names_str += ", "
+            form.submit.errors.append(
+                "The following members aren't present: " + names_str)
+            flash('Power Rankings Failed to Create!', 'danger')
+
+    db.close()
+    return render_template("create_power_rankings.html", form=form)
+
+
 @app.route("/member/<int:member_id>", methods=["GET", "POST"])
 def get_member_info(member_id):
 
@@ -881,259 +1134,6 @@ def season_summary():
                            standings=standings.to_html(classes="table table-striped"))
 
 
-@ app.route("/tools/create_member", methods=["GET", "POST"])
-def create_member():
-    form = CreateMember()
-    if form.validate_on_submit():
-        db = get_db()
-        query = db.execute(
-            f"""
-            SELECT {MEMBER_ID} FROM member
-            WHERE {FIRST_NAME}=? AND {LAST_NAME}=?
-            """,
-            (form.data["firstName"], form.data["lastName"])
-        ).fetchone()
-        if query:
-            form.firstName.errors.append(
-                "A member of this name already exists")
-            form.lastName.errors.append(
-                "A member of this name already exists")
-        else:
-            photo = form.data["image"]
-            first_name = form.data["firstName"]
-            last_name = form.data["lastName"]
-            file_name = "default.png"
-            if photo:
-                extension = os.path.splitext(photo.filename)[1]
-                file_name = f"{first_name}_{last_name}{extension}"
-                full_file_path = os.path.join(
-                    app.root_path, Path('static/img/avatars/', file_name)
-                )
-                output_size = (800, 800)
-                i = Image.open(photo)
-                i = i.resize(output_size)
-                i.save(full_file_path)
-
-            db.execute(
-                f"""
-                INSERT INTO member
-                ({FIRST_NAME}, {LAST_NAME}, {YEAR_JOINED}, {ACTIVE}, {IMG_FILEPATH})
-                VALUES(?, ?, ?, ?, ?)
-                """, (first_name, last_name, form.data["initialYear"], form.data["activeMember"], file_name)
-            )
-            db.commit()
-            db.close()
-            flash('Member created!', 'success')
-            return redirect(url_for('tools'))
-
-    return render_template("create_member.html", form=form)
-
-
-@ app.route("/tools/create_game", methods=["GET", "POST"])
-def create_game():
-    form = CreateGame()
-    if form.validate_on_submit():
-        db = get_db()
-        query = db.execute(
-            f"""
-            SELECT {TEAM_A_ID}, {TEAM_B_ID}, {WEEK}, {SEASON} FROM game
-            WHERE {TEAM_A_ID}=? AND {TEAM_B_ID}=? AND {WEEK}=? AND {SEASON}=?
-            """,
-            (form.data["teamAName"], form.data["teamBName"],
-             form.data["week"], form.data["season"])
-        ).fetchone()
-        if query:
-            form.teamAName.errors.append(
-                "A game with these two opponents already exists at the given date"
-            )
-            form.teamBName.errors.append(
-                "A game with these two opponents already exists at the given date"
-            )
-            form.week.errors.append(
-                "A game with these two opponents already exists at the given date"
-            )
-            form.season.errors.append(
-                "A game with these two opponents already exists at the given date"
-            )
-        else:
-            db.execute(
-                f"""
-                INSERT INTO game
-                ({TEAM_A_SCORE}, {TEAM_B_SCORE}, {SEASON}, {WEEK},
-                {MATCHUP_LENGTH}, {PLAYOFFS}, {TEAM_A_ID}, {TEAM_B_ID})
-                VALUES(?, ?, ?, ?, ?, ?, ?, ?)
-                """,
-                (form.data["teamAScore"], form.data["teamBScore"], form.data["season"],
-                 form.data["week"], form.data["matchupLength"], form.data["playoffs"],
-                 form.data["teamAName"], form.data["teamBName"])
-            )
-            db.commit()
-            db.close()
-            flash('Game created!', 'success')
-            return redirect(url_for('create_game'))
-
-    return render_template("create_game.html", form=form)
-
-
-@ app.route("/tools/add_all_members", methods=["GET", "POST"])
-def add_league_members():
-
-    db = get_db()
-
-    # Clear table
-    db.execute(
-        """
-        DELETE FROM member
-        """
-    )
-
-    members = json.load(open(member_data, "r"))
-
-    for member in members:
-        db.execute(
-            """
-            INSERT INTO member(
-                first_name, last_name, year_joined, active, img_filepath)
-                VALUES (?, ?, ?, ?, ?)
-            """,
-            (member[FIRST_NAME], member[LAST_NAME],
-             member[YEAR_JOINED], member[ACTIVE], member[IMG_FILEPATH])
-        )
-    db.commit()
-
-    return jsonify(members)
-
-
-@ app.route("/tools/add_all_games", methods=["GET", "POST"])
-def add_games():
-    db = get_db()
-
-    # Clear table
-    db.execute(
-        """
-        DELETE FROM game
-        """
-    )
-    db.commit()
-    games = json.load(open(games_data, "r"))
-
-    for game in games:
-        first_name_home, last_name_home = game[HOME_TEAM].split(" ")
-        member_id_home = get_member_id(first_name_home, last_name_home)
-
-        first_name_away, last_name_away = game[AWAY_TEAM].split(" ")
-        member_id_away = get_member_id(first_name_away, last_name_away)
-
-        db = get_db()
-        db.execute(
-            f"""
-            INSERT INTO game(
-                {TEAM_A_SCORE}, {TEAM_B_SCORE}, {SEASON}, {WEEK},
-                {MATCHUP_LENGTH}, {PLAYOFFS}, {TEAM_A_ID}, {TEAM_B_ID}
-            ) VALUES(?, ?, ?, ?, ?, ?, ?, ?)
-            """,
-            (game[HOME_SCORE], game[AWAY_SCORE],
-             game[SEASON], game[WEEK], game[MATCHUP_LENGTH],
-             game[PLAYOFFS], member_id_home, member_id_away)
-        )
-        db.commit()
-
-    return jsonify(games)
-
-
-@app.route("/tools/create_power_rankings", methods=["GET", "POST"])
-def create_power_rankings():
-    db = get_db()
-    actives_query = db.execute(
-        f"""
-        SELECT {MEMBER_ID} FROM member
-        WHERE {ACTIVE}=?
-        """, (1,)
-    ).fetchall()
-
-    form = CreatePowerRankings(year=CURRENT_SEASON)
-    if form.validate_on_submit():
-        team_one = form.team_one.data
-        team_two = form.team_two.data
-        team_three = form.team_three.data
-        team_four = form.team_four.data
-        team_five = form.team_five.data
-        team_six = form.team_six.data
-        team_seven = form.team_seven.data
-        team_eight = form.team_eight.data
-        team_nine = form.team_nine.data
-        team_ten = form.team_ten.data
-        team_eleven = form.team_eleven.data
-        team_twelve = form.team_twelve.data
-        submitted = [team_one, team_two, team_three, team_four, team_five, team_six,
-                     team_seven, team_eight, team_nine, team_ten, team_eleven, team_twelve]
-
-        submitted_set = set(submitted)
-        actives_set = set([str(row[MEMBER_ID]) for row in actives_query])
-
-        missing = actives_set - submitted_set
-        if len(missing) == 0:
-            year = form.year.data
-            week = form.week.data
-            file_name = f"power_rankings_week_{week}.json"
-
-            query = db.execute(
-                f"""
-                SELECT {MEMBER_ID}, {FIRST_NAME}, {LAST_NAME}
-                FROM member
-                """
-            ).fetchall()
-            names_dict = {}
-            for row in query:
-                name = row[FIRST_NAME] + " " + row[LAST_NAME]
-                names_dict[row[MEMBER_ID]] = name
-
-            object = {
-                "year": year,
-                "week": week,
-                "rankings": [names_dict[int(i)] for i in submitted]
-            }
-
-            file_path = os.path.join(
-                app.root_path, "data", "power_rankings", year)
-            os.makedirs(file_path, exist_ok=True)
-            json.dump(object, open(os.path.join(file_path, file_name), "w"))
-            db.close()
-            flash('Power Rankings Created!', 'success')
-            return redirect(url_for('tools'))
-
-        else:
-            # This fixes the bug where a single member was missed from power rankings
-            if len(missing) == 1:
-                elem = list(missing)[0]
-                query = db.execute(
-                    f"""
-                    SELECT {FIRST_NAME}, {LAST_NAME} FROM member
-                    WHERE {MEMBER_ID}=?
-                    """, (elem,)
-                ).fetchall()
-            else:
-                query = db.execute(
-                    f"""
-                    SELECT {FIRST_NAME}, {LAST_NAME} FROM member
-                    WHERE {MEMBER_ID} IN {tuple(missing)}
-                    """
-                ).fetchall()
-            names = [name[FIRST_NAME] + " " + name[LAST_NAME]
-                     for name in query]
-            names_str = ""
-            for i, name in enumerate(names):
-                names_str += name
-                if i != len(names):
-                    names_str += ", "
-            form.submit.errors.append(
-                "The following members aren't present: " + names_str)
-            flash('Power Rankings Failed to Create!', 'danger')
-
-    db.close()
-    return render_template("create_power_rankings.html", form=form)
-
-
 @app.route("/current_season", methods=["GET", "POST"])
 def current_season():
     return render_template("current_season.html", cards=CURRENT_SEASON_CARDS)
@@ -1350,6 +1350,7 @@ def current_season_analytics():
 
 @app.route("/current_season/report", methods=["GET", "POST"])
 def current_season_report():
+    # TODO
     return render_template("current_season_report.html", cards=CURRENT_SEASON_CARDS)
 
 
