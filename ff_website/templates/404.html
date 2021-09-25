@@ -1,0 +1,22 @@
+{% extends "layout.html" %}{% block content %}
+
+<div class="container-fluid error-background">
+  <div class="row text-center">
+    <div class="col-12 justify-content-center">
+      <img
+        src="{{url_for('static', filename='img/error_image.jpg')}}"
+        class="img-fluid error-img"
+      />
+    </div>
+  </div>
+  <div class="row justify-content-center text-center">
+    <div class="col-12">
+      <h5>Woah there, buddy! Looks like someone took a wrong turn!</h5>
+      <a href="{{url_for('homepage')}}">
+        <button class="btn btn-info">Take me home</button>
+      </a>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}

@@ -118,3 +118,13 @@ h6 {
   font-family: Impact, fantasy;
   font-size: 2.5rem;
 }
+
+.error-background {
+  height: 100%;
+  background-color: white;
+}
+
+.error-img {
+  max-height: 50%;
+  margin-top: 5rem;
+}
