@@ -40,9 +40,9 @@ class HeadToHead(FlaskForm):
             raise ValidationError("League members must be different")
 
     leagueMemberOne = SelectField(
-        "League Member One", choices=members, validators=[DataRequired(), valid_names_one], coerce=str)
+        "League Member One", choices=members, validators=[DataRequired("Please select a league member"), valid_names_one], coerce=str)
     leagueMemberTwo = SelectField(
-        "League Member Two", choices=members, validators=[DataRequired(), valid_names_two])
+        "League Member Two", choices=members, validators=[DataRequired("Please select a league member"), valid_names_two])
 
     submit = SubmitField("Compare members")
 
@@ -74,7 +74,7 @@ class SeasonSelector(FlaskForm):
                        choices=[("", "Please select a season..."),
                                 ("2017", "2017"), ("2018", "2018"),
                                 ("2019", "2019"), ("2020", "2020")],
-                       validators=[DataRequired()])
+                       validators=[DataRequired("Please select a season")])
 
     submit = SubmitField("View Season")
 
@@ -178,7 +178,7 @@ class SelectPowerRankWeek(FlaskForm):
     weeks = [("", "Select a week to view")] + \
         [(week, f"Week {week}") for week in range(1, 15)]
     week = SelectField("Select a week to view", choices=weeks,
-                       validators=[DataRequired()])
+                       validators=[DataRequired("Select a week to view")])
     submit = SubmitField("View")
 
 

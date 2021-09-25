@@ -1318,6 +1318,8 @@ def season_summary():
             WHERE season=?
             """, (year,)
         ).fetchall()
+        if len(query) == 0 or int(year) == CURRENT_SEASON:
+            return redirect(url_for("season_summary"))
 
         standings, _ = get_standings(query)
         playoffs = get_playoff_results_for_season_summary(query)
