@@ -8,18 +8,151 @@ import pandas as pd
 from flask import flash, jsonify, redirect, render_template, request, url_for
 from PIL import Image
 
-from ff_website import app
+from ff_website import app, bcrypt
 from ff_website.apis import get_member_id
 from ff_website.constants import *
-from ff_website.db import get_db
+from ff_website.db import close_db, get_db
 from ff_website.forms import (CreateGame, CreateMember, CreatePowerRankings,
-                              GameQualities, HeadToHead, SeasonSelector,
-                              selectPowerRankWeek)
+                              GameQualities, HeadToHead, LoginForm, RegistrationForm, SeasonSelector,
+                              SelectPowerRankWeek)
 from ff_website.helper_functions import *
+from flask_login import login_user, logout_user, current_user, login_required, UserMixin
+
+
+class User(UserMixin):
+    def __init__(self, id, username, email, password):
+        self.id = id
+        self.username = username
+        self.email = email
+        self.password = password
+        self.authenticated = False
+
+    def __repr__(self):
+        return f"{self.username}"
+
+    def is_active(self):
+        return self.is_active()
+
+    def is_anonymous(self):
+        return False
+
+    def is_authenticated(self):
+        return self.authenticated
+
+    def is_active(self):
+        return True
+
+    def get_id(self):
+        return self.id
+
+
+@app.login_manager.user_loader
+def load_user(user_id):
+    with get_db() as db:
+        lu = db.execute(
+            f"""
+        SELECT * from user
+        WHERE {USER_ID}=?
+        """, (user_id,)
+        ).fetchone()
+    close_db()
+    if lu is None:
+        return None
+    else:
+        return User(id=lu["user_id"], username=lu["username"], email=lu["email"], password=lu["password"])
+
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if current_user.is_authenticated:
+        logout_user()
+
+    db = get_db()
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        inputted_username = form.username.data
+        inputted_email = form.email.data
+
+        query = db.execute(
+            f"""
+            SELECT * FROM user
+            WHERE {USERNAME}=? OR {EMAIL}=?
+            """, (inputted_username, inputted_email)
+        ).fetchone()
+        if query:
+            if query[USERNAME] == inputted_username:
+                form.username.errors.append("That username is already taken")
+            if query[EMAIL] == inputted_email:
+                form.email.errors.append(
+                    "That email address is already being used by another account")
+        else:
+            hashed_password = bcrypt.generate_password_hash(
+                form.password.data).decode('utf-8')
+            db.execute(
+                f"""
+                INSERT INTO user
+                ({USERNAME}, {EMAIL}, {PASSWORD})
+                VALUES(?, ?, ?)
+                """, (form.username.data, form.email.data, hashed_password)
+            )
+            db.commit()
+            id = db.execute(
+                f"""
+                SELECT {USER_ID} FROM user
+                WHERE {USERNAME}=?
+                """, (form.username.data,)
+            ).fetchone()
+            user = User(id=id[USER_ID], username=form.username.data,
+                        email=form.email.data, password=hashed_password)
+            login_user(user)
+            close_db()
+            return redirect(url_for('homepage'))
+
+    close_db()
+    return render_template("register.html", form=form)
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    form = LoginForm()
+    if current_user.is_authenticated:
+        return redirect(url_for('homepage'))
+
+    db = get_db()
+    if form.validate_on_submit():
+        query = db.execute(
+            f"""
+            SELECT * FROM user
+            WHERE {USERNAME}=? OR {EMAIL}=?
+            """, (form.username_or_email.data, form.username_or_email.data)
+        ).fetchone()
+        if query:
+            if bcrypt.check_password_hash(query[PASSWORD], form.password.data):
+                user = User(id=query[USER_ID], username=query[USERNAME],
+                            email=query[EMAIL], password=query[PASSWORD])
+                login_user(user)
+                close_db()
+                return redirect(url_for('homepage'))
+            else:
+                form.password.errors.append("Password is incorrect")
+
+        else:
+            form.username_or_email.errors.append(
+                "No account is associated with that username or email address")
+
+    close_db()
+    return render_template('login.html', form=form)
+
+
+@app.route("/logout", methods=["GET", "POST"])
+def logout():
+    logout_user()
+    flash("You have logged out", "info")
+    return redirect(url_for("login"))
 
 
 @app.route("/", methods=["GET", "POST"])
-def hello():
+def homepage():
     links = [
         {
             "title": "League Members",
@@ -46,7 +179,6 @@ def hello():
             "link": "https://fantasy.espn.com/football/league?leagueId=50890012"
         }
     ]
-
     return render_template("home.html", ql=links)
 
 
@@ -69,6 +201,7 @@ def members():
                 'static', filename=f"img/avatars/{member[IMG_FILEPATH]}")
         })
 
+    close_db()
     return render_template("league_members.html", title="Current Members", cards=cards)
 
 
@@ -91,29 +224,45 @@ def inactive_members():
                 'static', filename=f"img/avatars/{member[IMG_FILEPATH]}")
         })
 
+    close_db()
     return render_template("league_members.html", title="Inactive Members", cards=cards)
 
 
 @app.route("/tools", methods=["GET", "POST"])
+@login_required
 def tools():
+
+    if current_user.username != "admin":
+        return redirect(url_for('homepage'))
+
     return render_template("tools.html")
 
 
 @app.route("/tools/list_all_members", methods=["GET", "POST"])
+@login_required
 def list_members():
+
+    if current_user.username != "admin":
+        return redirect(url_for('homepage'))
+
     db = get_db()
     all_members = db.execute(
         """
         SELECT * FROM member
         """
     ).fetchall()
-    db.close()
+    close_db()
     data = jsonify_members(all_members)
     return render_template("members_admin.html", data=data)
 
 
 @app.route("/tools/update_member/<int:member_id>", methods=["GET", "POST"])
+@login_required
 def update_member(member_id):
+
+    if current_user.username != "admin":
+        return redirect(url_for('homepage'))
+
     db = get_db()
     info = db.execute(
         """
@@ -134,6 +283,7 @@ def update_member(member_id):
     if form.validate_on_submit():
         if form.firstName.data == first_name and form.lastName.data == last_name and form.initialYear.data == str(year_joined) and form.activeMember.data == str(status) and form.image.data == None:
             flash('Member not changed.', 'warning')
+            close_db()
             return redirect(url_for('list_members'))
         else:
             new_first_name = form.firstName.data
@@ -164,7 +314,7 @@ def update_member(member_id):
                 """, (new_first_name, new_last_name, new_year_joined, new_status, file_name, member_id)
             )
             db.commit()
-            db.close()
+            close_db()
             flash('Member updated!', 'success')
             return redirect(url_for('tools'))
 
@@ -177,7 +327,12 @@ def update_member(member_id):
 
 
 @app.route("/tools/delete_member/<int:member_id>", methods=["GET", "POST"])
+@login_required
 def delete_member(member_id):
+
+    if current_user.username != "admin":
+        return redirect(url_for('homepage'))
+
     db = get_db()
     query = db.execute(
         f"""
@@ -225,13 +380,18 @@ def delete_member(member_id):
         """, (member_id,)
     )
     db.commit()
-    db.close()
+    close_db()
     flash('Member deleted!', 'danger')
     return redirect(url_for('tools'))
 
 
 @app.route("/tools/list_all_games", methods=["GET", "POST"])
+@login_required
 def list_games():
+
+    if current_user.username != "admin":
+        return redirect(url_for('homepage'))
+
     db = get_db()
     all_games = db.execute(
         """
@@ -255,11 +415,17 @@ def list_games():
             "Placeholder"
         ]
 
+    close_db()
     return render_template("games_admin.html", df=df)
 
 
 @app.route("/tools/update_game/<int:game_id>", methods=["GET", "POST"])
+@login_required
 def update_game(game_id):
+
+    if current_user.username != "admin":
+        return redirect(url_for('homepage'))
+
     db = get_db()
     info = db.execute(
         """
@@ -294,6 +460,7 @@ def update_game(game_id):
                 form.playoffs.data == str(playoffs) and \
                 form.matchupLength.data == str(matchup_length):
             flash('Game not changed.', 'warning')
+            close_db()
             return redirect(url_for('tools'))
         else:
             new_week = form.week.data
@@ -313,15 +480,21 @@ def update_game(game_id):
                 """, (new_week, new_season, new_team_A_name, new_team_A_score, new_team_B_name, new_team_B_score, new_playoffs, new_matchup_length, game_id)
             )
             db.commit()
-            db.close()
+            close_db()
             flash('Game updated!', 'success')
+            close_db()
             return redirect(url_for('tools'))
 
     return render_template("update_game.html", form=form)
 
 
 @app.route("/tools/delete_game/<int:game_id>", methods=["GET", "POST"])
+@login_required
 def delete_game(game_id):
+
+    if current_user.username != "admin":
+        return redirect(url_for('homepage'))
+
     db = get_db()
     db.execute(
         """
@@ -330,16 +503,21 @@ def delete_game(game_id):
         """, (game_id,)
     )
     db.commit()
-    db.close()
+    close_db()
     flash('Game deleted!', 'danger')
     return redirect(url_for('tools'))
 
 
-@ app.route("/tools/create_member", methods=["GET", "POST"])
+@app.route("/tools/create_member", methods=["GET", "POST"])
+@login_required
 def create_member():
+
+    if current_user.username != "admin":
+        return redirect(url_for('homepage'))
+
+    db = get_db()
     form = CreateMember()
     if form.validate_on_submit():
-        db = get_db()
         query = db.execute(
             f"""
             SELECT {MEMBER_ID} FROM member
@@ -376,18 +554,25 @@ def create_member():
                 """, (first_name, last_name, form.data["initialYear"], form.data["activeMember"], file_name)
             )
             db.commit()
-            db.close()
+            close_db()
             flash('Member created!', 'success')
             return redirect(url_for('tools'))
 
+    close_db()
     return render_template("create_member.html", form=form)
 
 
-@ app.route("/tools/create_game", methods=["GET", "POST"])
+@app.route("/tools/create_game", methods=["GET", "POST"])
+@login_required
 def create_game():
+
+    if current_user.username != "admin":
+        return redirect(url_for('homepage'))
+
+    db = get_db()
+
     form = CreateGame()
     if form.validate_on_submit():
-        db = get_db()
         query = db.execute(
             f"""
             SELECT {TEAM_A_ID}, {TEAM_B_ID}, {WEEK}, {SEASON} FROM game
@@ -422,15 +607,20 @@ def create_game():
                  form.data["teamAName"], form.data["teamBName"])
             )
             db.commit()
-            db.close()
+            close_db()
             flash('Game created!', 'success')
             return redirect(url_for('create_game'))
 
+    close_db()
     return render_template("create_game.html", form=form)
 
 
-@ app.route("/tools/add_all_members", methods=["GET", "POST"])
+@app.route("/tools/add_all_members", methods=["GET", "POST"])
+@login_required
 def add_league_members():
+
+    if current_user.username != "admin":
+        return redirect(url_for('homepage'))
 
     db = get_db()
 
@@ -455,11 +645,17 @@ def add_league_members():
         )
     db.commit()
 
+    close_db()
     return jsonify(members)
 
 
-@ app.route("/tools/add_all_games", methods=["GET", "POST"])
+@app.route("/tools/add_all_games", methods=["GET", "POST"])
+@login_required
 def add_games():
+
+    if current_user.username != "admin":
+        return redirect(url_for('homepage'))
+
     db = get_db()
 
     # Clear table
@@ -492,11 +688,17 @@ def add_games():
         )
         db.commit()
 
+    close_db()
     return jsonify(games)
 
 
 @app.route("/tools/create_power_rankings", methods=["GET", "POST"])
+@login_required
 def create_power_rankings():
+
+    if current_user.username != "admin":
+        return redirect(url_for('homepage'))
+
     db = get_db()
     actives_query = db.execute(
         f"""
@@ -552,8 +754,8 @@ def create_power_rankings():
                 app.root_path, "data", "power_rankings", year)
             os.makedirs(file_path, exist_ok=True)
             json.dump(object, open(os.path.join(file_path, file_name), "w"))
-            db.close()
             flash('Power Rankings Created!', 'success')
+            close_db()
             return redirect(url_for('tools'))
 
         else:
@@ -584,7 +786,7 @@ def create_power_rankings():
                 "The following members aren't present: " + names_str)
             flash('Power Rankings Failed to Create!', 'danger')
 
-    db.close()
+    close_db()
     return render_template("create_power_rankings.html", form=form)
 
 
@@ -662,6 +864,7 @@ def get_member_info(member_id):
     summaries_html = summaries.to_html(classes="table table-striped")
     seasons = get_schedules(all_games_for_member, name)
 
+    close_db()
     return render_template("member.html",
                            name=name,
                            img_filepath=img_filepath,
@@ -674,12 +877,12 @@ def get_member_info(member_id):
                            seasons=seasons)
 
 
-@ app.route("/archives/", methods=["GET", "POST"])
+@app.route("/archives/", methods=["GET", "POST"])
 def archives_home():
     return render_template("archives_home.html")
 
 
-@ app.route("/archives/head_to_head", methods=["GET", "POST"])
+@app.route("/archives/head_to_head", methods=["GET", "POST"])
 def h2h():
 
     # Initialize variables that will be returned on successful submission of the form
@@ -701,12 +904,12 @@ def h2h():
     except AttributeError as e:
         print("Something went wrong getting parameters!", e)
 
+    db = get_db()
     # If we got the members successfully, find the history of their games
     if member_one_id and member_two_id:
         df = pd.DataFrame(columns=[
             "Season", "Week", "Matchup Format", "Winning Team", "Losing Team", "Score"])
 
-        db = get_db()
         query = db.execute(
             f"""
             SELECT team_A_score, team_B_score, season, week, matchup_length, playoffs,
@@ -797,9 +1000,8 @@ def h2h():
                     member_two_img = query[0][IMG_FILEPATH]
                     member_two_name = f"{query[0][FIRST_NAME]} {query[0][LAST_NAME]}"
 
-        db.close()
+    close_db()
     if form.validate_on_submit():
-        print(form.data)
         return redirect(url_for("h2h", member_one_id=form.data["leagueMemberOne"], member_two_id=form.data["leagueMemberTwo"]))
     return render_template("head_to_head.html",
                            form=form,
@@ -823,7 +1025,7 @@ def h2h():
                            )
 
 
-@ app.route("/archives/game_qualities", methods=["GET", "POST"])
+@app.route("/archives/game_qualities", methods=["GET", "POST"])
 def game_qualities():
     form = GameQualities()
     args = request.args
@@ -836,10 +1038,11 @@ def game_qualities():
     except AttributeError as e:
         print("Something went wrong getting paramters", e)
 
+    db = get_db()
+
     # Fewest points scored combined
     if filter_type == "1":
         total_scores_list = []
-        db = get_db()
         query = db.execute(
             f"""
             SELECT team_A_score, team_B_score, season, week, matchup_length, playoffs, team_A_score+team_B_score as total_score,
@@ -877,13 +1080,11 @@ def game_qualities():
 
             total_scores_list.append(row["total_score"])
         df["Total Points"] = total_scores_list
-        db.close()
 
     # Fewest points scored individual
     if filter_type == "2":
         df = pd.DataFrame(columns=[
             "Season", "Week", "Matchup Format", "League Member", "Points"])
-        db = get_db()
         query = db.execute(
             f"""
             WITH t as(
@@ -911,12 +1112,10 @@ def game_qualities():
             matchup_format = "Playoffs" if playoffs else "Regular Season"
             df.loc[len(df.index)] = [season, week,
                                      matchup_format, team_name, points]
-        db.close()
 
     # Most points scored combined
     if filter_type == "3":
         total_scores_list = []
-        db = get_db()
         query = db.execute(
             f"""
             SELECT team_A_score, team_B_score, season, week, matchup_length, playoffs, team_A_score+team_B_score as total_score,
@@ -954,13 +1153,11 @@ def game_qualities():
 
             total_scores_list.append(row["total_score"])
         df["Total Points"] = total_scores_list
-        db.close()
 
     # Fewest points scored combined
     if filter_type == "4":
         df = pd.DataFrame(columns=[
             "Season", "Week", "Matchup Format", "League Member", "Points"])
-        db = get_db()
         query = db.execute(
             f"""
             WITH t as(
@@ -988,12 +1185,10 @@ def game_qualities():
             matchup_format = "Playoffs" if playoffs else "Regular Season"
             df.loc[len(df.index)] = [season, week,
                                      matchup_format, team_name, points]
-        db.close()
 
     # Largest margin of victory
     if filter_type == "5":
         deficits_list = []
-        db = get_db()
         query = db.execute(
             f"""
             SELECT team_A_score, team_B_score, season, week, matchup_length, playoffs, abs(team_A_score-team_B_score) as margin,
@@ -1031,12 +1226,10 @@ def game_qualities():
 
             deficits_list.append(row["margin"])
         df["Margin"] = deficits_list
-        db.close()
 
     # Smallest margin of victory
     if filter_type == "6":
         deficits_list = []
-        db = get_db()
         query = db.execute(
             f"""
             SELECT team_A_score, team_B_score, season, week, matchup_length, playoffs, abs(team_A_score-team_B_score) as margin,
@@ -1074,10 +1267,10 @@ def game_qualities():
 
             deficits_list.append(row["margin"])
         df["Margin"] = deficits_list
-        db.close()
 
     df.index += 1
 
+    close_db()
     if form.validate_on_submit():
         return redirect(url_for("game_qualities", filter_type=form.data["filter"], num_results=form.data["numberOfResults"]))
 
@@ -1087,7 +1280,7 @@ def game_qualities():
                            df=df.to_html(classes="table table-striped"))
 
 
-@ app.route("/archives/season_summary", methods=["GET", "POST"])
+@app.route("/archives/season_summary", methods=["GET", "POST"])
 def season_summary():
 
     form = SeasonSelector()
@@ -1102,8 +1295,9 @@ def season_summary():
     except AttributeError as e:
         print("Something went wrong getting parameters", e)
 
+    db = get_db()
+
     if year:
-        db = get_db()
         query = db.execute(
             f"""
             SELECT team_A_score, team_B_score, season, week, matchup_length, playoffs,
@@ -1123,8 +1317,10 @@ def season_summary():
         roto = get_roto(query)
 
     if form.validate_on_submit():
+        close_db()
         return redirect(url_for("season_summary", year=form.data["year"]))
 
+    close_db()
     return render_template("season_summary.html",
                            form=form,
                            year=year,
@@ -1164,6 +1360,7 @@ def current_season_standings():
     matchups = get_projected_playoff_teams(
         standings, ranks, roto, 6, 1)
 
+    close_db()
     return render_template("current_season_standings.html",
                            cards=CURRENT_SEASON_CARDS,
                            standings=standings_html,
@@ -1339,6 +1536,7 @@ def current_season_analytics():
     head_to_head = get_head_to_head(query)
     intervals = get_intervals(query)
 
+    close_db()
     return render_template("current_season_analytics.html",
                            cards=CURRENT_SEASON_CARDS,
                            roto_against=roto_against.to_html(
@@ -1379,7 +1577,7 @@ def current_season_power_rankings():
             current_info[member]["change"] = previous_info[member]["rank"] - \
                 current_info[member]["rank"]
 
-    form = selectPowerRankWeek()
+    form = SelectPowerRankWeek()
     if form.validate_on_submit():
         return redirect(url_for('current_season_power_rankings', week=form.week.data))
     return render_template("current_season_power_rankings.html",
@@ -1438,6 +1636,7 @@ def hall_of_fame():
             "img_src": url_for('static', filename=f"img/avatars/{img_src}")
         })
 
+    close_db()
     return render_template("hall_of_fame.html",
                            top_3_most_points_all_time=top_3_most_points_all_time,
                            top_3_most_ppg_all_time=top_3_most_ppg_all_time,
@@ -1501,4 +1700,5 @@ def get_all_members():
 
     response = jsonify_members(query)
 
+    close_db()
     return jsonify(response)

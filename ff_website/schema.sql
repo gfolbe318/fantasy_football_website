@@ -24,4 +24,11 @@ CREATE TABLE IF NOT EXISTS game
     FOREIGN KEY (team_B_id) REFERENCES member (member_id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
--- https://stackoverflow.com/questions/25675314/how-to-backup-sqlite-database
+
+CREATE TABLE IF NOT EXISTS user
+(
+    user_id INTEGER PRIMARY KEY,
+    username TEXT NOT NULL,
+    email TEXT NOT NULL,
+    password TEXT NOT NULL
+);

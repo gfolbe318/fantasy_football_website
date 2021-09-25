@@ -1,13 +1,11 @@
-from datetime import datetime
-
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField
 from wtforms import FloatField, SelectField, StringField, SubmitField
 from wtforms.fields.core import FloatField
-from wtforms.validators import DataRequired, ValidationError
+from wtforms.fields.simple import PasswordField
+from wtforms.validators import DataRequired, Length, ValidationError, Email, EqualTo
 
-from ff_website.apis import get_all_members
-from ff_website.constants import CURRENT_SEASON, FIRST_NAME, LAST_NAME, MEMBER_ID
+from ff_website.constants import CURRENT_SEASON
 
 
 def get_all_members_helper():
@@ -176,9 +174,29 @@ class CreatePowerRankings(FlaskForm):
     submit = SubmitField("Submit")
 
 
-class selectPowerRankWeek(FlaskForm):
+class SelectPowerRankWeek(FlaskForm):
     weeks = [("", "Select a week to view")] + \
         [(week, f"Week {week}") for week in range(1, 15)]
     week = SelectField("Select a week to view", choices=weeks,
                        validators=[DataRequired()])
     submit = SubmitField("View")
+
+
+class RegistrationForm(FlaskForm):
+    username = StringField('Username', validators=[
+                           DataRequired(), Length(min=5, max=15, message="Username must be between 5 and 15 characters")])
+    email = StringField('Email address',
+                        validators=[DataRequired(), Email()])
+
+    password = PasswordField('Password', validators=[
+        DataRequired(), EqualTo('confirm_password', 'Passwords must match')])
+    confirm_password = PasswordField('Confirm Password', validators=[
+        DataRequired(),  EqualTo('password', 'Passwords must match')])
+    submit = SubmitField()
+
+
+class LoginForm(FlaskForm):
+    username_or_email = StringField('Username/Email Address',
+                                    validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    submit = SubmitField()

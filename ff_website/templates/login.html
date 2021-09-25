@@ -1,0 +1,57 @@
+{% extends "layout.html" %} {% block content %}
+<div class="container-fluid content">
+  <div class="row justify-content-center">
+    <div class="col-12">
+      <div class="form-body">
+        <div class="content-section">
+          <form novalidate="novalidate" method="POST" action="">
+            <fieldset class="form-group">
+              <legend>Login</legend>
+              <input
+                type="hidden"
+                name="csrf_token"
+                value="{{ csrf_token() }}"
+              />
+              <div class="form-group">
+                {{ form.username_or_email.label(class="form-control-md") }} {%
+                if form.username_or_email.errors %} {{
+                form.username_or_email(class="form-control form-control-md
+                is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.username_or_email.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+                {% else %} {{ form.username_or_email(class="form-control
+                form-control-md") }} {% endif %}
+              </div>
+
+              <div class="form-group">
+                {{ form.password.label(class="form-control-md") }} {% if
+                form.password.errors %} {{ form.password(class="form-control
+                form-control-md is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.password.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+                {% else %} {{ form.password(class="form-control
+                form-control-md") }} {% endif %}
+              </div>
+            </fieldset>
+            <div class="form-group">
+              {{ form.submit(class="btn btn-outline-info")}}
+            </div>
+            <div class="border-top pt-3">
+              <small class="text-muted">
+                Need an Account?
+                <a class="ml-2" href="{{ url_for('register') }}">Sign Up Now</a>
+              </small>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

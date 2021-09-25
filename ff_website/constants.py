@@ -22,6 +22,10 @@ MATCHUP_LENGTH = "matchup_length"
 PLAYOFFS = "playoffs"
 TEAM_A_ID = "team_A_id"
 TEAM_B_ID = "team_B_id"
+USER_ID = "user_id"
+USERNAME = "username"
+EMAIL = "email"
+PASSWORD = "password"
 
 # Additional JSON keys
 SEASON = "season"
