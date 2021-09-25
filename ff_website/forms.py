@@ -2,7 +2,7 @@ from flask_wtf import FlaskForm
 from flask_wtf.file import FileField
 from wtforms import FloatField, SelectField, StringField, SubmitField
 from wtforms.fields.core import FloatField
-from wtforms.fields.simple import PasswordField
+from wtforms.fields.simple import PasswordField, TextAreaField
 from wtforms.validators import DataRequired, Length, ValidationError, Email, EqualTo
 
 from ff_website.constants import CURRENT_SEASON
@@ -180,6 +180,13 @@ class SelectPowerRankWeek(FlaskForm):
     week = SelectField("Select a week to view", choices=weeks,
                        validators=[DataRequired("Select a week to view")])
     submit = SubmitField("View")
+
+
+class MakeAnnouncement(FlaskForm):
+    title = StringField('Title', validators=[DataRequired()])
+    announcement = TextAreaField(
+        'What do you want to say?', validators=[DataRequired()])
+    submit = SubmitField("Create Announcement")
 
 
 class RegistrationForm(FlaskForm):

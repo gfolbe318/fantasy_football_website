@@ -32,3 +32,13 @@ CREATE TABLE IF NOT EXISTS user
     email TEXT NOT NULL,
     password TEXT NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS announcement
+(
+    announcement_id INTEGER PRIMARY KEY,
+    title TEXT NOT NULL,
+    announcement TEXT NOT NULL,
+    date TEXT NOT NULL,
+    time TEXT NOT NULL,
+    FOREIGN KEY (announcement_id) REFERENCES user (user_id) ON UPDATE CASCADE ON DELETE CASCADE
+);

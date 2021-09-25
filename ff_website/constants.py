@@ -13,6 +13,7 @@ LAST_NAME = "last_name"
 YEAR_JOINED = "year_joined"
 ACTIVE = "active"
 IMG_FILEPATH = "img_filepath"
+
 GAME_ID = "game_id"
 TEAM_A_SCORE = "team_A_score"
 TEAM_B_SCORE = "team_B_score"
@@ -22,10 +23,17 @@ MATCHUP_LENGTH = "matchup_length"
 PLAYOFFS = "playoffs"
 TEAM_A_ID = "team_A_id"
 TEAM_B_ID = "team_B_id"
+
 USER_ID = "user_id"
 USERNAME = "username"
 EMAIL = "email"
 PASSWORD = "password"
+
+ANNOUNCEMENT_ID = "announcement_id"
+TITLE = "title"
+ANNOUNCEMENT = "announcement"
+DATE = "date"
+TIME = "time"
 
 # Additional JSON keys
 SEASON = "season"
@@ -73,6 +81,6 @@ CURRENT_SEASON_CARDS = [
         "name": "Announcements",
         "filename": 'img/announcements.png',
         "description": "Announcements from the comissioner as well as for the website",
-        "link": 'current_season_standings'
+        "link": 'current_season_announcements'
     }
 ]

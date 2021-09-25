@@ -1,3 +1,5 @@
+from datetime import datetime
+from pytz import timezone
 import glob
 import json
 import os
@@ -14,7 +16,7 @@ from ff_website.constants import *
 from ff_website.db import close_db, get_db
 from ff_website.forms import (CreateGame, CreateMember, CreatePowerRankings,
                               GameQualities, HeadToHead, LoginForm, RegistrationForm, SeasonSelector,
-                              SelectPowerRankWeek)
+                              SelectPowerRankWeek, MakeAnnouncement)
 from ff_website.helper_functions import *
 from flask_login import login_user, logout_user, current_user, login_required, UserMixin
 
@@ -1599,7 +1601,33 @@ def current_season_power_rankings():
 
 @app.route("/current_season/announcements", methods=["GET", "POST"])
 def current_season_announcements():
-    return render_template("current_season_report.html", cards=CURRENT_SEASON_CARDS)
+    return render_template("current_season_announcements.html", cards=CURRENT_SEASON_CARDS)
+
+
+@app.route("/current_season/create_announcement", methods=["GET", "POST"])
+def create_announcement():
+    form = MakeAnnouncement()
+    db = get_db()
+    if form.validate_on_submit():
+        tz = timezone('US/Eastern')
+        cur_date = datetime.now(tz)
+        db_date = cur_date.strftime("%B %d, %Y")
+        db_time = cur_date.strftime("%I:%M %p")
+
+        db.execute(
+            f"""
+            INSERT INTO announcement
+            ({TITLE}, {ANNOUNCEMENT}, {DATE}, {TIME})
+            VALUES(?, ?, ?, ?)
+            """, (form.title.data, form.announcement.data, db_date, db_time)
+        )
+        db.commit()
+        close_db()
+        flash("Announcement created successfully!", "success")
+        return redirect(url_for("current_season_announcements"))
+
+    close_db()
+    return render_template("create_announcement.html", form=form)
 
 
 @app.route("/hall_of_fame",  methods=["GET", "POST"])
