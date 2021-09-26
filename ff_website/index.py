@@ -19,18 +19,21 @@ from ff_website.forms import (CreateGame, CreateMember, CreatePowerRankings,
                               SelectPowerRankWeek, MakeAnnouncement)
 from ff_website.helper_functions import *
 from flask_login import login_user, logout_user, current_user, login_required, UserMixin
+from ff_website.credentials import accepted_admins
 
 
 class User(UserMixin):
-    def __init__(self, id, username, email, password):
+    def __init__(self, id, username, email, password, admin_privileges, announcement_privileges):
         self.id = id
         self.username = username
         self.email = email
         self.password = password
+        self.admin_privileges = admin_privileges
+        self.announcement_privileges = announcement_privileges
         self.authenticated = False
 
     def __repr__(self):
-        return f"{self.username}"
+        return f"{self.username}, admin_privileges: {self.admin_privileges}, announcement_privileges: {self.announcement_privileges}"
 
     def is_active(self):
         return self.is_active()
@@ -61,7 +64,13 @@ def load_user(user_id):
     if lu is None:
         return None
     else:
-        return User(id=lu["user_id"], username=lu["username"], email=lu["email"], password=lu["password"])
+        return User(id=lu[USER_ID],
+                    username=lu[USERNAME],
+                    email=lu[EMAIL],
+                    password=lu[PASSWORD],
+                    admin_privileges=lu[ADMIN_PRIVILEGES],
+                    announcement_privileges=lu[ANNOUNCEMENT_PRIVILEGES]
+                    )
 
 
 @app.errorhandler(404)
@@ -98,12 +107,18 @@ def register():
         else:
             hashed_password = bcrypt.generate_password_hash(
                 form.password.data).decode('utf-8')
+            admin_privileges = 0
+            announcement_privileges = 0
+            if form.username.data in accepted_admins:
+                admin_privileges = 1
+                announcement_privileges = 1
+
             db.execute(
                 f"""
                 INSERT INTO user
-                ({USERNAME}, {EMAIL}, {PASSWORD})
-                VALUES(?, ?, ?)
-                """, (form.username.data, form.email.data, hashed_password)
+                ({USERNAME}, {EMAIL}, {PASSWORD}, {ADMIN_PRIVILEGES}, {ANNOUNCEMENT_PRIVILEGES})
+                VALUES(?, ?, ?, ?, ?)
+                """, (form.username.data, form.email.data, hashed_password, admin_privileges, announcement_privileges)
             )
             db.commit()
             id = db.execute(
@@ -112,8 +127,12 @@ def register():
                 WHERE {USERNAME}=?
                 """, (form.username.data,)
             ).fetchone()
-            user = User(id=id[USER_ID], username=form.username.data,
-                        email=form.email.data, password=hashed_password)
+            user = User(id=id[USER_ID],
+                        username=form.username.data,
+                        email=form.email.data,
+                        password=hashed_password,
+                        admin_privileges=admin_privileges,
+                        announcement_privileges=announcement_privileges)
             login_user(user)
             close_db()
             return redirect(url_for('homepage'))
@@ -139,7 +158,9 @@ def login():
         if query:
             if bcrypt.check_password_hash(query[PASSWORD], form.password.data):
                 user = User(id=query[USER_ID], username=query[USERNAME],
-                            email=query[EMAIL], password=query[PASSWORD])
+                            email=query[EMAIL], password=query[PASSWORD],
+                            admin_privileges=query[ADMIN_PRIVILEGES],
+                            announcement_privileges=query[ANNOUNCEMENT_PRIVILEGES])
                 login_user(user)
                 close_db()
                 return redirect(url_for('homepage'))
@@ -163,6 +184,7 @@ def logout():
 
 @app.route("/", methods=["GET", "POST"])
 def homepage():
+    print(current_user)
     links = [
         {
             "title": "League Members",
@@ -242,7 +264,7 @@ def inactive_members():
 @login_required
 def tools():
 
-    if current_user.username != "admin":
+    if not current_user.admin_privileges:
         return redirect(url_for('homepage'))
 
     return render_template("tools.html")
@@ -252,7 +274,7 @@ def tools():
 @login_required
 def list_members():
 
-    if current_user.username != "admin":
+    if not current_user.admin_privileges:
         return redirect(url_for('homepage'))
 
     db = get_db()
@@ -270,7 +292,7 @@ def list_members():
 @login_required
 def update_member(member_id):
 
-    if current_user.username != "admin":
+    if not current_user.admin_privileges:
         return redirect(url_for('homepage'))
 
     db = get_db()
@@ -340,7 +362,7 @@ def update_member(member_id):
 @login_required
 def delete_member(member_id):
 
-    if current_user.username != "admin":
+    if not current_user.admin_privileges:
         return redirect(url_for('homepage'))
 
     db = get_db()
@@ -399,7 +421,7 @@ def delete_member(member_id):
 @login_required
 def list_games():
 
-    if current_user.username != "admin":
+    if not current_user.admin_privileges:
         return redirect(url_for('homepage'))
 
     db = get_db()
@@ -433,7 +455,7 @@ def list_games():
 @login_required
 def update_game(game_id):
 
-    if current_user.username != "admin":
+    if not current_user.admin_privileges:
         return redirect(url_for('homepage'))
 
     db = get_db()
@@ -502,7 +524,7 @@ def update_game(game_id):
 @login_required
 def delete_game(game_id):
 
-    if current_user.username != "admin":
+    if not current_user.admin_privileges:
         return redirect(url_for('homepage'))
 
     db = get_db()
@@ -522,7 +544,7 @@ def delete_game(game_id):
 @login_required
 def create_member():
 
-    if current_user.username != "admin":
+    if not current_user.admin_privileges:
         return redirect(url_for('homepage'))
 
     db = get_db()
@@ -576,7 +598,7 @@ def create_member():
 @login_required
 def create_game():
 
-    if current_user.username != "admin":
+    if not current_user.admin_privileges:
         return redirect(url_for('homepage'))
 
     db = get_db()
@@ -629,7 +651,7 @@ def create_game():
 @login_required
 def add_league_members():
 
-    if current_user.username != "admin":
+    if not current_user.admin_privileges:
         return redirect(url_for('homepage'))
 
     db = get_db()
@@ -663,7 +685,7 @@ def add_league_members():
 @login_required
 def add_games():
 
-    if current_user.username != "admin":
+    if not current_user.admin_privileges:
         return redirect(url_for('homepage'))
 
     db = get_db()
@@ -706,7 +728,7 @@ def add_games():
 @login_required
 def create_power_rankings():
 
-    if current_user.username != "admin":
+    if not current_user.admin_privileges:
         return redirect(url_for('homepage'))
 
     db = get_db()
@@ -798,6 +820,92 @@ def create_power_rankings():
 
     close_db()
     return render_template("create_power_rankings.html", form=form)
+
+
+@app.route("/tools/list_all_users")
+@login_required
+def list_all_users():
+    db = get_db()
+    query = db.execute(
+        f"""
+        SELECT {USERNAME}, {USER_ID}, {ADMIN_PRIVILEGES}, {ANNOUNCEMENT_PRIVILEGES} FROM user
+        WHERE {USERNAME} NOT IN {tuple(set(accepted_admins))}
+        """
+    ).fetchall()
+    data = []
+    for row in query:
+        data.append({
+            "user_id": row[USER_ID],
+            "username": row[USERNAME],
+            "admin_priv": row[ADMIN_PRIVILEGES],
+            "announce_priv": row[ANNOUNCEMENT_PRIVILEGES]
+        })
+
+    return render_template("users_admin.html", data=data)
+
+
+@app.route("/tools/grant_admin_status/<int:user_id>")
+@login_required
+def grant_admin_status(user_id):
+    db = get_db()
+    db.execute(
+        f"""
+        UPDATE user
+        SET {ADMIN_PRIVILEGES}=?, {ANNOUNCEMENT_PRIVILEGES}=?
+        WHERE {USER_ID}=?
+        """, (1, 1, user_id)
+    )
+    db.commit()
+    close_db()
+    return redirect(url_for('list_all_users'))
+
+
+@app.route("/tools/revoke_admin_status/<int:user_id>")
+@login_required
+def revoke_admin_status(user_id):
+    db = get_db()
+    db.execute(
+        f"""
+        UPDATE user
+        SET {ADMIN_PRIVILEGES}=?
+        WHERE {USER_ID}=?
+        """, (0, user_id)
+    )
+    db.commit()
+    close_db()
+    return redirect(url_for('list_all_users'))
+
+
+@app.route("/tools/grant_announcement_status/<int:user_id>")
+@login_required
+def grant_announcement_status(user_id):
+    db = get_db()
+    db.execute(
+        f"""
+        UPDATE user
+        SET {ANNOUNCEMENT_PRIVILEGES}=?
+        WHERE {USER_ID}=?
+        """, (1, user_id)
+    )
+    db.commit()
+    close_db()
+    return redirect(url_for('list_all_users'))
+
+
+@app.route("/tools/revoke_announcement_status/<int:user_id>")
+@login_required
+def revoke_announcement_status(user_id):
+    db = get_db()
+    db.execute(
+        f"""
+        UPDATE user
+        SET {ANNOUNCEMENT_PRIVILEGES}=?
+        WHERE {USER_ID}=?
+        """, (0, user_id)
+    )
+    db.commit()
+    close_db()
+    return redirect(url_for('list_all_users'))
 
 
 @app.route("/member/<int:member_id>", methods=["GET", "POST"])

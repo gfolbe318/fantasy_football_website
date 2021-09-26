@@ -28,6 +28,8 @@ USER_ID = "user_id"
 USERNAME = "username"
 EMAIL = "email"
 PASSWORD = "password"
+ADMIN_PRIVILEGES = "admin_privileges"
+ANNOUNCEMENT_PRIVILEGES = "announcement_privileges"
 
 ANNOUNCEMENT_ID = "announcement_id"
 TITLE = "title"

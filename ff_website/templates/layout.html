@@ -89,13 +89,15 @@
                 >Hall of Fame</a
               >
             </li>
-            {% if current_user.username == "admin" %}
+            {% if current_user.admin_privileges == 1 %}
             <li class="nav-item">
               <a class="nav-link" href="{{ url_for('tools') }}">Tools</a>
             </li>
             {% endif %} {% if current_user.is_authenticated %}
             <li class="nav-item">
-              <a class="nav-link" href="{{url_for('logout')}}">Logout</a>
+              <a class="nav-link" href="{{url_for('logout')}}"
+                >Logout ({{current_user.username}})</a
+              >
             </li>
             {% else %}
             <li class="nav-item">

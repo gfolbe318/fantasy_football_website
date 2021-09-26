@@ -1,0 +1,55 @@
+{% extends "layout.html" %} {% block content %}
+<div class="container-fluid content">
+  <hr class="separator" />
+  <h1>Update Privileges of Members</h1>
+  <hr class="separator" />
+  <div class="row justify-content-center">
+    <div class="col-12">
+      <ul>
+        {% for user in data %}
+        <li style="padding-top: 5px; padding-bottom: 5px">
+          {{user.username}}
+          <ul>
+            <li style="padding-top: 5px; padding-bottom: 5px">
+              {% if user.admin_priv == 1 %}
+              <a href="{{url_for('revoke_admin_status', user_id=user.user_id)}}"
+                ><button class="btn btn-sm btn-danger">
+                  Remove Admin Privileges
+                </button>
+              </a>
+              {% else %}
+              <a href="{{url_for('grant_admin_status', user_id=user.user_id)}}">
+                <button class="btn btn-sm btn-success">
+                  Grant Admin Privileges
+                </button>
+              </a>
+              {% endif %}
+            </li>
+
+            <li style="padding-top: 5px; padding-bottom: 5px">
+              {% if user.announce_priv == 1 %}
+              <a
+                href="{{url_for('revoke_announcement_status', user_id=user.user_id)}}"
+              >
+                <button class="btn btn-sm btn-danger">
+                  Remove Announcement Privileges
+                </button>
+              </a>
+              {% else %}
+              <a
+                href="{{url_for('grant_announcement_status', user_id=user.user_id)}}"
+              >
+                <button class="btn btn-sm btn-success">
+                  Grant Announcement Privileges
+                </button>
+              </a>
+              {% endif %}
+            </li>
+          </ul>
+          {% endfor %}
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock content %}
