@@ -26,3 +26,22 @@
   display: inline-block;
   margin: auto;
 }
+
+.post {
+  padding: 20px;
+  border: 2px solid lightgray;
+  border-radius: 0.5rem;
+}
+
+.post-title {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.post-title-underline {
+  width: 100%;
+  background-color: lightgray;
+  height: 1px;
+  border: none;
+  margin-top: 0;
+}

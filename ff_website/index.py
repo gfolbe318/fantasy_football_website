@@ -184,7 +184,6 @@ def logout():
 
 @app.route("/", methods=["GET", "POST"])
 def homepage():
-    print(current_user)
     links = [
         {
             "title": "League Members",
@@ -1709,25 +1708,49 @@ def current_season_power_rankings():
 
 @app.route("/current_season/announcements", methods=["GET", "POST"])
 def current_season_announcements():
-    return render_template("current_season_announcements.html", cards=CURRENT_SEASON_CARDS)
+    db = get_db()
+    query = db.execute(
+        f"""
+        SELECT {ANNOUNCEMENT_ID}, {TITLE}, {ANNOUNCEMENT}, {TIMESTAMP}, {USERNAME}
+        FROM announcement
+        INNER JOIN user
+        ON {AUTHOR} = {USER_ID} 
+        """
+    ).fetchall()
+
+    announcements = []
+    for row in query:
+        announcements.append({
+            ANNOUNCEMENT_ID: row[ANNOUNCEMENT_ID],
+            AUTHOR: row[USERNAME],
+            TITLE: row[TITLE],
+            ANNOUNCEMENT: row[ANNOUNCEMENT],
+            TIMESTAMP: row[TIMESTAMP]
+        })
+
+    return render_template("current_season_announcements.html",
+                           announcements=announcements,
+                           cards=CURRENT_SEASON_CARDS)
 
 
 @app.route("/current_season/create_announcement", methods=["GET", "POST"])
+@login_required
 def create_announcement():
+    if current_user.announcement_privileges != 1:
+        return redirect(url_for('current_season'))
     form = MakeAnnouncement()
     db = get_db()
     if form.validate_on_submit():
         tz = timezone('US/Eastern')
         cur_date = datetime.now(tz)
-        db_date = cur_date.strftime("%B %d, %Y")
-        db_time = cur_date.strftime("%I:%M %p")
+        timestamp = cur_date.strftime("%B %d, %Y %I:%M %p EST")
 
         db.execute(
             f"""
             INSERT INTO announcement
-            ({TITLE}, {ANNOUNCEMENT}, {DATE}, {TIME})
+            ({TITLE}, {AUTHOR}, {ANNOUNCEMENT}, {TIMESTAMP})
             VALUES(?, ?, ?, ?)
-            """, (form.title.data, form.announcement.data, db_date, db_time)
+            """, (form.title.data, current_user.id, form.announcement.data, timestamp)
         )
         db.commit()
         close_db()
@@ -1736,6 +1759,67 @@ def create_announcement():
 
     close_db()
     return render_template("create_announcement.html", form=form)
+
+
+@app.route("/current_season/delete_announcement/<int:announcement_id>", methods=["GET", "POST"])
+@login_required
+def delete_announcement(announcement_id):
+    db = get_db()
+    query = db.execute(
+        f"""
+        SELECT * FROM announcement
+        WHERE {ANNOUNCEMENT_ID}=?        
+        """, (announcement_id,)
+    ).fetchone()
+    if query:
+        if str(query[AUTHOR]) == str(current_user.id) or current_user.admin_privileges == 1:
+            db.execute(
+                f"""
+                DELETE FROM announcement
+                WHERE {ANNOUNCEMENT_ID}=?
+                """, (announcement_id,)
+            )
+            db.commit()
+            close_db()
+            flash('Announcement deleted', 'danger')
+            return redirect(url_for('current_season_announcements'))
+
+    close_db()
+    return redirect(url_for('current_season_announcements'))
+
+
+@app.route("/current_season/update_announcement/<int:announcement_id>", methods=["GET", "POST"])
+@login_required
+def update_announcement(announcement_id):
+    db = get_db()
+    query = db.execute(
+        f"""
+        SELECT * FROM announcement
+        WHERE {ANNOUNCEMENT_ID}=?
+        """, (announcement_id,)
+    ).fetchone()
+    current_title = query[TITLE]
+    current_ann = query[TITLE]
+
+    form = MakeAnnouncement(
+        title=current_title, announcement=current_ann)
+    if form.validate_on_submit():
+        db.execute(
+            f"""
+            UPDATE announcement
+            SET {TITLE}=?, {ANNOUNCEMENT}=?
+            WHERE {ANNOUNCEMENT_ID}=?
+            """, (form.title.data, form.announcement.data, announcement_id)
+        )
+        db.commit()
+        close_db()
+        if form.title.data == current_title and form.announcement.data == current_ann:
+            flash("Announcement unchanged", "warning")
+        else:
+            flash("Announcement updated", "warning")
+        return redirect(url_for('current_season_announcements'))
+
+    return render_template("update_announcement.html", form=form)
 
 
 @app.route("/hall_of_fame",  methods=["GET", "POST"])

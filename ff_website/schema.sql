@@ -38,9 +38,9 @@ CREATE TABLE IF NOT EXISTS user
 CREATE TABLE IF NOT EXISTS announcement
 (
     announcement_id INTEGER PRIMARY KEY,
+    author TEXT NOT NULL,
     title TEXT NOT NULL,
     announcement TEXT NOT NULL,
-    date TEXT NOT NULL,
-    time TEXT NOT NULL,
-    FOREIGN KEY (announcement_id) REFERENCES user (user_id) ON UPDATE CASCADE ON DELETE CASCADE
+    timestamp TEXT NOT NULL,
+    FOREIGN KEY (author) REFERENCES user (user_id) ON UPDATE CASCADE ON DELETE CASCADE
 );

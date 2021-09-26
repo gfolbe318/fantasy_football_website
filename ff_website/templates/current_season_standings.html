@@ -2,7 +2,7 @@
 <div class="container-fluid content">
   <div class="row">
     {% for card in cards %}
-    <div class="col">
+    <div class="col text-center">
       <a href="{{url_for(card.link)}}">
         <img
           src="{{url_for('static', filename=card.filename)}}"

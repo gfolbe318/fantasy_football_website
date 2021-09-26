@@ -1,8 +1,54 @@
-{% extends "layout.html" %} {% block content %}
+{% extends "layout.html" %} {% block content %} {% for a in announcements %}
+<div
+  class="modal fade"
+  id="modal{{a.announcement_id}}"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">
+          Are you sure you want to delete this announcement?
+        </h5>
+        <div class="modal-body">
+          <p>
+            The announcement titled <b>{{a.title}}</b> and authored by
+            <b>{{a.author}}</b> on <b>{{a.timestamp}}</b> will be deleted. THIS
+            ACTION CANNOT BE UNDONE.
+          </p>
+        </div>
+
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          No, go back.
+        </button>
+        <a
+          href="{{ url_for('delete_announcement', announcement_id=a.announcement_id)}}"
+        >
+          <button type="button" class="btn btn-primary">Yes</button>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+
 <div class="container-fluid content">
   <div class="row justify-content-center">
     {% for card in cards %}
-    <div class="col-2">
+    <div class="col-2 text-center">
       <a href="{{url_for(card.link)}}">
         <img
           src="{{url_for('static', filename=card.filename)}}"
@@ -12,6 +58,68 @@
     </div>
     {% endfor %}
   </div>
+  <hr class="separator" />
+  <h1>Announcements</h1>
+  <hr class="separator" />
+  <div class="row">
+    <div class="col-12">
+      <p class="season_intro">
+        Welcome to the announcement page. Here, you can find important
+        information from the comissioner, league updates, and new features on
+        the website. Only authorized users are allowed to create an
+        announcement. If you feel that you need access to make an announcement,
+        reach out to Garrett.
+      </p>
+    </div>
+  </div>
+  {% if current_user.announcement_privileges %}
+  <div class="row justify-content-center mb-4">
+    <div class="col-12 text-center">
+      <a href="{{url_for('create_announcement')}}"
+        ><button class="btn btn-lg btn-success">Create a post</button></a
+      >
+    </div>
+  </div>
+  {% endif %} {% if announcements|length == 0 %}
+  <div class="row">
+    <div class="col-12">
+      <h3>No announcements at this time</h3>
+    </div>
+  </div>
+  {% endif %} {% for a in announcements|reverse %}
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="post">
+        <p class="post-title"><b>{{a.title}}</b></p>
+        <hr class="post-title-underline" />
+        <p>{{a.announcement|safe}}</p>
+        <hr class="post-title-underline" />
+        <i
+          ><small class="text-muted"
+            ><b>{{a.author}}</b> - {{a.timestamp}}</small
+          ></i
+        >
+        <br />
+        {% if current_user.username == a.author or current_user.admin_privileges
+        == 1 %}
+        <a
+          href="{{url_for('update_announcement', announcement_id=a.announcement_id)}}"
+        >
+          <button class="btn btn-sm btn-warning mt-3">Edit announcement</button>
+        </a>
+
+        <button
+          class="btn btn-sm btn-danger mt-3"
+          data-toggle="modal"
+          data-target="#modal{{a.announcement_id}}"
+        >
+          Delete announcement
+        </button>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% endfor %}
 </div>
 
 {% endblock content %}
