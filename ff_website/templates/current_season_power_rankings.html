@@ -24,6 +24,17 @@
         from the previous power rankings (even if that ranking was more a week
         ago).
       </p>
+    </div>
+  </div>
+  {% if current_user.admin_privileges %}
+  <div class="row text-center">
+    <div class="col-12">
+      <button class="btn btn-success mb-4">Create Power Rankings</button>
+    </div>
+  </div>
+  {% endif %}
+  <div class="row season_intro">
+    <div class="col-12">
       <p>
         <u><b>Week {{week}} Power Rankings</b></u>
       </p>
@@ -36,7 +47,7 @@
           >{{info.change}}) {% elif info.change > 0 %} (&nbsp;<span
             class="triangle-up"
           ></span
-          >{{info.change}}) {% endif %}
+          >+{{info.change}}) {% endif %}
         </li>
         {% endfor %}
       </ol>

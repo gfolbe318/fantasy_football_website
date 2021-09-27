@@ -7,6 +7,7 @@ from pathlib import Path
 
 import inflect
 import pandas as pd
+from urllib.parse import unquote
 from flask import flash, jsonify, redirect, render_template, request, url_for
 from PIL import Image
 
@@ -814,11 +815,37 @@ def create_power_rankings():
                 if i != len(names):
                     names_str += ", "
             form.submit.errors.append(
-                "The following members aren't present: " + names_str)
+                "The following members weren't present: " + names_str)
             flash('Power Rankings Failed to Create!', 'danger')
 
     close_db()
     return render_template("create_power_rankings.html", form=form)
+
+
+@app.route("/tools/list_all_power_rankings", methods=["GET", "POST"])
+@login_required
+def list_all_power_rankings():
+    if current_user.admin_privileges != 1:
+        return redirect(url_for('homepage'))
+
+    base_path = os.path.join(
+        app.root_path, "data", "power_rankings", str(CURRENT_SEASON))
+    power_rankings_path = str(base_path) + "/*"
+    reports = glob.glob(power_rankings_path)
+    files = [(os.path.basename(report), report, index)
+             for index, report in enumerate(reports)]
+    return render_template("power_rankings_admin.html", files=files)
+
+
+@app.route("/tools/delete_power_ranking/<string:filepath>")
+def delete_power_ranking(filepath):
+    if current_user.admin_privileges != 1:
+        return redirect(url_for('homepage'))
+
+    decoded = unquote(filepath)
+    os.remove(decoded)
+    flash("Power Rankings Deleted", "danger")
+    return redirect(url_for('list_all_power_rankings'))
 
 
 @app.route("/tools/list_all_users")

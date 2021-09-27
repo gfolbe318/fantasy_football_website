@@ -18,35 +18,17 @@
                 name="csrf_token"
                 value="{{ csrf_token() }}"
               />
-              <div class="row">
-                <div class="col-6">
-                  <div class="form-group">
-                    {{ form.week.label(class="form-control-md") }} {% if
-                    form.week.errors %} {{ form.week(class="form-control
-                    form-control-md is-invalid") }}
-                    <div class="invalid-feedback">
-                      {% for error in form.week.errors %}
-                      <span>{{ error }}</span>
-                      {% endfor %}
-                    </div>
-                    {% else %} {{ form.week(class="form-control
-                    form-control-md") }} {% endif %}
-                  </div>
+              <div class="form-group">
+                {{ form.week.label(class="form-control-md") }} {% if
+                form.week.errors %} {{ form.week(class="form-control
+                form-control-md is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.week.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
                 </div>
-                <div class="col-6">
-                  <div class="form-group">
-                    {{ form.year.label(class="form-control-md") }} {% if
-                    form.year.errors %} {{ form.year(class="form-control
-                    form-control-md is-invalid") }}
-                    <div class="invalid-feedback">
-                      {% for error in form.year.errors %}
-                      <span>{{ error }}</span>
-                      {% endfor %}
-                    </div>
-                    {% else %} {{ form.year(class="form-control
-                    form-control-md") }} {% endif %}
-                  </div>
-                </div>
+                {% else %} {{ form.week(class="form-control form-control-md") }}
+                {% endif %}
               </div>
               <div class="form-group">
                 {{ form.team_one.label(class="form-control-md") }} {% if
@@ -212,5 +194,5 @@
     </div>
   </div>
 </div>
-
+<script src="/static/js/add_power_rank_members.js"></script>
 {% endblock content %}
