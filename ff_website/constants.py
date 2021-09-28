@@ -70,8 +70,8 @@ CURRENT_SEASON_CARDS = [
     {
         "name": "Report of The Week",
         "filename": 'img/report.png',
-        "description": "Coming to you live from Lincoln, it's Jart's Report of the Week",
-        "link": 'current_season_standings'
+        "description": "Coming to you live from Lincoln, it's Jarrett's Report of the Week",
+        "link": 'current_season_report'
     },
     {
         "name": "Power Rankings",

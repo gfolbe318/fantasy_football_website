@@ -1,0 +1,53 @@
+{% extends "layout.html" %} {% block content %}
+<div class="container-fluid content">
+  <div class="row justify-content-center">
+    {% for card in cards %}
+    <div class="col-2 text-center">
+      <a href="{{url_for(card.link)}}">
+        <img
+          src="{{url_for('static', filename=card.filename)}}"
+          class="thumbnail"
+        />
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+  <hr class="separator" />
+  <h1>The Jarrett Report</h1>
+  <hr class="separator" />
+  {% if current_user.admin_privileges %}
+  <div class="row">
+    <div class="col-12 text-center">
+      <a href="{{url_for('create_jarrett_report')}}">
+        <button class="btn btn-success">Create Report</button>
+      </a>
+    </div>
+  </div>
+  {% endif %} {% if data is not none %}
+  <div class="row">
+    <div class="col">
+      <small>
+        For a list of all Jarrett Reports, including those from previous
+        seasons, head over to the
+        <a href="{{url_for('archives_home')}}">archives.</a>
+      </small>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <p class="post-title"><b>{{data.title}}</b></p>
+      <i
+        ><small class="text-muted"
+          ><b>Week {{data.week}}, {{data.season}} Season</b>
+        </small></i
+      >
+      <hr class="post-title-underline" />
+      {{data.report|safe}}
+      <hr class="post-title-underline" />
+    </div>
+    {% else %}
+    <h2>No report available at this time</h2>
+    {% endif %}
+  </div>
+</div>
+{% endblock content %}

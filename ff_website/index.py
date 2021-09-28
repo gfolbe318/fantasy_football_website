@@ -17,7 +17,7 @@ from ff_website.constants import *
 from ff_website.db import close_db, get_db
 from ff_website.forms import (CreateGame, CreateMember, CreatePowerRankings,
                               GameQualities, HeadToHead, LoginForm, RegistrationForm, SeasonSelector,
-                              SelectPowerRankWeek, MakeAnnouncement)
+                              SelectPowerRankWeek, MakeAnnouncement, JarrettReport)
 from ff_website.helper_functions import *
 from flask_login import login_user, logout_user, current_user, login_required, UserMixin
 from ff_website.credentials import accepted_admins
@@ -235,29 +235,6 @@ def members():
 
     close_db()
     return render_template("league_members.html", title="Current Members", cards=cards)
-
-
-@app.route("/archives/inactive_members", methods=["GET", "POST"])
-def inactive_members():
-    db = get_db()
-    data = db.execute(
-        f"""
-        SELECT * FROM member
-        WHERE {ACTIVE}=?
-        ORDER BY {LAST_NAME} ASC
-        """, (0,)
-    ).fetchall()
-    cards = []
-    for member in data:
-        cards.append({
-            MEMBER_ID: member[MEMBER_ID],
-            "name": f"{member[FIRST_NAME]} {member[LAST_NAME]}",
-            IMG_FILEPATH: url_for(
-                'static', filename=f"img/avatars/{member[IMG_FILEPATH]}")
-        })
-
-    close_db()
-    return render_template("league_members.html", title="Inactive Members", cards=cards)
 
 
 @app.route("/tools", methods=["GET", "POST"])
@@ -724,6 +701,7 @@ def add_games():
     return jsonify(games)
 
 
+# TODO: Prevent from creating a new power rankings without manually deleting the previous one
 @app.route("/tools/create_power_rankings", methods=["GET", "POST"])
 @login_required
 def create_power_rankings():
@@ -741,6 +719,15 @@ def create_power_rankings():
 
     form = CreatePowerRankings(year=CURRENT_SEASON)
     if form.validate_on_submit():
+        base_path = os.path.join(
+            app.root_path, "data", "power_rankings", str(CURRENT_SEASON))
+        files = glob.glob(base_path + "/*")
+        for file in files:
+            if str(parse_rankings_filename(file)) == str(form.week.data):
+                form.week.errors.append(
+                    "A power rankings for that week already exists for the current season. Please delete it before proceeding")
+                return render_template("create_power_rankings.html", form=form)
+
         team_one = form.team_one.data
         team_two = form.team_two.data
         team_three = form.team_three.data
@@ -761,9 +748,8 @@ def create_power_rankings():
 
         missing = actives_set - submitted_set
         if len(missing) == 0:
-            year = form.year.data
             week = form.week.data
-            file_name = f"power_rankings_week_{week}.json"
+            file_name = f"{CURRENT_SEASON}_power_rankings_week_{week}.json"
 
             query = db.execute(
                 f"""
@@ -777,13 +763,13 @@ def create_power_rankings():
                 names_dict[row[MEMBER_ID]] = name
 
             object = {
-                "year": year,
+                "year": CURRENT_SEASON,
                 "week": week,
                 "rankings": [names_dict[int(i)] for i in submitted]
             }
 
             file_path = os.path.join(
-                app.root_path, "data", "power_rankings", year)
+                app.root_path, "data", "power_rankings", str(CURRENT_SEASON))
             os.makedirs(file_path, exist_ok=True)
             json.dump(object, open(os.path.join(file_path, file_name), "w"))
             flash('Power Rankings Created!', 'success')
@@ -1476,6 +1462,59 @@ def season_summary():
                            standings=standings.to_html(classes="table table-striped"))
 
 
+@app.route("/archives/inactive_members", methods=["GET", "POST"])
+def inactive_members():
+    db = get_db()
+    data = db.execute(
+        f"""
+        SELECT * FROM member
+        WHERE {ACTIVE}=?
+        ORDER BY {LAST_NAME} ASC
+        """, (0,)
+    ).fetchall()
+    cards = []
+    for member in data:
+        cards.append({
+            MEMBER_ID: member[MEMBER_ID],
+            "name": f"{member[FIRST_NAME]} {member[LAST_NAME]}",
+            IMG_FILEPATH: url_for(
+                'static', filename=f"img/avatars/{member[IMG_FILEPATH]}")
+        })
+
+    close_db()
+    return render_template("league_members.html", title="Inactive Members", cards=cards)
+
+
+@app.route("/archives/archived_reports", methods=["GET", "POST"])
+def archived_reports():
+    archived_reports = []
+
+    base_path = os.path.join(app.root_path, "jarrett_reports")
+    reports = glob.glob(base_path + "/*/*")
+
+    for report in reports:
+        data = json.load(open(report, "r"))
+        archived_reports.append({
+            "title": data["title"],
+            "week": int(data["week"]),
+            "season": int(data["season"]),
+            "link": report
+        })
+
+    archived_reports.sort(key=lambda x: (x["season"], x["week"]))
+    organized_reports = OrderedDict()
+    for report in archived_reports:
+        season = report["season"]
+        if season not in organized_reports:
+            organized_reports[season] = [report]
+        else:
+            organized_reports[season].append(report)
+
+    print(organized_reports)
+
+    return render_template("archived_reports.html", organized_reports=organized_reports)
+
+
 @app.route("/current_season", methods=["GET", "POST"])
 def current_season():
     return render_template("current_season.html", cards=CURRENT_SEASON_CARDS)
@@ -1694,16 +1733,68 @@ def current_season_analytics():
 
 @app.route("/current_season/report", methods=["GET", "POST"])
 def current_season_report():
-    # TODO
-    return render_template("current_season_report.html", cards=CURRENT_SEASON_CARDS)
+    args = request.args
+    season = None
+    week = None
+    try:
+        season = args.get("season")
+        week = args.get("week")
+    except AttributeError:
+        print("Something went wrong getting args!")
+
+    base_path = os.path.join(
+        app.root_path, "jarrett_reports"
+    )
+    files = glob.glob(base_path + "/*/*")
+    if not files:
+        return render_template("current_season_report.html", data=None, cards=CURRENT_SEASON_CARDS)
+
+    helper = []
+    for file in files:
+        temp_week, temp_year = parse_jarrett_report_filename(
+            os.path.basename(file))
+        helper.append({
+            "week": str(temp_week),
+            "season": str(temp_year),
+            "filepath": file
+        })
+    helper.sort(key=lambda x: (int(x["season"]), int(x["week"])))
+
+    if week == None and season == None:
+        current_report = helper[-1]
+        data = json.load(open(current_report["filepath"]))
+    else:
+        for file in helper:
+            if file["week"] == week and file["season"] == season:
+                data = json.load(open(file["filepath"]))
+                break
+        else:
+            current_report = helper[-1]
+            data = json.load(open(current_report["filepath"]))
+
+    return render_template("current_season_report.html", data=data, cards=CURRENT_SEASON_CARDS)
 
 
 @app.route("/current_season/power_rankings", methods=["GET", "POST"])
 def current_season_power_rankings():
+    form = SelectPowerRankWeek()
     base_path = os.path.join(
         app.root_path, "data", "power_rankings", str(CURRENT_SEASON))
     power_rankings_path = str(base_path) + "/*"
     reports = glob.glob(power_rankings_path)
+
+    if not reports:
+        return render_template("current_season_power_rankings.html",
+                               week=None,
+                               current_info=None,
+                               form=form,
+                               cards=CURRENT_SEASON_CARDS
+                               )
+
+    helper = [(parse_rankings_filename(i), i) for i in reports]
+    helper.sort(key=lambda x: int(x[0]))
+
+    reports = [i[1] for i in helper]
 
     args = request.args
     try:
@@ -1723,7 +1814,6 @@ def current_season_power_rankings():
             current_info[member]["change"] = previous_info[member]["rank"] - \
                 current_info[member]["rank"]
 
-    form = SelectPowerRankWeek()
     if form.validate_on_submit():
         return redirect(url_for('current_season_power_rankings', week=form.week.data))
     return render_template("current_season_power_rankings.html",
@@ -1907,6 +1997,30 @@ def hall_of_fame():
                            top_3_most_top_scoring_weeks=top_3_most_top_scoring_weeks,
                            champions=champion_cards
                            )
+
+# TODO: Prevent from creating a new report without manually deleting the previous one
+
+
+@app.route("/tools/create_jarrett_report", methods=["GET", "POST"])
+@login_required
+def create_jarrett_report():
+    form = JarrettReport()
+    if form.validate_on_submit():
+        content = {
+            "title": form.title.data,
+            "season": CURRENT_SEASON,
+            "week": form.week.data,
+            "report": form.report.data
+        }
+        file_name = f"jarrett_report_{CURRENT_SEASON}_week_{form.week.data}.json"
+        base_path = os.path.join(
+            app.root_path, "jarrett_reports", str(CURRENT_SEASON))
+        os.makedirs(base_path, exist_ok=True)
+
+        json.dump(content, open(os.path.join(base_path, file_name), "w"))
+        flash('Power Rankings Created!', 'success')
+        return redirect(url_for('tools'))
+    return render_template("create_jarrett_report.html", form=form)
 
 
 @app.route("/apis/power_rankings_available", methods=["GET", "POST"])

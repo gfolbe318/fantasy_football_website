@@ -39,6 +39,7 @@ h1 {
 
 .content-home {
   padding-top: 1rem;
+  padding-bottom: 1rem;
   width: 100%;
   background-color: white;
 }
@@ -50,6 +51,7 @@ h1 {
   background-color: white;
   margin-top: 2rem;
   margin-bottom: 2rem;
+  padding-bottom: 10px;
 }
 
 @media (max-width: 550px) {

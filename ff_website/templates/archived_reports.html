@@ -1,0 +1,34 @@
+{% extends "layout.html" %} {% block content %}
+<div class="container-fluid content">
+  <div class="row">
+    <div class="col">
+      <hr class="separator" />
+      <h1>Archived Reports</h1>
+      <hr class="separator" />
+      <div class="row season_intro">
+        <div class="col">
+          {% for year, reports in organized_reports.items() %}
+          <ul>
+            <li>
+              {{year}}
+              <ul class="small-ul-padding">
+                {% for report in reports %}
+                <li>
+                  Week&nbsp;{{report.week}}&nbsp;-&nbsp
+                  <a
+                    href="{{ url_for('current_season_report', season=report.season, week=report.week )}}"
+                  >
+                    {{report.title}}
+                  </a>
+                </li>
+                {% endfor %}
+              </ul>
+            </li>
+          </ul>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

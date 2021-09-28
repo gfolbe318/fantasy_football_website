@@ -140,10 +140,8 @@ class CreateGame(FlaskForm):
 
 class CreatePowerRankings(FlaskForm):
     members = get_all_members_helper()
-    years = get_years_helper(2017, CURRENT_SEASON)
     weeks = get_weeks()
 
-    year = SelectField("Season", choices=years, validators=[DataRequired()])
     week = SelectField("Week", choices=weeks, validators=[DataRequired()])
 
     team_one = SelectField(
@@ -189,9 +187,18 @@ class MakeAnnouncement(FlaskForm):
     submit = SubmitField("Create Announcement")
 
 
+class JarrettReport(FlaskForm):
+    title = StringField('Title', validators=[DataRequired()])
+    week = SelectField('Week', choices=get_weeks(),
+                       validators=[DataRequired()])
+    report = TextAreaField(
+        'Report', validators=[DataRequired()])
+    submit = SubmitField('Create Report')
+
+
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[
-                           DataRequired(), Length(min=5, max=15, message="Username must be between 5 and 15 characters")])
+        DataRequired(), Length(min=5, max=15, message="Username must be between 5 and 15 characters")])
     email = StringField('Email address',
                         validators=[DataRequired(), Email()])
 

@@ -1063,3 +1063,14 @@ def hall_of_fame_helper(query):
         top_3_most_roto_points_all_time, \
         top_3_most_top_scoring_weeks, \
         champions
+
+
+def parse_jarrett_report_filename(file_name):
+    # input resembles: jarrett_report_2021_week_17.json
+
+    parts = file_name.split("_")
+    year = int(parts[2])
+    ending = parts[-1]
+    week = int(ending.split(".")[0])
+
+    return week, year

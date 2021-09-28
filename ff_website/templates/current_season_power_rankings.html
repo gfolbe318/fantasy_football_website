@@ -29,12 +29,16 @@
   {% if current_user.admin_privileges %}
   <div class="row text-center">
     <div class="col-12">
-      <button class="btn btn-success mb-4">Create Power Rankings</button>
+      <a href="{{url_for('create_power_rankings')}}">
+        <button class="btn btn-success mb-4">Create Power Rankings</button>
+      </a>
     </div>
   </div>
   {% endif %}
+
   <div class="row season_intro">
     <div class="col-12">
+      {% if week is not none %}
       <p>
         <u><b>Week {{week}} Power Rankings</b></u>
       </p>
@@ -51,8 +55,12 @@
         </li>
         {% endfor %}
       </ol>
+      {% else %}
+      <h2>No power rankings available at this time</h2>
+      {% endif %}
     </div>
   </div>
+  {% if week is not none %}
   <div class="row justify-content-center">
     <div class="col-12">
       <div class="form-body">
@@ -90,6 +98,7 @@
       </div>
     </div>
   </div>
+  {% endif %}
 </div>
 <script src="/static/js/add_power_rank_weeks.js"></script>
 
