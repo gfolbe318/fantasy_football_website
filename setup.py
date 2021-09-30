@@ -6,14 +6,28 @@ setup(
     packages=find_packages(),
     install_requires=[
         "autopep8",
+        "bcrypt",
+        "certifi",
+        "cffi",
         "click",
+        "chardet",
+        "dnspython",
+        "email-validator",
         "Flask",
-        "flask-CLI",
+        "Flask-Bcrypt"
+        "Flask-CLI",
+        "Flask-Login",
+        "Flask-WTF",
+        "idna",
+        "importlib-metadata",
+        "inflect",
         "itsdangerous",
-        "jinja2",
+        "Jinja2",
         "MarkupSafe",
+        "mccabe",
         "numpy",
         "pandas",
+        "Pillow",
         "pip",
         "pycodestyle",
         "python-dateutil"
@@ -21,8 +35,11 @@ setup(
         "setuptools",
         "six",
         "toml",
+        "typing-extensions",
+        "urllib3",
         "Werkzeug",
         "Flask-WTF",
-        "WTForms"
+        "WTForms",
+        "zipp"
     ],
 )
