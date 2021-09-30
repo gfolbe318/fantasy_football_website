@@ -1,26 +1,28 @@
-from datetime import datetime
-from pytz import timezone
 import glob
 import json
 import os
+from datetime import datetime
 from pathlib import Path
+from urllib.parse import unquote
 
 import inflect
 import pandas as pd
-from urllib.parse import unquote
 from flask import flash, jsonify, redirect, render_template, request, url_for
+from flask_login import (UserMixin, current_user, login_required, login_user,
+                         logout_user)
 from PIL import Image
+from pytz import timezone
 
 from ff_website import app, bcrypt
 from ff_website.apis import get_member_id
 from ff_website.constants import *
+from ff_website.credentials import accepted_admins
 from ff_website.db import close_db, get_db
 from ff_website.forms import (CreateGame, CreateMember, CreatePowerRankings,
-                              GameQualities, HeadToHead, LoginForm, RegistrationForm, SeasonSelector,
-                              SelectPowerRankWeek, MakeAnnouncement, JarrettReport)
+                              GameQualities, HeadToHead, JarrettReport,
+                              LoginForm, MakeAnnouncement, RegistrationForm,
+                              SeasonSelector, SelectPowerRankWeek)
 from ff_website.helper_functions import *
-from flask_login import login_user, logout_user, current_user, login_required, UserMixin
-from ff_website.credentials import accepted_admins
 
 
 class User(UserMixin):
@@ -117,7 +119,8 @@ def register():
             db.execute(
                 f"""
                 INSERT INTO user
-                ({USERNAME}, {EMAIL}, {PASSWORD}, {ADMIN_PRIVILEGES}, {ANNOUNCEMENT_PRIVILEGES})
+                ({USERNAME}, {EMAIL}, {PASSWORD}, {
+                 ADMIN_PRIVILEGES}, {ANNOUNCEMENT_PRIVILEGES})
                 VALUES(?, ?, ?, ?, ?)
                 """, (form.username.data, form.email.data, hashed_password, admin_privileges, announcement_privileges)
             )
@@ -701,7 +704,6 @@ def add_games():
     return jsonify(games)
 
 
-# TODO: Prevent from creating a new power rankings without manually deleting the previous one
 @app.route("/tools/create_power_rankings", methods=["GET", "POST"])
 @login_required
 def create_power_rankings():
@@ -834,8 +836,132 @@ def delete_power_ranking(filepath):
     return redirect(url_for('list_all_power_rankings'))
 
 
-@app.route("/tools/list_all_users")
+@app.route("/tools/create_jarrett_report", methods=["GET", "POST"])
 @login_required
+def create_jarrett_report():
+    if current_user.admin_privileges == 0:
+        return redirect(url_for('homepage'))
+
+    form = JarrettReport()
+    if form.validate_on_submit():
+        content = {
+            "title": form.title.data,
+            "season": CURRENT_SEASON,
+            "week": form.week.data,
+            "report": form.report.data
+        }
+        file_name = f"jarrett_report_{CURRENT_SEASON}_week_{form.week.data}.json"
+        base_path = os.path.join(
+            app.root_path, "jarrett_reports", str(CURRENT_SEASON))
+
+        os.makedirs(base_path, exist_ok=True)
+
+        full_path = os.path.join(base_path, file_name)
+        if os.path.exists(full_path):
+            form.week.errors.append('A report at this week already exists')
+
+        else:
+            json.dump(content, open(full_path, "w"))
+            flash('Jarrett Report Created!', 'success')
+            return redirect(url_for('current_season_report', week=form.week.data, season=CURRENT_SEASON))
+    return render_template("create_jarrett_report.html", form=form)
+
+
+@ app.route("/tools/delete_jarrett_report", methods=["GET", "POST"])
+@ login_required
+def delete_jarrett_report():
+
+    if current_user.admin_privileges == 0:
+        return redirect(url_for('homepage'))
+
+    args = request.args
+    season = None
+    week = None
+    try:
+        season = args.get("season")
+        week = args.get("week")
+    except AttributeError:
+        print("Something went wrong getting args!")
+
+    filename = f"jarrett_report_{season}_week_{week}.json"
+    base_path = os.path.join(
+        app.root_path, "jarrett_reports", str(season), filename
+    )
+
+    if os.path.exists(base_path):
+        os.remove(base_path)
+        flash("Report deleted!", "danger")
+    else:
+        flash("Report could not be deleted", "warning")
+
+    return redirect(url_for('archived_reports'))
+
+
+@app.route("/tools/update_jarrett_report", methods=["GET", "POST"])
+@login_required
+def update_jarrett_report():
+    form = JarrettReport()
+    args = request.args
+    season = None
+    week = None
+    try:
+        season = args.get("season")
+        week = args.get("week")
+    except AttributeError:
+        print("Something went wrong getting args!")
+
+    filename = f"jarrett_report_{season}_week_{week}.json"
+    base_path = os.path.join(
+        app.root_path, "jarrett_reports", str(season), filename
+    )
+
+    if os.path.exists(base_path):
+
+        data = json.load(open(base_path, "r"))
+        report = data["report"]
+        title = data["title"]
+        week = data["week"]
+
+        form = JarrettReport(week=week, title=title, report=report)
+        if form.validate_on_submit():
+            if form.week.data != week:
+                new_filename = f"jarrett_report_{season}_week_{form.week.data}.json"
+
+                if os.path.exists(os.path.join(app.root_path, "jarrett_reports", str(season), new_filename)):
+                    form.week.errors.append(
+                        "A report for this week already exists")
+                    return render_template("update_jarrett_report.html", form=form)
+                else:
+                    os.remove(os.path.join(app.root_path,
+                                           "jarrett_reports", str(season), filename))
+
+            content = {
+                "title": form.title.data,
+                "season": CURRENT_SEASON,
+                "week": form.week.data,
+                "report": form.report.data
+            }
+            file_name = f"jarrett_report_{CURRENT_SEASON}_week_{form.week.data}.json"
+            base_path = os.path.join(
+                app.root_path, "jarrett_reports", str(CURRENT_SEASON))
+
+            json.dump(content, open(
+                os.path.join(base_path, file_name), "w"))
+            if form.title.data == title and form.report.data == report and form.week.data == week:
+                flash('Report unchanged', 'warning')
+                return redirect(url_for('current_season_report', week=form.week.data, season=CURRENT_SEASON))
+            else:
+                flash('Jarrett report updated successfully!', 'success')
+                return redirect(url_for('current_season_report', week=form.week.data, season=CURRENT_SEASON))
+
+    else:
+        flash("Report doesn't exist", "warning")
+        return redirect(url_for('homepage'))
+    return render_template("update_jarrett_report.html", form=form)
+
+
+@ app.route("/tools/list_all_users")
+@ login_required
 def list_all_users():
     db = get_db()
     query = db.execute(
@@ -1510,8 +1636,6 @@ def archived_reports():
         else:
             organized_reports[season].append(report)
 
-    print(organized_reports)
-
     return render_template("archived_reports.html", organized_reports=organized_reports)
 
 
@@ -1916,7 +2040,7 @@ def update_announcement(announcement_id):
         """, (announcement_id,)
     ).fetchone()
     current_title = query[TITLE]
-    current_ann = query[TITLE]
+    current_ann = query[ANNOUNCEMENT]
 
     form = MakeAnnouncement(
         title=current_title, announcement=current_ann)
@@ -1997,30 +2121,6 @@ def hall_of_fame():
                            top_3_most_top_scoring_weeks=top_3_most_top_scoring_weeks,
                            champions=champion_cards
                            )
-
-# TODO: Prevent from creating a new report without manually deleting the previous one
-
-
-@app.route("/tools/create_jarrett_report", methods=["GET", "POST"])
-@login_required
-def create_jarrett_report():
-    form = JarrettReport()
-    if form.validate_on_submit():
-        content = {
-            "title": form.title.data,
-            "season": CURRENT_SEASON,
-            "week": form.week.data,
-            "report": form.report.data
-        }
-        file_name = f"jarrett_report_{CURRENT_SEASON}_week_{form.week.data}.json"
-        base_path = os.path.join(
-            app.root_path, "jarrett_reports", str(CURRENT_SEASON))
-        os.makedirs(base_path, exist_ok=True)
-
-        json.dump(content, open(os.path.join(base_path, file_name), "w"))
-        flash('Power Rankings Created!', 'success')
-        return redirect(url_for('tools'))
-    return render_template("create_jarrett_report.html", form=form)
 
 
 @app.route("/apis/power_rankings_available", methods=["GET", "POST"])

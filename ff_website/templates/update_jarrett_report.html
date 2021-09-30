@@ -1,0 +1,80 @@
+<!--
+https://word2cleanhtml.com/ is a good tool to use for converting word docs into readable html
+Remember to go through and clean the document before submitting to the cleaner, and once html
+is cleaned, don't forget to go back and update the headers.
+-->
+
+{% extends "layout.html" %} {% block content %}
+<div class="container-fluid content">
+  <div class="row justify-content-center">
+    <div class="col-12">
+      <div class="form-body">
+        <div class="content-section">
+          <form
+            novalidate="novalidate"
+            method="POST"
+            action=""
+            autocomplete="off"
+          >
+            <fieldset class="form-group">
+              <legend>Update a Jarrett Report</legend>
+              <input
+                type="hidden"
+                name="csrf_token"
+                value="{{ csrf_token() }}"
+              />
+              <div class="row">
+                <div class="col-lg-6 col-sm-12">
+                  <div class="form-group">
+                    {{ form.title.label(class="form-control-md") }} {% if
+                    form.title.errors %} {{ form.title(class="form-control
+                    form-control-md is-invalid") }}
+                    <div class="invalid-feedback">
+                      {% for error in form.title.errors %}
+                      <span>{{ error }}</span>
+                      {% endfor %}
+                    </div>
+                    {% else %} {{ form.title(class="form-control
+                    form-control-md") }} {% endif %}
+                  </div>
+                </div>
+
+                <div class="col-lg-6 col-sm-12">
+                  <div class="form-group">
+                    {{ form.week.label(class="form-control-md") }} {% if
+                    form.week.errors %} {{ form.week(class="form-control
+                    form-control-md is-invalid") }}
+                    <div class="invalid-feedback">
+                      {% for error in form.week.errors %}
+                      <span>{{ error }}</span>
+                      {% endfor %}
+                    </div>
+                    {% else %} {{ form.week(class="form-control
+                    form-control-md") }} {% endif %}
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                {{ form.report.label(class="form-control-md") }} {% if
+                form.report.errors %} {{ form.report(class="form-control
+                form-control-md is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.report.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+                {% else %} {{ form.report(class="form-control form-control-md")
+                }} {% endif %}
+              </div>
+            </fieldset>
+            <div class="form-group">
+              {{ form.submit(class="btn btn-outline-info")}}
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
