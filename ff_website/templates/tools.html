@@ -1,6 +1,9 @@
 {% extends "layout.html" %}{% block content %}
 
 <div class="container-fluid content">
+  <hr class="separator" />
+  <h1>Tools</h1>
+  <hr class="separator" />
   <div class="row justify-content-center text-center">
     <div class="col-lg-6 col-sm-10">
       <div class="list-group">
@@ -13,7 +16,7 @@
         <a href="{{ url_for('list_members') }}" class="list-group-item">
           <h5 class="mb-1">Update a member</h5>
         </a>
-        <a href="{{url_for('list_games') }}" class="list-group-item">
+        <a href="{{url_for('list_all_seasons') }}" class="list-group-item">
           <h5 class="mb-1">Update a game</h5>
         </a>
       </div>

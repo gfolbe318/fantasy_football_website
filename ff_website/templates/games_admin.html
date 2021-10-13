@@ -57,8 +57,10 @@ df.iterrows() %}
           <td>{{value['Week']}}</td>
           <td>{{value['Playoffs']}}</td>
           <td>{{value['Team_A_id']}}</td>
+          <td>{{value['Team_A_name']}}</td>
           <td>{{value['Team_A_score']}}</td>
           <td>{{value['Team_B_id']}}</td>
+          <td>{{value['Team_B_name']}}</td>
           <td>{{value['Team_B_score']}}</td>
           <td>
             <a href="{{url_for('update_game', game_id=value['id'])}}"

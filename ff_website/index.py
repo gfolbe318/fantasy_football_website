@@ -397,21 +397,47 @@ def delete_member(member_id):
     return redirect(url_for('tools'))
 
 
-@app.route("/tools/list_all_games", methods=["GET", "POST"])
+@app.route("/tools/list_all_seasons", methods=["GET", "POST"])
 @login_required
-def list_games():
+def list_all_seasons():
+    db = get_db()
+    query = db.execute(
+        f"""
+        SELECT {SEASON}
+        FROM game
+        """
+    )
+    seasons = set()
+    for row in query:
+        seasons.add(row[SEASON])
+    close_db()
+    return render_template("list_all_seasons.html", seasons=seasons)
+
+
+@app.route("/tools/list_all_games/<string:season>", methods=["GET", "POST"])
+@login_required
+def list_games(season):
 
     if not current_user.admin_privileges:
         return redirect(url_for('homepage'))
 
+    print(season)
+
     db = get_db()
     all_games = db.execute(
-        """
-        SELECT * FROM game
-        """
+        f"""
+        SELECT game_id, team_A_id, team_B_id, team_A_score, team_B_score, season, week, matchup_length, playoffs,
+        t2.first_name as team_A_first_name, t2.last_name as team_A_last_name, t3.first_name as team_B_first_name, t3.last_name as team_B_last_name
+        FROM game
+        INNER JOIN member t2
+        ON t2.member_id = team_A_id
+        INNER JOIN member t3
+        ON t3.member_id = team_B_id
+        WHERE {SEASON}=?
+        """, (season,)
     ).fetchall()
     df = pd.DataFrame(columns=["id", "Season", "Week", "Playoffs",
-                               "Team_A_id", "Team_A_score", "Team_B_id", "Team_B_score", "Edit", "Delete"])
+                               "Team_A_id", "Team_A_name", "Team_A_score", "Team_B_id", "Team_B_name", "Team_B_score", "Edit", "Delete"])
 
     for index, element in enumerate(all_games):
         df.loc[index] = [
@@ -420,8 +446,10 @@ def list_games():
             element[WEEK],
             element[PLAYOFFS],
             element[TEAM_A_ID],
+            element["team_A_first_name"] + " " + element["team_A_last_name"],
             element[TEAM_A_SCORE],
             element[TEAM_B_ID],
+            element["team_B_first_name"] + " " + element["team_B_last_name"],
             element[TEAM_B_SCORE],
             "Placeholder",
             "Placeholder"
