@@ -72,7 +72,7 @@ def get_all_data():
     for game in games2017:
         all_games.append(game)
 
-    for year in ["2018", "2019", "2020"]:
+    for year in ["2018", "2019", "2020", "2021"]:
         data = get_data_one_week_playoffs(year)
         json.dump(data, open(f"data\\{year}games.json", "w"), indent=4)
         for game in data:

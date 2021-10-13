@@ -1,0 +1,89 @@
+{% extends "layout.html" %} {% block content %}
+<div
+  class="modal fade"
+  id="confirm"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">
+          Are you sure you want to update this table? {{num_changes}} rows will
+          be written!
+        </h5>
+        <div class="modal-body">
+          <p>
+            This is going to be very annoying to undo! Please proceed with
+            caution :)
+          </p>
+        </div>
+
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          No, go back.
+        </button>
+        <a href="{{url_for('fetch_games', write='hard', year=year)}}">
+          <button type="button" class="btn btn-primary">Yes</button>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container-fluid content">
+  <div class="row">
+    <div class="col">
+      <hr class="separator" />
+      <h1>{{year}} Data Fetcher</h1>
+      <hr class="separator" />
+      {% if write == false %}
+      <h4 class="mb-4">You are currently viewing a preview</h4>
+      {% else %}
+      <h4 class="mb-4">The following rows have been changed</h4>
+      {% endif %}
+      <div class="row justify-content-center mb-4">
+        <div class="col-12">
+          <h5>Updates</h5>
+          <div class="table-responsive justify-content-center">
+            {{updates|safe}}
+          </div>
+        </div>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-12">
+          <h5>Additions</h5>
+          <div class="table-responsive justify-content-center">
+            {{additions|safe}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row text-center">
+    <div class="col-12">
+      <button
+        class="btn btn-lg btn-warning mt-2"
+        data-toggle="modal"
+        data-target="#confirm"
+      >
+        Write changes
+      </button>
+      <a href="{{url_for('fetch_games', write='soft', year=year)}}">
+        <button class="btn btn-lg btn-success mt-2">Preview Changes</button>
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock content %}

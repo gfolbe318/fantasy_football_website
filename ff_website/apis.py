@@ -1,4 +1,4 @@
-from ff_website.db import get_db, init_db
+from ff_website.db import get_db, init_db, close_db
 from ff_website import app
 from ff_website.constants import *
 
@@ -23,6 +23,6 @@ def get_member_id(first_name, last_name):
             (first_name, last_name)
         ).fetchall()
 
-        db.close()
+        close_db()
 
         return member_id[0][MEMBER_ID]

@@ -1,0 +1,20 @@
+{% extends "layout.html" %}{% block content %}
+<div class="container-fluid content">
+  <hr class="separator" />
+  <h1>Select a Season to Fetch Data</h1>
+  <hr class="separator" />
+  <div class="row justify-content-center">
+    <div class="col-6">
+      <ul class="list-group text-center">
+        {% for season in seasons %}
+        <a href="{{url_for('fetch_games', write='soft', year=season)}}">
+          <li class="list-group-item mb-2 list-group-item-action">
+            {{season}}
+          </li>
+        </a>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock content %}

@@ -1,6 +1,7 @@
 import glob
 import json
 import os
+import requests
 from datetime import datetime
 from pathlib import Path
 from urllib.parse import unquote
@@ -16,7 +17,7 @@ from pytz import timezone
 from ff_website import app, bcrypt
 from ff_website.apis import get_member_id
 from ff_website.constants import *
-from ff_website.credentials import accepted_admins
+from ff_website.credentials import accepted_admins, cookies
 from ff_website.db import close_db, get_db
 from ff_website.forms import (CreateGame, CreateMember, CreatePowerRankings,
                               GameQualities, HeadToHead, JarrettReport,
@@ -403,13 +404,11 @@ def list_all_seasons():
     db = get_db()
     query = db.execute(
         f"""
-        SELECT {SEASON}
+        SELECT DISTINCT {SEASON}
         FROM game
         """
     )
-    seasons = set()
-    for row in query:
-        seasons.add(row[SEASON])
+    seasons = [x[SEASON] for x in query]
     close_db()
     return render_template("list_all_seasons.html", seasons=seasons)
 
@@ -434,6 +433,9 @@ def list_games(season):
         INNER JOIN member t3
         ON t3.member_id = team_B_id
         WHERE {SEASON}=?
+        ORDER BY 
+        {SEASON} ASC,
+        {WEEK} ASC
         """, (season,)
     ).fetchall()
     df = pd.DataFrame(columns=["id", "Season", "Week", "Playoffs",
@@ -692,44 +694,10 @@ def add_league_members():
 @app.route("/tools/add_all_games", methods=["GET", "POST"])
 @login_required
 def add_games():
+    # Hard coded so that we can load data for years if there's no existing data
+    seasons = [x for x in range(2017, CURRENT_SEASON + 1)]
 
-    if not current_user.admin_privileges:
-        return redirect(url_for('homepage'))
-
-    db = get_db()
-
-    # Clear table
-    db.execute(
-        """
-        DELETE FROM game
-        """
-    )
-    db.commit()
-    games = json.load(open(games_data, "r"))
-
-    for game in games:
-        first_name_home, last_name_home = game[HOME_TEAM].split(" ")
-        member_id_home = get_member_id(first_name_home, last_name_home)
-
-        first_name_away, last_name_away = game[AWAY_TEAM].split(" ")
-        member_id_away = get_member_id(first_name_away, last_name_away)
-
-        db = get_db()
-        db.execute(
-            f"""
-            INSERT INTO game(
-                {TEAM_A_SCORE}, {TEAM_B_SCORE}, {SEASON}, {WEEK},
-                {MATCHUP_LENGTH}, {PLAYOFFS}, {TEAM_A_ID}, {TEAM_B_ID}
-            ) VALUES(?, ?, ?, ?, ?, ?, ?, ?)
-            """,
-            (game[HOME_SCORE], game[AWAY_SCORE],
-             game[SEASON], game[WEEK], game[MATCHUP_LENGTH],
-             game[PLAYOFFS], member_id_home, member_id_away)
-        )
-        db.commit()
-
-    close_db()
-    return jsonify(games)
+    return render_template("fetch_season_data_selector.html", seasons=seasons)
 
 
 @app.route("/tools/create_power_rankings", methods=["GET", "POST"])
@@ -1098,7 +1066,7 @@ def get_member_info(member_id):
     year_joined = member_info[YEAR_JOINED]
 
     all_games_for_member = db.execute(
-        """
+        f"""
             SELECT team_A_score, team_B_score, season, week, matchup_length, playoffs,
             t2.first_name as team_A_first_name, t2.last_name as team_A_last_name, t3.first_name as team_B_first_name, t3.last_name as team_B_last_name, t3.year_joined
             FROM game
@@ -1107,11 +1075,15 @@ def get_member_info(member_id):
             INNER JOIN member t3
             ON t3.member_id = team_B_id
             WHERE team_A_id=? OR team_B_id=?
+            ORDER BY 
+            {SEASON} ASC,
+            {WEEK} ASC
+
         """, (member_id, member_id)
     ).fetchall()
 
     all_games = db.execute(
-        """
+        f"""
             SELECT team_A_score, team_B_score, season, week, matchup_length, playoffs,
             t2.first_name as team_A_first_name, t2.last_name as team_A_last_name, t3.first_name as team_B_first_name, t3.last_name as team_B_last_name, t3.year_joined
             FROM game
@@ -1205,6 +1177,9 @@ def h2h():
             INNER JOIN member t3
             ON t3.member_id = team_B_id
             WHERE team_A_id = ? AND team_B_id = ? OR team_A_id = ? AND team_B_id = ?
+            ORDER BY 
+            {SEASON} ASC,
+            {WEEK} ASC
             """, (member_one_id, member_two_id,
                   member_two_id, member_one_id)
         ).fetchall()
@@ -1592,6 +1567,9 @@ def season_summary():
             INNER JOIN member t3
             ON t3.member_id = team_B_id
             WHERE season=?
+            ORDER BY 
+            {SEASON} ASC,
+            {WEEK} ASC
             """, (year,)
         ).fetchall()
         if len(query) == 0 or int(year) == CURRENT_SEASON:
@@ -1685,6 +1663,9 @@ def current_season_info():
             INNER JOIN member t3
             ON t3.member_id = team_B_id
             WHERE season=?
+            ORDER BY 
+            {SEASON} ASC,
+            {WEEK} ASC
             """, (CURRENT_SEASON,)
     ).fetchall()
 
@@ -1723,6 +1704,9 @@ def current_season_payouts():
             INNER JOIN member t3
             ON t3.member_id = team_B_id
             WHERE season=?
+            ORDER BY 
+            {SEASON} ASC,
+            {WEEK} ASC
             """, (CURRENT_SEASON,)
     ).fetchall()
 
@@ -1777,6 +1761,9 @@ def current_season_payouts():
             INNER JOIN member t3
             ON t3.member_id = team_B_id
             WHERE season=?
+            ORDER BY 
+            {SEASON} ASC,
+            {WEEK} ASC
             """, (CURRENT_SEASON,)
     ).fetchall()
 
@@ -1871,6 +1858,9 @@ def current_season_analytics():
             INNER JOIN member t3
             ON t3.member_id = team_B_id
             WHERE season=? AND playoffs=?
+            ORDER BY 
+            {SEASON} ASC,
+            {WEEK} ASC
             """, (CURRENT_SEASON, 0)
     ).fetchall()
 
@@ -2109,6 +2099,9 @@ def hall_of_fame():
             ON t2.member_id = team_A_id
             INNER JOIN member t3
             ON t3.member_id = team_B_id
+            ORDER BY 
+            {SEASON} ASC,
+            {WEEK} ASC
             """
     ).fetchall()
     top_3_most_points_all_time, \
@@ -2206,3 +2199,139 @@ def get_all_members():
 
     close_db()
     return jsonify(response)
+
+
+@login_required
+@app.route("/apis/fetch_games", methods=["GET", "POST"])
+def fetch_games():
+    year, write = None, None
+
+    args = request.args
+    try:
+        year = args.get("year")
+        write = args.get("write") == "hard"
+    except AttributeError as e:
+        print("Something went wrong getting the args!", e)
+
+    data_path = os.path.join(app.root_path, "data", f"{year}games.json")
+
+    if year != str(CURRENT_SEASON):
+        data = json.load(open(data_path, "r"))
+    else:
+        try:
+            ID = league_IDs[year]
+
+            base_url = f"https://fantasy.espn.com/apis/v3/games/ffl/seasons/{year}/segments/0/leagues/{ID}"
+            r = requests.get(url=base_url,
+                             params={"view": "mMatchupScore"},
+                             cookies=cookies)
+            d = r.json()
+            member_ids_path = os.path.join(
+                app.root_path, "data", "member_ids.json")
+            data = json.load(open(member_ids_path, "r"))
+            member_ids = data[year]
+
+            data = get_data_one_week_playoffs(d, member_ids, year)
+            if write:
+                json.dump(data, open(data_path, "w"), indent=4)
+                all_data_path = os.path.join(
+                    app.root_path, "data", f"all_games.json")
+                all_data = json.load(open(all_data_path, "r"))
+                all_data.extend(data)
+                json.dump(all_data, open(all_data_path, "w"), indent=4)
+
+        except Exception as e:
+            print("Something went wrong fetching new games!")
+            data = []
+
+    if data:
+        new_additions = []
+        updates = []
+        for game in data:
+            first_name_home, last_name_home = game[HOME_TEAM].split(" ")
+            member_id_home = get_member_id(first_name_home, last_name_home)
+
+            first_name_away, last_name_away = game[AWAY_TEAM].split(" ")
+            member_id_away = get_member_id(first_name_away, last_name_away)
+            db = get_db()
+            query = db.execute(
+                f"""
+                SELECT * FROM game
+                WHERE season=? AND week=?
+                AND (team_A_id = ? AND team_B_id = ? OR team_A_id = ? AND team_B_id = ?)                
+                """, (year, game[WEEK], member_id_home, member_id_away, member_id_away, member_id_home)
+            ).fetchone()
+            if query:
+                if query[TEAM_A_SCORE] == game["home_score"] and query[TEAM_B_SCORE] == game["away_score"]:
+                    continue
+                else:
+                    if write:
+                        db.execute(
+                            f"""
+                            UPDATE game
+                            SET 
+                            {TEAM_A_SCORE}=?, 
+                            {TEAM_B_SCORE}=?
+                            WHERE
+                            {GAME_ID}=?
+                            """, (game["home_score"], game["away_score"], query[GAME_ID])
+                        )
+                        db.commit()
+
+                    game["home_team_id"] = member_id_home
+                    game["away_team_id"] = member_id_away
+                    updates.append(game)
+            else:
+                if write:
+                    db.execute(
+                        f"""
+                        INSERT INTO game(
+                            {TEAM_A_SCORE}, {TEAM_B_SCORE}, {SEASON}, {WEEK},
+                            {MATCHUP_LENGTH}, {PLAYOFFS}, {TEAM_A_ID}, {TEAM_B_ID}
+                        ) VALUES(?, ?, ?, ?, ?, ?, ?, ?)
+                        """,
+                        (game[HOME_SCORE], game[AWAY_SCORE],
+                            game[SEASON], game[WEEK], game[MATCHUP_LENGTH],
+                            game[PLAYOFFS], member_id_home, member_id_away)
+                    )
+                    db.commit()
+
+                game["home_team_id"] = member_id_home
+                game["away_team_id"] = member_id_away
+                new_additions.append(game)
+
+            close_db()
+
+    columns = ["Season", "Week", "Team A Name",
+               "Team A Score", "Team B Name", "Team B Score"]
+    updated_df = pd.DataFrame(columns=columns)
+    additions_df = pd.DataFrame(columns=columns)
+
+    for row in updates:
+        updated_df.loc[len(updated_df.index)] = [
+            row[SEASON],
+            row[WEEK],
+            row["home_team"],
+            row["home_score"],
+            row["away_team"],
+            row["away_score"]
+        ]
+    updated_html = updated_df.to_html(classes="table table-striped")
+
+    for row in new_additions:
+        additions_df.loc[len(additions_df)] = [
+            row[SEASON],
+            row[WEEK],
+            row["home_team"],
+            row["home_score"],
+            row["away_team"],
+            row["away_score"]
+        ]
+    additions_html = additions_df.to_html(classes="table table-striped")
+
+    return render_template("fetch_games_results.html",
+                           year=year,
+                           write=write,
+                           updates=updated_html,
+                           additions=additions_html,
+                           num_changes=len(updates) + len(new_additions))

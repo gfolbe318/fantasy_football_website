@@ -1076,3 +1076,41 @@ def parse_jarrett_report_filename(file_name):
     week = int(ending.split(".")[0])
 
     return week, year
+
+
+def get_data_one_week_playoffs(data, member_ids, year):
+    all_games = []
+
+    for game in data["schedule"]:
+        if game["playoffTierType"] == "WINNERS_BRACKET" \
+                or game["playoffTierType"] == "NONE":
+            week = game["matchupPeriodId"]
+
+            home_team_member = member_ids[str(game["home"]["teamId"])]
+            home_score = game["home"]["totalPoints"]
+
+            # Account for bye weeks
+            if "away" in game:
+                away_team_member = member_ids[str(game["away"]["teamId"])]
+                away_score = game["away"]["totalPoints"]
+
+                # Account for weird bug that makes week 14 the playoffs
+                if game["playoffTierType"] == "NONE" or game['winner'] == "UNDECIDED":
+                    playoffs = False
+                elif game["playoffTierType"] == "WINNERS_BRACKET":
+                    playoffs = True
+
+                if home_score > 0 and away_score > 0:
+                    all_games.append(
+                        {"season": year,
+                         "week": week,
+                         "matchup_length": 1,
+                         "playoffs": playoffs,
+                         "home_team": home_team_member,
+                         "home_score": home_score,
+                         "away_team": away_team_member,
+                         "away_score": away_score
+                         }
+                    )
+
+    return all_games
