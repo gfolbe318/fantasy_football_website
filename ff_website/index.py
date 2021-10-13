@@ -1672,8 +1672,8 @@ def current_season():
     return render_template("current_season.html", cards=CURRENT_SEASON_CARDS)
 
 
-@app.route("/current_season/standings", methods=["GET", "POST"])
-def current_season_standings():
+@app.route("/current_season/season_info", methods=["GET", "POST"])
+def current_season_info():
     db = get_db()
     query = db.execute(
         f"""
@@ -1690,6 +1690,9 @@ def current_season_standings():
 
     standings, ranks = get_standings(query)
     standings_html = standings.to_html(classes="table table-striped")
+    all_weeks = get_all_week_results(query)
+    playoffs = get_playoff_results_for_season_summary(query)
+    print(playoffs)
 
     roto = get_roto(query)
     roto_html = roto.to_html(classes="table table-striped")
@@ -1698,11 +1701,13 @@ def current_season_standings():
         standings, ranks, roto, 6, 1)
 
     close_db()
-    return render_template("current_season_standings.html",
+    return render_template("current_season_info.html",
                            cards=CURRENT_SEASON_CARDS,
                            standings=standings_html,
                            roto=roto_html,
-                           matchups=matchups)
+                           matchups=matchups,
+                           all_weeks=all_weeks,
+                           playoffs=playoffs)
 
 
 @app.route("/current_season/payouts", methods=["GET", "POST"])

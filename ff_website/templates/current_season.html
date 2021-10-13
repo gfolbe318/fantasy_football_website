@@ -8,7 +8,7 @@
       <p class="season_intro">
         While most relevant information for our league can be found on our ESPN
         homepage, click on one of the links for a deeper dive into our current
-        season. The "Standings", "Payouts", and "Analytics" pages are all
+        season. The "Season Info", "Payouts", and "Analytics" pages are all
         updated in real time, whereas the power rankings and weekly reports are
         updated on a weekly basis.
       </p>
@@ -18,7 +18,7 @@
     <div class="col-lg-12 col-md-12">
       <div class="row text-center justify-content-center">
         {% for card in cards %}
-        <div class="col-lg-4 col-md-6 col-sm-12 d-flex align-items-stretch">
+        <div class="col-lg-4 col-sm-6 d-flex align-items-stretch">
           <div class="card mb-4 ml-2 mr-2 mt-4">
             <a href="{{url_for(card.link)}}">
               <img

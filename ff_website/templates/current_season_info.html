@@ -13,7 +13,7 @@
     {% endfor %}
   </div>
   <hr class="separator" />
-  <h1>2021 Standings</h1>
+  <h1>2021 Season Info</h1>
   <hr class="separator" />
   <div class="season_intro">
     <div class="row">
@@ -42,7 +42,7 @@
           <li>{{matchups[3]}}&nbsp;vs&nbsp;{{matchups[4]}}</li>
         </ul>
         <small
-          ><i> "*" indicates a team qualified for the playoffs via roto.</i>
+          ><i>"*" indicates a team qualified for the playoffs via roto.</i>
         </small>
       </div>
     </div>
@@ -65,5 +65,39 @@
       <div class="table-responsive justify-content-center">{{roto|safe}}</div>
     </div>
   </div>
+  <div class="row justify-content-center">
+    <div class="col-12">
+      <hr class="separator" />
+      <h2>Results</h2>
+      <hr class="separator" />
+      <div class="row">
+        {% for week, results in all_weeks.items() %}
+        <div class="col-lg-6 col-md-12">
+          <h4>Week {{week}}</h4>
+          <div class="table-responsive justify-content-center">
+            {{results|safe}}
+          </div>
+        </div>
+        {%endfor %}
+      </div>
+    </div>
+  </div>
+  {% if playoffs is not none %}
+  <div class="row justify-content-center">
+    <div class="col-12">
+      <hr class="separator" />
+      <h2>Playoffs</h2>
+      <hr class="separator" />
+      {% for week, results in playoffs.items() %}
+      <div class="col-12">
+        <h4>{{week}}</h4>
+        <div class="table-responsive justify_content_center">
+          {{results|safe}}
+        </div>
+      </div>
+      {%endfor%}
+    </div>
+  </div>
+  {% endif %}
 </div>
 {% endblock content %}

@@ -50,10 +50,10 @@ games_data = "ff_website\data\\all_games.json"
 
 CURRENT_SEASON_CARDS = [
     {
-        "name": "Standings",
+        "name": "Season Info",
         "filename": 'img/standings.png',
-        "description": "View the current standings, roto, and playoff picture",
-        "link": 'current_season_standings'
+        "description": "View the current standings, roto, playoff picture, and this year's results",
+        "link": 'current_season_info'
     },
     {
         "name": "Payouts",

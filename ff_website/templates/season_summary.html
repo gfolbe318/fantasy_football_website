@@ -79,8 +79,8 @@
   <div class="row">
     {% for week, results in all_weeks.items() %}
     <div class="col-lg-6 col-md-12">
+      <h4>Week {{week}}</h4>
       <div class="table-responsive justify-content-center">
-        <h4>Week {{week}}</h4>
         {{results|safe}}
       </div>
     </div>
@@ -92,8 +92,8 @@
   <div class="row">
     {% for week, results in playoffs.items() %}
     <div class="col-12">
+      <h4>{{week}}</h4>
       <div class="table-responsive justify_content_center">
-        <h4>{{week}}</h4>
         {{results|safe}}
       </div>
     </div>

@@ -570,6 +570,8 @@ def get_playoff_results_for_season_summary(query):
     df = pd.DataFrame(columns=["Winning Team", "Losing Team", "Score"])
 
     playoffs_raw = get_playoffs(query)
+    if not playoffs_raw:
+        return None
     playoff_round_names = {}
     weeks = list(playoffs_raw.keys())
     if len(playoffs_raw) == 2:
