@@ -143,7 +143,7 @@ def register():
             return redirect(url_for('homepage'))
 
     close_db()
-    return render_template("register.html", form=form)
+    return render_template("register.html", form=form, title="Register")
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -177,7 +177,7 @@ def login():
                 "No account is associated with that username or email address")
 
     close_db()
-    return render_template('login.html', form=form)
+    return render_template('login.html', form=form, title="Login")
 
 
 @app.route("/logout", methods=["GET", "POST"])
@@ -215,7 +215,7 @@ def homepage():
             "link": "https://fantasy.espn.com/football/league?leagueId=50890012"
         }
     ]
-    return render_template("home.html", ql=links)
+    return render_template("home.html", ql=links, title="Home")
 
 
 @app.route("/members", methods=["GET", "POST"])
@@ -248,7 +248,7 @@ def tools():
     if not current_user.admin_privileges:
         return redirect(url_for('homepage'))
 
-    return render_template("tools.html")
+    return render_template("tools.html", title="Tools")
 
 
 @app.route("/tools/list_all_members", methods=["GET", "POST"])
@@ -266,7 +266,7 @@ def list_members():
     ).fetchall()
     close_db()
     data = jsonify_members(all_members)
-    return render_template("members_admin.html", data=data)
+    return render_template("members_admin.html", data=data, title="Members Admin")
 
 
 @app.route("/tools/update_member/<int:member_id>", methods=["GET", "POST"])
@@ -336,7 +336,8 @@ def update_member(member_id):
                            first_name=first_name,
                            last_name=last_name,
                            year_joined=year_joined,
-                           status=status)
+                           status=status,
+                           title="Update a Member")
 
 
 @app.route("/tools/delete_member/<int:member_id>", methods=["GET", "POST"])
@@ -410,7 +411,7 @@ def list_all_seasons():
     )
     seasons = [x[SEASON] for x in query]
     close_db()
-    return render_template("list_all_seasons.html", seasons=seasons)
+    return render_template("list_all_seasons.html", seasons=seasons, title="All Seasons")
 
 
 @app.route("/tools/list_all_games/<string:season>", methods=["GET", "POST"])
@@ -458,7 +459,7 @@ def list_games(season):
         ]
 
     close_db()
-    return render_template("games_admin.html", df=df)
+    return render_template("games_admin.html", df=df, title=f"{season} Games")
 
 
 @app.route("/tools/update_game/<int:game_id>", methods=["GET", "POST"])
@@ -527,7 +528,7 @@ def update_game(game_id):
             close_db()
             return redirect(url_for('tools'))
 
-    return render_template("update_game.html", form=form)
+    return render_template("update_game.html", form=form, title="Update Game")
 
 
 @app.route("/tools/delete_game/<int:game_id>", methods=["GET", "POST"])
@@ -601,7 +602,7 @@ def create_member():
             return redirect(url_for('tools'))
 
     close_db()
-    return render_template("create_member.html", form=form)
+    return render_template("create_member.html", form=form, title="Create a Member")
 
 
 @app.route("/tools/create_game", methods=["GET", "POST"])
@@ -654,7 +655,7 @@ def create_game():
             return redirect(url_for('create_game'))
 
     close_db()
-    return render_template("create_game.html", form=form)
+    return render_template("create_game.html", form=form, title="Create a Game")
 
 
 @app.route("/tools/add_all_members", methods=["GET", "POST"])
@@ -697,7 +698,7 @@ def add_games():
     # Hard coded so that we can load data for years if there's no existing data
     seasons = [x for x in range(2017, CURRENT_SEASON + 1)]
 
-    return render_template("fetch_season_data_selector.html", seasons=seasons)
+    return render_template("fetch_season_data_selector.html", seasons=seasons, title="Add all Games")
 
 
 @app.route("/tools/create_power_rankings", methods=["GET", "POST"])
@@ -803,7 +804,7 @@ def create_power_rankings():
             flash('Power Rankings Failed to Create!', 'danger')
 
     close_db()
-    return render_template("create_power_rankings.html", form=form)
+    return render_template("create_power_rankings.html", form=form, title="Create Power Rankings")
 
 
 @app.route("/tools/list_all_power_rankings", methods=["GET", "POST"])
@@ -818,7 +819,7 @@ def list_all_power_rankings():
     reports = glob.glob(power_rankings_path)
     files = [(os.path.basename(report), report, index)
              for index, report in enumerate(reports)]
-    return render_template("power_rankings_admin.html", files=files)
+    return render_template("power_rankings_admin.html", files=files, title="Power Rankings Admin")
 
 
 @app.route("/tools/delete_power_ranking/<string:filepath>")
@@ -860,7 +861,7 @@ def create_jarrett_report():
             json.dump(content, open(full_path, "w"))
             flash('Jarrett Report Created!', 'success')
             return redirect(url_for('current_season_report', week=form.week.data, season=CURRENT_SEASON))
-    return render_template("create_jarrett_report.html", form=form)
+    return render_template("create_jarrett_report.html", form=form, title="Create Jarrett Report")
 
 
 @ app.route("/tools/delete_jarrett_report", methods=["GET", "POST"])
@@ -953,7 +954,7 @@ def update_jarrett_report():
     else:
         flash("Report doesn't exist", "warning")
         return redirect(url_for('homepage'))
-    return render_template("update_jarrett_report.html", form=form)
+    return render_template("update_jarrett_report.html", form=form, title="Update Report")
 
 
 @ app.route("/tools/list_all_users")
@@ -975,7 +976,7 @@ def list_all_users():
             "announce_priv": row[ANNOUNCEMENT_PRIVILEGES]
         })
 
-    return render_template("users_admin.html", data=data)
+    return render_template("users_admin.html", data=data, title="Users Admin")
 
 
 @app.route("/tools/grant_admin_status/<int:user_id>")
@@ -1130,12 +1131,13 @@ def get_member_info(member_id):
                            championships=championships,
                            cards=cards,
                            summaries=summaries_html,
-                           seasons=seasons)
+                           seasons=seasons,
+                           title=name)
 
 
 @app.route("/archives/", methods=["GET", "POST"])
 def archives_home():
-    return render_template("archives_home.html")
+    return render_template("archives_home.html", title="Archives")
 
 
 @app.route("/archives/head_to_head", methods=["GET", "POST"])
@@ -1280,7 +1282,8 @@ def h2h():
                            streak_holder=streak_holder,
                            streak_count=streak_count,
                            df=df.to_html(classes="table table-striped"),
-                           matchups_exist=num_matchups != 0
+                           matchups_exist=num_matchups != 0,
+                           title="Head to Head"
                            )
 
 
@@ -1536,7 +1539,8 @@ def game_qualities():
     return render_template("game_qualities.html",
                            form=form,
                            query_specified=len(df.index != 0),
-                           df=df.to_html(classes="table table-striped"))
+                           df=df.to_html(classes="table table-striped"),
+                           title="Game Qualities")
 
 
 @app.route("/archives/season_summary", methods=["GET", "POST"])
@@ -1591,7 +1595,9 @@ def season_summary():
                            all_weeks=all_weeks,
                            roto=roto.to_html(classes="table table-striped"),
                            playoffs=playoffs,
-                           standings=standings.to_html(classes="table table-striped"))
+                           standings=standings.to_html(
+                               classes="table table-striped"),
+                           title="Season Summary")
 
 
 @app.route("/archives/inactive_members", methods=["GET", "POST"])
@@ -1642,12 +1648,15 @@ def archived_reports():
         else:
             organized_reports[season].append(report)
 
-    return render_template("archived_reports.html", organized_reports=organized_reports)
+    return render_template("archived_reports.html",
+                           organized_reports=organized_reports,
+                           title="Archived Reports"
+                           )
 
 
 @app.route("/current_season", methods=["GET", "POST"])
 def current_season():
-    return render_template("current_season.html", cards=CURRENT_SEASON_CARDS)
+    return render_template("current_season.html", cards=CURRENT_SEASON_CARDS, title="Current Season")
 
 
 @app.route("/current_season/season_info", methods=["GET", "POST"])
@@ -1688,7 +1697,8 @@ def current_season_info():
                            roto=roto_html,
                            matchups=matchups,
                            all_weeks=all_weeks,
-                           playoffs=playoffs)
+                           playoffs=playoffs,
+                           title="Current Season Info")
 
 
 @app.route("/current_season/payouts", methods=["GET", "POST"])
@@ -1842,7 +1852,8 @@ def current_season_payouts():
                            payouts=payouts.to_html(
                                classes="table table-striped"),
                            owed=owed,
-                           cards=CURRENT_SEASON_CARDS)
+                           cards=CURRENT_SEASON_CARDS,
+                           title="Current Season Payouts")
 
 
 @app.route("/current_season/analytics", methods=["GET", "POST"])
@@ -1875,7 +1886,9 @@ def current_season_analytics():
                                classes="table table-striped"),
                            head_to_head=head_to_head.to_html(
                                classes="table table-striped"),
-                           intervals=intervals.to_html(classes="table table-striped"))
+                           intervals=intervals.to_html(
+                               classes="table table-striped"),
+                           title="Current Season Analytics")
 
 
 @app.route("/current_season/report", methods=["GET", "POST"])
@@ -1919,7 +1932,10 @@ def current_season_report():
             current_report = helper[-1]
             data = json.load(open(current_report["filepath"]))
 
-    return render_template("current_season_report.html", data=data, cards=CURRENT_SEASON_CARDS)
+    return render_template("current_season_report.html",
+                           data=data,
+                           cards=CURRENT_SEASON_CARDS,
+                           title="Jarrett Report")
 
 
 @app.route("/current_season/power_rankings", methods=["GET", "POST"])
@@ -1967,7 +1983,8 @@ def current_season_power_rankings():
                            week=week_of_current_report,
                            current_info=current_info,
                            form=form,
-                           cards=CURRENT_SEASON_CARDS)
+                           cards=CURRENT_SEASON_CARDS,
+                           title="Power Rankings")
 
 
 @app.route("/current_season/announcements", methods=["GET", "POST"])
@@ -1994,7 +2011,8 @@ def current_season_announcements():
 
     return render_template("current_season_announcements.html",
                            announcements=announcements,
-                           cards=CURRENT_SEASON_CARDS)
+                           cards=CURRENT_SEASON_CARDS,
+                           title="Announcements")
 
 
 @app.route("/current_season/create_announcement", methods=["GET", "POST"])
@@ -2022,7 +2040,7 @@ def create_announcement():
         return redirect(url_for("current_season_announcements"))
 
     close_db()
-    return render_template("create_announcement.html", form=form)
+    return render_template("create_announcement.html", form=form, title="Create Announcement")
 
 
 @app.route("/current_season/delete_announcement/<int:announcement_id>", methods=["GET", "POST"])
@@ -2055,6 +2073,8 @@ def delete_announcement(announcement_id):
 @app.route("/current_season/update_announcement/<int:announcement_id>", methods=["GET", "POST"])
 @login_required
 def update_announcement(announcement_id):
+    if current_user.announcement_privileges != 1:
+        return redirect(url_for('current_season'))
     db = get_db()
     query = db.execute(
         f"""
@@ -2083,7 +2103,7 @@ def update_announcement(announcement_id):
             flash("Announcement updated", "warning")
         return redirect(url_for('current_season_announcements'))
 
-    return render_template("update_announcement.html", form=form)
+    return render_template("update_announcement.html", form=form, title="Update Announcement")
 
 
 @app.route("/hall_of_fame",  methods=["GET", "POST"])
@@ -2145,7 +2165,8 @@ def hall_of_fame():
                            top_3_longest_win_streak=top_3_longest_win_streak,
                            top_3_most_roto_points_all_time=top_3_most_roto_points_all_time,
                            top_3_most_top_scoring_weeks=top_3_most_top_scoring_weeks,
-                           champions=champion_cards
+                           champions=champion_cards,
+                           title="Hall of Fame"
                            )
 
 
@@ -2334,4 +2355,4 @@ def fetch_games():
                            write=write,
                            updates=updated_html,
                            additions=additions_html,
-                           num_changes=len(updates) + len(new_additions))
+                           num_changes=len(updates) + len(new_additions), title="Data Available")
