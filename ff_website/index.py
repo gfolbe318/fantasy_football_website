@@ -1,6 +1,7 @@
 import glob
 import json
 import os
+from flask_bcrypt import Bcrypt
 import requests
 from datetime import datetime
 from pathlib import Path
@@ -22,7 +23,7 @@ from ff_website.db import close_db, get_db
 from ff_website.forms import (CreateGame, CreateMember, CreatePowerRankings,
                               GameQualities, HeadToHead, JarrettReport,
                               LoginForm, MakeAnnouncement, RegistrationForm,
-                              SeasonSelector, SelectPowerRankWeek)
+                              SeasonSelector, SelectPowerRankWeek, changePassword)
 from ff_website.helper_functions import *
 
 
@@ -185,6 +186,45 @@ def logout():
     logout_user()
     flash("You have logged out", "info")
     return redirect(url_for("login"))
+
+
+@app.route("/change_password", methods=["GET", "POST"])
+def change_password():
+    if current_user.username == "admin":
+        flash("Password cannot be updated for admin", "danger")
+        return redirect(url_for('home'))
+
+    form = changePassword()
+    if form.validate_on_submit():
+        current_username = current_user.username
+
+        db = get_db()
+        query = db.execute(
+            f"""
+            SELECT {PASSWORD} from user
+            WHERE {USERNAME}=?
+            """, (current_username,)
+        ).fetchone()
+        correct_current_password = query[PASSWORD]
+        if not bcrypt.check_password_hash(correct_current_password, form.current_password.data):
+            form.current_password.errors.append(
+                "Current password is incorrect")
+        else:
+            new_password = bcrypt.generate_password_hash(
+                form.new_password.data)
+            db.execute(
+                f"""
+                UPDATE user
+                SET {PASSWORD}=?
+                WHERE {USERNAME}=?
+                """, (new_password, current_username)
+            )
+            db.commit()
+            flash("Password updated!", "success")
+            return redirect(url_for('change_password'))
+
+    close_db()
+    return render_template("change_password.html", form=form)
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -420,8 +460,6 @@ def list_games(season):
 
     if not current_user.admin_privileges:
         return redirect(url_for('homepage'))
-
-    print(season)
 
     db = get_db()
     all_games = db.execute(
@@ -1682,7 +1720,6 @@ def current_season_info():
     standings_html = standings.to_html(classes="table table-striped")
     all_weeks = get_all_week_results(query)
     playoffs = get_playoff_results_for_season_summary(query)
-    print(playoffs)
 
     roto = get_roto(query)
     roto_html = roto.to_html(classes="table table-striped")
@@ -2350,6 +2387,7 @@ def fetch_games():
         ]
     additions_html = additions_df.to_html(classes="table table-striped")
 
+    close_db()
     return render_template("fetch_games_results.html",
                            year=year,
                            write=write,
