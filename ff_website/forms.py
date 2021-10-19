@@ -217,11 +217,11 @@ class LoginForm(FlaskForm):
 
 
 class changePassword(FlaskForm):
-    current_password = StringField(
+    current_password = PasswordField(
         'Current Password', validators=[DataRequired()])
-    new_password = StringField('New Password', validators=[
-                               DataRequired(), EqualTo('confirm_password', 'New passwords do not match')])
-    confirm_password = StringField('Confirm New Password', validators=[
-                                   DataRequired(), EqualTo('new_password', 'New passwords do not match')])
+    new_password = PasswordField('New Password', validators=[
+        DataRequired(), EqualTo('confirm_password', 'New passwords do not match')])
+    confirm_password = PasswordField('Confirm New Password', validators=[
+        DataRequired(), EqualTo('new_password', 'New passwords do not match')])
 
     submit = SubmitField('Update Password')
