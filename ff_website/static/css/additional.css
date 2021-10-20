@@ -9,12 +9,14 @@ body {
 }
 
 #home {
-  background: url("../img/campbell.png") center center fixed;
+  background: url("../img/campbell.png") center fixed;
   display: table;
-  height: 75%;
-  position: relative;
-  width: 100%;
-  background-size: cover;
+  height: 75vh;
+  width: 100vw;
+  background-size: 100%;
+  -webkit-background-size: contain;
+  -moz-background-size: contain;
+  -o-background-size: contain;
 }
 
 .landing-text {
@@ -116,8 +118,6 @@ h6 {
 
 .boom {
   color: black;
-  text-decoration: bol;
-  font-family: Impact, fantasy;
   font-size: 2.5rem;
 }
 
