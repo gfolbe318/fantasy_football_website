@@ -23,8 +23,12 @@ def get_years_helper(start, stop):
     return years
 
 
-def get_weeks():
-    return [("", "Select a week...")] + [(x, x) for x in range(1, 18)]
+def get_weeks(include_zero=False):
+    if include_zero:
+        start = 0
+    else:
+        start = 1
+    return [("", "Select a week...")] + [(x, x) for x in range(start, 18)]
 
 
 class HeadToHead(FlaskForm):
@@ -188,8 +192,9 @@ class MakeAnnouncement(FlaskForm):
 
 
 class JarrettReport(FlaskForm):
+    weeks = get_weeks
     title = StringField('Title', validators=[DataRequired()])
-    week = SelectField('Week', choices=get_weeks(),
+    week = SelectField('Week', choices=get_weeks(include_zero=True),
                        validators=[DataRequired()])
     report = TextAreaField(
         'Report', validators=[DataRequired()])
