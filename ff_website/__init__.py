@@ -13,6 +13,7 @@ app = Flask(__name__, instance_relative_config=True)
 app.config.from_mapping(
     SECRET_KEY=credentials.xss_key,
     DATABASE=os.path.join(app.instance_path, "logs.sqlite"),
+    SEND_FILE_MAX_AGE_DEFAULT=0
 )
 
 try:
