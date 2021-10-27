@@ -1972,7 +1972,7 @@ def current_season_report():
     return render_template("current_season_report.html",
                            data=data,
                            cards=CURRENT_SEASON_CARDS,
-                           title="Jarrett Report")
+                           title="The Jart Report")
 
 
 @app.route("/current_season/power_rankings", methods=["GET", "POST"])
