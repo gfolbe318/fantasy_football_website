@@ -1,7 +1,7 @@
 {% extends "layout.html" %}{% block content %} {% for file in files %}
 <div
   class="modal fade"
-  id="modal{{file[2]}}"
+  id="modal{{file.week}}"
   tabindex="-1"
   role="dialog"
   aria-labelledby="exampleModalLabel"
@@ -14,7 +14,7 @@
           Are you sure you want to delete this power rankings?
         </h5>
         <div class="modal-body">
-          <p>The following ranking will be deleted: {{file[0]}}</p>
+          <p>The following ranking will be deleted: {{file.filename}}</p>
         </div>
 
         <button
@@ -30,7 +30,9 @@
         <button type="button" class="btn btn-secondary" data-dismiss="modal">
           No, go back.
         </button>
-        <a href="{{url_for('delete_power_ranking', filepath=file[1])}}">
+        <a
+          href="{{url_for('delete_power_ranking', week=file.week, season=file.season)}}"
+        >
           <button type="button" class="btn btn-primary">Yes</button>
         </a>
       </div>
@@ -44,11 +46,11 @@
       <ul>
         {% for file in files %}
         <li style="padding-top: 5px; padding-bottom: 5px">
-          {{file[0]}}&nbsp;
+          {{file.filename}}&nbsp;
           <button
             class="btn btn-sm btn-danger"
             data-toggle="modal"
-            data-target="#modal{{file[2]}}"
+            data-target="#modal{{file.week}}"
           >
             Delete
           </button>

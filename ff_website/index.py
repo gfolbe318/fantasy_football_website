@@ -855,19 +855,47 @@ def list_all_power_rankings():
         app.root_path, "data", "power_rankings", str(CURRENT_SEASON))
     power_rankings_path = str(base_path) + "/*"
     reports = glob.glob(power_rankings_path)
-    files = [(os.path.basename(report), report, index)
-             for index, report in enumerate(reports)]
+
+    files = [
+        {
+            "filename": os.path.basename(report),
+            "week": parse_rankings_filename(report),
+            "season": CURRENT_SEASON
+        }
+        for report in reports
+    ]
+
     return render_template("power_rankings_admin.html", files=files, title="Power Rankings Admin")
 
 
-@app.route("/tools/delete_power_ranking/<string:filepath>")
-def delete_power_ranking(filepath):
+@app.route("/tools/delete_power_ranking", methods=["GET", "POST"])
+def delete_power_ranking():
     if current_user.admin_privileges != 1:
         return redirect(url_for('homepage'))
 
-    decoded = unquote(filepath)
-    os.remove(decoded)
-    flash("Power Rankings Deleted", "danger")
+    args = request.args
+    season = None
+    week = None
+    try:
+        season = args.get("season")
+        week = args.get("week")
+    except AttributeError:
+        print("Something went wrong getting args!")
+
+    filename = f"{season}_power_rankings_week_{week}.json"
+    base_path = os.path.join(
+        app.root_path, "data", "power_rankings", str(season), filename
+    )
+
+    print(base_path)
+
+    if os.path.exists(base_path):
+
+        os.remove(base_path)
+        flash("Power rankings deleted!", "danger")
+    else:
+        flash("Power rankings could not be deleted", "warning")
+
     return redirect(url_for('list_all_power_rankings'))
 
 
