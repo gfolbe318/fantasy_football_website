@@ -2,7 +2,7 @@
 df.iterrows() %}
 <div
   class="modal fade"
-  id="modal{{key}}"
+  id="modal{{value['id']}}"
   tabindex="-1"
   role="dialog"
   aria-labelledby="exampleModalLabel"
@@ -32,7 +32,7 @@ df.iterrows() %}
         <button type="button" class="btn btn-secondary" data-dismiss="modal">
           No, go back.
         </button>
-        <a href="{{ url_for('delete_game', game_id=key)}}">
+        <a href="{{ url_for('delete_game', game_id=value['id'])}}">
           <button type="button" class="btn btn-primary">Yes</button>
         </a>
       </div>
