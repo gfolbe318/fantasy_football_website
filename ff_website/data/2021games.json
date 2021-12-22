@@ -298,5 +298,545 @@
         "home_score": 135.72,
         "away_team": "Daniel Banooni",
         "away_score": 127.3
+    },
+    {
+        "season": "2021",
+        "week": 6,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Alex Ross",
+        "home_score": 110.08,
+        "away_team": "CJ Drogosch",
+        "away_score": 93.46
+    },
+    {
+        "season": "2021",
+        "week": 6,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Merrick Bank",
+        "home_score": 90.68,
+        "away_team": "Brad Silverman",
+        "away_score": 64.78
+    },
+    {
+        "season": "2021",
+        "week": 6,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jason Silverstone",
+        "home_score": 95.28,
+        "away_team": "Jarrett Black",
+        "away_score": 116.0
+    },
+    {
+        "season": "2021",
+        "week": 6,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jonah Lopas",
+        "home_score": 137.06,
+        "away_team": "Daniel Michaels",
+        "away_score": 127.6
+    },
+    {
+        "season": "2021",
+        "week": 6,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Daniel Banooni",
+        "home_score": 113.94,
+        "away_team": "Garrett Folbe",
+        "away_score": 130.92
+    },
+    {
+        "season": "2021",
+        "week": 6,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Merrick Weingarten",
+        "home_score": 74.8,
+        "away_team": "Noah Nathan",
+        "away_score": 148.38
+    },
+    {
+        "season": "2021",
+        "week": 7,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Merrick Bank",
+        "home_score": 105.14,
+        "away_team": "Alex Ross",
+        "away_score": 89.18
+    },
+    {
+        "season": "2021",
+        "week": 7,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "CJ Drogosch",
+        "home_score": 105.96,
+        "away_team": "Jason Silverstone",
+        "away_score": 103.58
+    },
+    {
+        "season": "2021",
+        "week": 7,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Brad Silverman",
+        "home_score": 75.64,
+        "away_team": "Jonah Lopas",
+        "away_score": 109.04
+    },
+    {
+        "season": "2021",
+        "week": 7,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jarrett Black",
+        "home_score": 134.34,
+        "away_team": "Daniel Banooni",
+        "away_score": 129.26
+    },
+    {
+        "season": "2021",
+        "week": 7,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Daniel Michaels",
+        "home_score": 111.24,
+        "away_team": "Merrick Weingarten",
+        "away_score": 83.74
+    },
+    {
+        "season": "2021",
+        "week": 7,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Garrett Folbe",
+        "home_score": 102.2,
+        "away_team": "Noah Nathan",
+        "away_score": 108.12
+    },
+    {
+        "season": "2021",
+        "week": 8,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Alex Ross",
+        "home_score": 109.38,
+        "away_team": "Jason Silverstone",
+        "away_score": 60.56
+    },
+    {
+        "season": "2021",
+        "week": 8,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jonah Lopas",
+        "home_score": 106.46,
+        "away_team": "Merrick Bank",
+        "away_score": 97.2
+    },
+    {
+        "season": "2021",
+        "week": 8,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Daniel Banooni",
+        "home_score": 108.62,
+        "away_team": "CJ Drogosch",
+        "away_score": 104.66
+    },
+    {
+        "season": "2021",
+        "week": 8,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Merrick Weingarten",
+        "home_score": 83.92,
+        "away_team": "Brad Silverman",
+        "away_score": 88.7
+    },
+    {
+        "season": "2021",
+        "week": 8,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Noah Nathan",
+        "home_score": 130.9,
+        "away_team": "Jarrett Black",
+        "away_score": 71.52
+    },
+    {
+        "season": "2021",
+        "week": 8,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Garrett Folbe",
+        "home_score": 87.06,
+        "away_team": "Daniel Michaels",
+        "away_score": 86.7
+    },
+    {
+        "season": "2021",
+        "week": 9,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jonah Lopas",
+        "home_score": 85.1,
+        "away_team": "Alex Ross",
+        "away_score": 94.24
+    },
+    {
+        "season": "2021",
+        "week": 9,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jason Silverstone",
+        "home_score": 89.78,
+        "away_team": "Daniel Banooni",
+        "away_score": 48.64
+    },
+    {
+        "season": "2021",
+        "week": 9,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Merrick Bank",
+        "home_score": 110.6,
+        "away_team": "Merrick Weingarten",
+        "away_score": 107.64
+    },
+    {
+        "season": "2021",
+        "week": 9,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "CJ Drogosch",
+        "home_score": 125.08,
+        "away_team": "Noah Nathan",
+        "away_score": 88.46
+    },
+    {
+        "season": "2021",
+        "week": 9,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Brad Silverman",
+        "home_score": 74.04,
+        "away_team": "Garrett Folbe",
+        "away_score": 86.66
+    },
+    {
+        "season": "2021",
+        "week": 9,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jarrett Black",
+        "home_score": 61.58,
+        "away_team": "Daniel Michaels",
+        "away_score": 116.78
+    },
+    {
+        "season": "2021",
+        "week": 10,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Alex Ross",
+        "home_score": 78.22,
+        "away_team": "Daniel Banooni",
+        "away_score": 72.74
+    },
+    {
+        "season": "2021",
+        "week": 10,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Merrick Weingarten",
+        "home_score": 90.4,
+        "away_team": "Jonah Lopas",
+        "away_score": 102.98
+    },
+    {
+        "season": "2021",
+        "week": 10,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Noah Nathan",
+        "home_score": 145.82,
+        "away_team": "Jason Silverstone",
+        "away_score": 88.64
+    },
+    {
+        "season": "2021",
+        "week": 10,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Garrett Folbe",
+        "home_score": 81.6,
+        "away_team": "Merrick Bank",
+        "away_score": 77.5
+    },
+    {
+        "season": "2021",
+        "week": 10,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Daniel Michaels",
+        "home_score": 109.24,
+        "away_team": "CJ Drogosch",
+        "away_score": 87.78
+    },
+    {
+        "season": "2021",
+        "week": 10,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jarrett Black",
+        "home_score": 112.32,
+        "away_team": "Brad Silverman",
+        "away_score": 90.54
+    },
+    {
+        "season": "2021",
+        "week": 11,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Merrick Weingarten",
+        "home_score": 119.08,
+        "away_team": "Alex Ross",
+        "away_score": 103.16
+    },
+    {
+        "season": "2021",
+        "week": 11,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Daniel Banooni",
+        "home_score": 77.8,
+        "away_team": "Noah Nathan",
+        "away_score": 69.32
+    },
+    {
+        "season": "2021",
+        "week": 11,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jonah Lopas",
+        "home_score": 157.36,
+        "away_team": "Garrett Folbe",
+        "away_score": 79.86
+    },
+    {
+        "season": "2021",
+        "week": 11,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jason Silverstone",
+        "home_score": 105.78,
+        "away_team": "Daniel Michaels",
+        "away_score": 97.84
+    },
+    {
+        "season": "2021",
+        "week": 11,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Merrick Bank",
+        "home_score": 90.58,
+        "away_team": "Jarrett Black",
+        "away_score": 112.32
+    },
+    {
+        "season": "2021",
+        "week": 11,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "CJ Drogosch",
+        "home_score": 110.5,
+        "away_team": "Brad Silverman",
+        "away_score": 79.6
+    },
+    {
+        "season": "2021",
+        "week": 12,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Alex Ross",
+        "home_score": 71.9,
+        "away_team": "Noah Nathan",
+        "away_score": 90.68
+    },
+    {
+        "season": "2021",
+        "week": 12,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Garrett Folbe",
+        "home_score": 139.5,
+        "away_team": "Merrick Weingarten",
+        "away_score": 90.32
+    },
+    {
+        "season": "2021",
+        "week": 12,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Daniel Michaels",
+        "home_score": 104.1,
+        "away_team": "Daniel Banooni",
+        "away_score": 74.22
+    },
+    {
+        "season": "2021",
+        "week": 12,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jarrett Black",
+        "home_score": 77.36,
+        "away_team": "Jonah Lopas",
+        "away_score": 125.08
+    },
+    {
+        "season": "2021",
+        "week": 12,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Brad Silverman",
+        "home_score": 123.92,
+        "away_team": "Jason Silverstone",
+        "away_score": 77.58
+    },
+    {
+        "season": "2021",
+        "week": 12,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "CJ Drogosch",
+        "home_score": 110.58,
+        "away_team": "Merrick Bank",
+        "away_score": 102.34
+    },
+    {
+        "season": "2021",
+        "week": 13,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Garrett Folbe",
+        "home_score": 100.5,
+        "away_team": "Alex Ross",
+        "away_score": 110.02
+    },
+    {
+        "season": "2021",
+        "week": 13,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Noah Nathan",
+        "home_score": 119.6,
+        "away_team": "Daniel Michaels",
+        "away_score": 107.42
+    },
+    {
+        "season": "2021",
+        "week": 13,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Merrick Weingarten",
+        "home_score": 94.68,
+        "away_team": "Jarrett Black",
+        "away_score": 71.6
+    },
+    {
+        "season": "2021",
+        "week": 13,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Daniel Banooni",
+        "home_score": 103.36,
+        "away_team": "Brad Silverman",
+        "away_score": 124.16
+    },
+    {
+        "season": "2021",
+        "week": 13,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jonah Lopas",
+        "home_score": 127.72,
+        "away_team": "CJ Drogosch",
+        "away_score": 111.92
+    },
+    {
+        "season": "2021",
+        "week": 13,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jason Silverstone",
+        "home_score": 94.3,
+        "away_team": "Merrick Bank",
+        "away_score": 87.72
+    },
+    {
+        "season": "2021",
+        "week": 14,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Alex Ross",
+        "home_score": 110.08,
+        "away_team": "Daniel Michaels",
+        "away_score": 84.24
+    },
+    {
+        "season": "2021",
+        "week": 14,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jarrett Black",
+        "home_score": 150.62,
+        "away_team": "Garrett Folbe",
+        "away_score": 113.22
+    },
+    {
+        "season": "2021",
+        "week": 14,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Brad Silverman",
+        "home_score": 103.92,
+        "away_team": "Noah Nathan",
+        "away_score": 155.0
+    },
+    {
+        "season": "2021",
+        "week": 14,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "CJ Drogosch",
+        "home_score": 98.64,
+        "away_team": "Merrick Weingarten",
+        "away_score": 87.1
+    },
+    {
+        "season": "2021",
+        "week": 14,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Merrick Bank",
+        "home_score": 107.02,
+        "away_team": "Daniel Banooni",
+        "away_score": 89.72
+    },
+    {
+        "season": "2021",
+        "week": 14,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jason Silverstone",
+        "home_score": 91.34,
+        "away_team": "Jonah Lopas",
+        "away_score": 85.22
     }
 ]
