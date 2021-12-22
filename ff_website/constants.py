@@ -49,6 +49,14 @@ AWAY_SCORE = "away_score"
 member_data = "ff_website\data\\all_members.json"
 games_data = "ff_website\data\\all_games.json"
 
+NUM_PLAYOFF_TEAMS_PER_YEAR = {
+    2017: 4,
+    2018: 6,
+    2019: 6,
+    2020: 6,
+    2021: 6
+}
+
 CURRENT_SEASON_CARDS = [
     {
         "name": "Season Info",

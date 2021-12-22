@@ -566,7 +566,7 @@ def get_all_week_results(query):
     return all_weeks
 
 
-def get_playoff_results_for_season_summary(query):
+def get_playoff_results_for_season_summary(query, num_playoff_teams):
     df = pd.DataFrame(columns=["Winning Team", "Losing Team", "Score"])
 
     playoffs_raw = get_playoffs(query)
@@ -574,13 +574,23 @@ def get_playoff_results_for_season_summary(query):
         return None
     playoff_round_names = {}
     weeks = list(playoffs_raw.keys())
-    if len(playoffs_raw) == 2:
-        playoff_round_names[weeks[0]] = "Semifinals"
-        playoff_round_names[weeks[1]] = "Championship"
+
+    if num_playoff_teams == 2:
+        if len(playoffs_raw) == 1:
+            playoff_round_names[weeks[0]] = "Semifinals"
+        if len(playoff_round_names) == 2:
+            playoff_round_names[weeks[0]] = "Semifinals"
+            playoff_round_names[weeks[1]] = "Championship"
     else:
-        playoff_round_names[weeks[0]] = "Quarterfinals"
-        playoff_round_names[weeks[1]] = "Semifinals"
-        playoff_round_names[weeks[2]] = "Championship"
+        if len(playoffs_raw) == 1:
+            playoff_round_names[weeks[0]] = "Quarterfinals"
+        elif len(playoffs_raw) == 2:
+            playoff_round_names[weeks[0]] = "Quarterfinals"
+            playoff_round_names[weeks[1]] = "Semifinals"
+        else:
+            playoff_round_names[weeks[0]] = "Quarterfinals"
+            playoff_round_names[weeks[1]] = "Semifinals"
+            playoff_round_names[weeks[2]] = "Championship"
 
     all_playoff_weeks = {}
     for week, results in playoffs_raw.items():

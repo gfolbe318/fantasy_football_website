@@ -1618,7 +1618,8 @@ def season_summary():
             return redirect(url_for("season_summary"))
 
         standings, _ = get_standings(query)
-        playoffs = get_playoff_results_for_season_summary(query)
+        playoffs = get_playoff_results_for_season_summary(
+            query, NUM_PLAYOFF_TEAMS_PER_YEAR[int(year)])
         all_weeks = get_all_week_results(query)
         roto = get_roto(query)
 
@@ -1719,7 +1720,8 @@ def current_season_info():
     standings, ranks = get_standings(query)
     standings_html = standings.to_html(classes="table table-striped")
     all_weeks = get_all_week_results(query)
-    playoffs = get_playoff_results_for_season_summary(query)
+    playoffs = get_playoff_results_for_season_summary(
+        query, NUM_PLAYOFF_TEAMS_PER_YEAR[int(CURRENT_SEASON)])
 
     roto = get_roto(query)
     roto_html = roto.to_html(classes="table table-striped")
