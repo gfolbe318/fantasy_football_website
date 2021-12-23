@@ -838,5 +838,25 @@
         "home_score": 91.34,
         "away_team": "Jonah Lopas",
         "away_score": 85.22
+    },
+    {
+        "season": "2021",
+        "week": 15,
+        "matchup_length": 1,
+        "playoffs": true,
+        "home_team": "Noah Nathan",
+        "home_score": 97.66,
+        "away_team": "Daniel Michaels",
+        "away_score": 114.48
+    },
+    {
+        "season": "2021",
+        "week": 15,
+        "matchup_length": 1,
+        "playoffs": true,
+        "home_team": "CJ Drogosch",
+        "home_score": 115.42,
+        "away_team": "Jarrett Black",
+        "away_score": 106.64
     }
 ]
