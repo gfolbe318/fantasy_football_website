@@ -20,9 +20,8 @@
       <p>
         Check back weekly for an updated edition of Jonah's power rankings.
         Previous iterations of the rankings are avaiable at the bottom of the
-        rankings. The change represents the difference in the member's ranking
-        from the previous power rankings (even if that ranking was more a week
-        ago).
+        page. The change represents the difference in the member's ranking from
+        the previous power rankings (even if that ranking was more a week ago).
       </p>
     </div>
   </div>
@@ -101,7 +100,55 @@
     </div>
   </div>
   {% endif %}
-</div>
-<script src="/static/js/add_power_rank_weeks.js"></script>
 
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.6.2/dist/chart.min.js"></script>
+
+  {% for data in all_data %}
+  <div>
+    <canvas id="linechart{{data.key}}"></canvas>
+  </div>
+  {% endfor %} {% for data in all_data %}
+  <script>
+    var ctx = document.getElementById("linechart{{data.key}}").getContext("2d");
+    var lineChart = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: {{data.xvalues}},
+        datasets: [
+          {
+            label: {{data.title|safe}},
+            data: {{data.yvalues}},
+            backgroundColor: {{data.color|safe}},
+            borderColor: {{data.color|safe}}
+          }
+        ],
+      },
+      options: {
+        scales: {
+          y: {
+            ticks: {
+              stepSize: 1,
+            },
+            title: {
+              display: true,
+              text: "Ranking"
+            },
+            min: 1,
+            max: 12,
+            reverse: true,
+          },
+          x: {
+            title: {
+              display: true,
+              text: "Week"
+            }
+          }
+        },
+      },
+    });
+  </script>
+  {% endfor %}
+
+  <script src="/static/js/add_power_rank_weeks.js"></script>
+</div>
 {% endblock content %}

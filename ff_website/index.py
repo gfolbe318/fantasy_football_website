@@ -5,7 +5,7 @@ from flask_bcrypt import Bcrypt
 import requests
 from datetime import datetime
 from pathlib import Path
-from urllib.parse import unquote
+from random import randint, shuffle
 
 import inflect
 import pandas as pd
@@ -2046,12 +2046,56 @@ def current_season_power_rankings():
 
     if form.validate_on_submit():
         return redirect(url_for('current_season_power_rankings', week=form.week.data))
+
+    base_path = os.path.join(
+        app.root_path, "data", "power_rankings", str(CURRENT_SEASON))
+    power_rankings_path = str(base_path) + "/*"
+    reports = glob.glob(power_rankings_path)
+
+    reports.sort(key=lambda x: int(parse_rankings_filename(x)))
+
+    graph_data = {}
+
+    for report in reports:
+        week = int(parse_rankings_filename(report))
+        data = json.load(open(report, "r"))
+        rankings = data["rankings"]
+        for index, member in enumerate(rankings):
+            if member not in graph_data:
+                graph_data[member] = [(week, index + 1)]
+            else:
+                graph_data[member].append((week, index + 1))
+
+    colors = ["lightCoral", "crimson", "hotPink", "orange", "gold", "indigo",
+              "slateBlue", "greenYellow", "darkGreen", "dodgerBlue", "silver", "black"]
+
+    all_data = []
+    color_index = 0
+
+    for member_name, data in graph_data.items():
+
+        all_data.append(
+            {
+                "title": '"' + member_name + '"',
+                "key": "".join(member_name.split()),
+                "xvalues": [x[0] for x in data],
+                "yvalues": [y[1] for y in data],
+                "color": '"' + colors[color_index] + '"'
+            }
+        )
+
+        color_index += 1
+
+    all_data.sort(key=lambda x: x["title"].split(" ")[1][0])
+
     return render_template("current_season_power_rankings.html",
                            week=week_of_current_report,
                            current_info=current_info,
                            form=form,
                            cards=CURRENT_SEASON_CARDS,
-                           title="Power Rankings")
+                           title="Power Rankings",
+                           all_data=all_data
+                           )
 
 
 @app.route("/current_season/announcements", methods=["GET", "POST"])
