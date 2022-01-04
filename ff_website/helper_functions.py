@@ -403,6 +403,11 @@ def get_playoff_finish(playoffs, standings, name):
 
     num_rounds = len(playoffs)
 
+    playoff_weeks = list(playoffs.keys())
+    playoff_weeks.sort()
+
+    playoffs_done = len(playoffs[playoff_weeks[-1]]) == 1
+
     finish = "DNQ"
     round = 1
     for _, results in playoffs.items():
@@ -429,7 +434,7 @@ def get_playoff_finish(playoffs, standings, name):
 
         round += 1
 
-    return rank, finish
+    return rank, finish, playoffs_done
 
 
 def get_summaries(query, name):
@@ -461,9 +466,9 @@ def get_summaries(query, name):
             final_record = f"{wins}-{losses}"
             tpf = standings.at[name, "PF"]
             tpa = standings.at[name, "PA"]
-            rank, finish = get_playoff_finish(
+            rank, finish, playoffs_done = get_playoff_finish(
                 playoffs, standings, name)
-            if year == CURRENT_SEASON:
+            if year == CURRENT_SEASON and playoffs_done == False:
                 over_finish = "--"
                 playoffs = "--"
             else:
