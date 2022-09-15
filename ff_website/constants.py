@@ -2,10 +2,11 @@ league_IDs = {
     "2018": "143059",
     "2019": "50890012",
     "2020": "50890012",
-    "2021": "50890012"
+    "2021": "50890012",
+    "2022": "50890012"
 }
 
-CURRENT_SEASON = 2021
+CURRENT_SEASON = 2022
 
 # db keys
 MEMBER_ID = "member_id"
@@ -54,7 +55,8 @@ NUM_PLAYOFF_TEAMS_PER_YEAR = {
     2018: 6,
     2019: 6,
     2020: 6,
-    2021: 6
+    2021: 6,
+    2022: 6
 }
 
 CURRENT_SEASON_CARDS = [

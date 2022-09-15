@@ -1,7 +1,6 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField
 from wtforms import FloatField, SelectField, StringField, SubmitField
-from wtforms.fields.core import FloatField
 from wtforms.fields.simple import PasswordField, TextAreaField
 from wtforms.validators import DataRequired, Length, ValidationError, Email, EqualTo
 
@@ -77,14 +76,15 @@ class SeasonSelector(FlaskForm):
     year = SelectField('Season',
                        choices=[("", "Please select a season..."),
                                 ("2017", "2017"), ("2018", "2018"),
-                                ("2019", "2019"), ("2020", "2020")],
+                                ("2019", "2019"), ("2020", "2020"),
+                                ("2021", "2021")],
                        validators=[DataRequired("Please select a season")])
 
     submit = SubmitField("View Season")
 
 
 class CreateMember(FlaskForm):
-    years = get_years_helper(2011, CURRENT_SEASON - 1)
+    years = get_years_helper(2011, CURRENT_SEASON)
 
     initialYear = SelectField(
         "Year Joined", choices=years, validators=[DataRequired()])
@@ -144,7 +144,7 @@ class CreateGame(FlaskForm):
 
 class CreatePowerRankings(FlaskForm):
     members = get_all_members_helper()
-    weeks = get_weeks()
+    weeks = get_weeks(True)
 
     week = SelectField("Week", choices=weeks, validators=[DataRequired()])
 

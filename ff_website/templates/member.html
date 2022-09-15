@@ -13,11 +13,14 @@
       <h1>{{name}}</h1>
       <ul class="bio-group">
         <li class="bio-elem"><b>Year Joined:&nbsp;</b>{{year_joined}}</li>
+        <li class="bio-elem"><b>Current Status:&nbsp;</b>{{status}}</li>
+        {% if status == 'Inactive' %}
         <li class="bio-elem"><b>Most Recent Season:&nbsp;</b>{{last_year}}</li>
-        <li class="bio-elem"><b>Championships:&nbsp;</b>{{championships}}</li>
+        {% endif %}
         <li class="bio-elem">
           <b>Playoff Appearances:&nbsp;</b>{{playoff_appearances}}
         </li>
+        <li class="bio-elem"><b>Championships:&nbsp;</b>{{championships}}</li>
       </ul>
     </div>
   </div>
@@ -39,6 +42,7 @@
   <hr class="separator" />
   <h2>Season Summaries</h2>
   <hr class="separator" />
+  {% if summaries is not none %}
   <div class="row">
     <div class="col-12">
       <div class="table-responsive justify-content-center">
@@ -46,9 +50,13 @@
       </div>
     </div>
   </div>
+  {% else %}
+  <h6>No data recorded for this member!</h6>
+  {% endif %}
   <hr class="separator" />
   <h2>List of Seasons</h2>
   <hr class="separator" />
+  {% if seasons is not none %}
   <div class="row">
     <div class="col-12">
       <div class="container">
@@ -79,5 +87,8 @@
       </div>
     </div>
   </div>
+  {% else %}
+  <h6>No data recorded for this member!</h6>
+  {% endif %}
 </div>
 {% endblock content %}

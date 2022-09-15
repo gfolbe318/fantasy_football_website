@@ -252,7 +252,7 @@ def homepage():
             "title": "League Office",
             "img_file": url_for("static", filename="img/espn.png"),
             "description": "Visit our official home page on ESPN for your complete fantasy football experience.",
-            "link": "https://fantasy.espn.com/football/league?leagueId=50890012"
+            "link": "https://fantasy.espn.com/football/league?leagueId=50890012&seasonId=2022"
         }
     ]
     return render_template("home.html", ql=links, title="Home")
@@ -324,17 +324,23 @@ def update_member(member_id):
         """, (member_id,)
     ).fetchone()
 
-    first_name = info[FIRST_NAME]
-    last_name = info[LAST_NAME]
-    year_joined = info[YEAR_JOINED]
-    status = info[ACTIVE]
-    form = CreateMember(firstName=first_name,
-                        lastName=last_name,
-                        initialYear=str(year_joined),
-                        activeMember=str(status))
+    original_first_name = info[FIRST_NAME]
+    original_last_name = info[LAST_NAME]
+    original_year_joined = info[YEAR_JOINED]
+    original_activity_status = info[ACTIVE]
+    original_image_path = info[IMG_FILEPATH]
+
+    form = CreateMember(firstName=original_first_name,
+                        lastName=original_last_name,
+                        initialYear=str(original_year_joined),
+                        activeMember=str(original_activity_status))
 
     if form.validate_on_submit():
-        if form.firstName.data == first_name and form.lastName.data == last_name and form.initialYear.data == str(year_joined) and form.activeMember.data == str(status) and form.image.data == None:
+        if form.firstName.data == original_first_name and \
+                form.lastName.data == original_last_name and \
+                form.initialYear.data == str(original_year_joined) and \
+                form.activeMember.data == str(original_activity_status) and \
+                form.image.data == None:
             flash('Member not changed.', 'warning')
             close_db()
             return redirect(url_for('list_members'))
@@ -345,12 +351,12 @@ def update_member(member_id):
             new_status = int(form.activeMember.data)
 
             photo = form.data["image"]
-            file_name = "default.png"
+            file_name = original_image_path
             if photo:
-                first_name = form.data["firstName"]
-                last_name = form.data["lastName"]
+                original_first_name = form.data["firstName"]
+                original_last_name = form.data["lastName"]
                 extension = os.path.splitext(photo.filename)[1]
-                file_name = f"{first_name}_{last_name}{extension}"
+                file_name = f"{original_first_name}_{original_last_name}{extension}"
                 full_file_path = os.path.join(
                     app.root_path, Path('static/img/avatars/', file_name)
                 )
@@ -373,10 +379,10 @@ def update_member(member_id):
 
     return render_template("update_member.html",
                            form=form,
-                           first_name=first_name,
-                           last_name=last_name,
-                           year_joined=year_joined,
-                           status=status,
+                           first_name=original_first_name,
+                           last_name=original_last_name,
+                           year_joined=original_year_joined,
+                           status=original_activity_status,
                            title="Update a Member")
 
 
@@ -887,8 +893,6 @@ def delete_power_ranking():
         app.root_path, "data", "power_rankings", str(season), filename
     )
 
-    print(base_path)
-
     if os.path.exists(base_path):
 
         os.remove(base_path)
@@ -1132,6 +1136,10 @@ def get_member_info(member_id):
 
     year_joined = member_info[YEAR_JOINED]
 
+    active = "Active" if member_info[ACTIVE] == True else "Inactive"
+
+    rookie = year_joined == CURRENT_SEASON
+
     all_games_for_member = db.execute(
         f"""
             SELECT team_A_score, team_B_score, season, week, matchup_length, playoffs,
@@ -1161,7 +1169,11 @@ def get_member_info(member_id):
         """
     ).fetchall()
 
-    last_year = all_games_for_member[-1][SEASON]
+    if rookie:
+        last_year = CURRENT_SEASON
+    else:
+        last_year = all_games_for_member[-1][SEASON]
+
     record, po_record, _, _, _, _ = get_overall_record(
         all_games_for_member, name)
     playoff_appearances = get_playoff_appearances(all_games_for_member)
@@ -1169,8 +1181,16 @@ def get_member_info(member_id):
     total_points, longest_win_streak, longest_losing_streak, most_points, fewest_points = get_additional_stats(
         all_games_for_member, name)
 
-    total_points_str = "{:.2f}".format(total_points)
-    avg_points_str = "{:.2f}".format(total_points/len(all_games_for_member))
+    if not all_games_for_member:
+        total_points_str = "0.0"
+    else:
+        total_points_str = "{:.2f}".format(total_points)
+
+    if not all_games_for_member:
+        avg_points_str = "0.0"
+    else:
+        avg_points_str = "{:.2f}".format(
+            total_points/len(all_games_for_member))
 
     cards.append(Card("Total Games", len(all_games_for_member)))
     cards.append(Card("Overall Record", record))
@@ -1183,15 +1203,19 @@ def get_member_info(member_id):
     cards.append(Card("Longest Losing Streak", longest_losing_streak))
 
     summaries = get_summaries(all_games, name)
+
     championships = get_championships(summaries, name)
-    summaries_html = summaries.to_html(classes="table table-striped")
     seasons = get_schedules(all_games_for_member, name)
+
+    summaries_html = summaries.to_html(
+        classes="table table-striped") if not summaries.empty else None
 
     close_db()
     return render_template("member.html",
                            name=name,
                            img_filepath=img_filepath,
                            year_joined=year_joined,
+                           status=active,
                            last_year=last_year,
                            playoff_appearances=playoff_appearances,
                            championships=championships,
@@ -1745,20 +1769,43 @@ def current_season_info():
             """, (CURRENT_SEASON,)
     ).fetchall()
 
-    standings, ranks = get_standings(query)
+    current_members_query = db.execute(
+        f"""
+        SELECT {FIRST_NAME}, {LAST_NAME}
+        FROM member
+        WHERE {ACTIVE}=?
+        ORDER BY
+        {LAST_NAME} ASC
+        """, (1,)
+    ).fetchall()
+
+    current_member_names = [
+        f"{row['first_name']} {row['last_name']}" for row in current_members_query]
+
+    standings, ranks = get_standings(query, current_member_names)
     standings_html = standings.to_html(classes="table table-striped")
     all_weeks = get_all_week_results(query)
     playoffs = get_playoff_results_for_season_summary(
         query, NUM_PLAYOFF_TEAMS_PER_YEAR[int(CURRENT_SEASON)])
 
-    roto = get_roto(query)
+    roto = get_roto(query, current_member_names)
     roto_html = roto.to_html(classes="table table-striped")
 
-    matchups = get_projected_playoff_teams(
-        standings, ranks, roto, 6, 1)
+    matchups = get_projected_playoff_teams(standings, ranks, roto, 6, 2)
+
+    if not query:
+        matchups = [""] * NUM_PLAYOFF_TEAMS_PER_YEAR[int(CURRENT_SEASON)]
+
+        matchups[0] = "Head to Head 1st Place"
+        matchups[1] = "Head to Head 2nd Place"
+        matchups[2] = "Head to Head 3rd Place"
+        matchups[3] = "Head to Head 4th Place"
+        matchups[4] = "Roto Wildcard #1"
+        matchups[5] = "Roto Wildcard #2"
 
     close_db()
     return render_template("current_season_info.html",
+                           year=CURRENT_SEASON,
                            cards=CURRENT_SEASON_CARDS,
                            standings=standings_html,
                            roto=roto_html,
@@ -1788,24 +1835,24 @@ def current_season_payouts():
     ).fetchall()
 
     dollars = {
-        "League Winner": 500,
-        "League Runner Up": 250,
-        "Roto Winner": 175,
-        "Roto 2nd Place": 125,
-        "Roto 3rd Place": 75,
-        "#1 Seed in Playoffs": 60,
-        "#2 Seed in Playoffs": 60,
-        "#3 Seed in Playoffs": 60,
-        "#4 Seed in Playoffs": 60,
-        "#5 Seed in Playoffs": 60,
-        "#6 Seed in Playoffs": 60,
-        "Roto 4th Place": 25,
-        "Roto 5th Place": 25,
-        "Roto 6th Place": 25,
-        "Roto 7th Place": 25,
-        "Roto 8th Place": 25,
-        "Roto 9th Place": 25,
-        "Highest Single Game Score": 25,
+        "League Winner": 360,
+        "League Runner Up": 140,
+        "Roto Winner": 115,
+        "Roto 2nd Place": 80,
+        "Roto 3rd Place": 50,
+        "#1 Seed in Playoffs": 35,
+        "#2 Seed in Playoffs": 35,
+        "#3 Seed in Playoffs": 35,
+        "#4 Seed in Playoffs": 35,
+        "#5 Seed in Playoffs": 35,
+        "#6 Seed in Playoffs": 35,
+        "Roto 4th Place": 15,
+        "Roto 5th Place": 15,
+        "Roto 6th Place": 15,
+        "Roto 7th Place": 15,
+        "Roto 8th Place": 15,
+        "Roto 9th Place": 15,
+        "Highest Single Game Score": 15,
         "Week 1 Winner": 10,
         "Week 2 Winner": 10,
         "Week 3 Winner": 10,
@@ -1897,13 +1944,30 @@ def current_season_payouts():
             break
 
     member_high_score, value = get_overall_highest(query)
-    payouts.at["Highest Single Game Score",
-               "League Member"] = str(member_high_score) + flag
-    payouts.at["Highest Single Game Score", "Value"] = str(value) + flag
+    if value > 0:
+        payouts.at["Highest Single Game Score",
+                   "League Member"] = str(member_high_score) + flag
+        payouts.at["Highest Single Game Score", "Value"] = str(value) + flag
 
     payouts = payouts.fillna("--")
 
     league_members = get_league_members(query)
+
+    # This implies the offseason
+    if not league_members:
+        current_members_query = db.execute(
+            f"""
+            SELECT {FIRST_NAME}, {LAST_NAME}
+            FROM member
+            WHERE {ACTIVE}=?
+            ORDER BY
+            {LAST_NAME} ASC
+            """, (1,)
+        ).fetchall()
+
+        league_members = [
+            f"{row['first_name']} {row['last_name']}" for row in current_members_query]
+
     owed = {}
     for member in league_members:
         owed[member] = 0
@@ -1916,6 +1980,7 @@ def current_season_payouts():
         owed.items(), key=lambda item: item[1], reverse=True)}
 
     return render_template("current_season_payouts.html",
+                           year=CURRENT_SEASON,
                            payouts=payouts.to_html(
                                classes="table table-striped"),
                            owed=owed,
@@ -1942,12 +2007,26 @@ def current_season_analytics():
             """, (CURRENT_SEASON, 0)
     ).fetchall()
 
-    roto_against = get_roto_against(query)
-    head_to_head = get_head_to_head(query)
-    intervals = get_intervals(query)
+    current_members_query = db.execute(
+        f"""
+        SELECT {FIRST_NAME}, {LAST_NAME}
+        FROM member
+        WHERE {ACTIVE}=?
+        ORDER BY
+        {LAST_NAME} ASC
+        """, (1,)
+    ).fetchall()
+
+    current_member_names = [
+        f"{row['first_name']} {row['last_name']}" for row in current_members_query]
+
+    roto_against = get_roto_against(query, current_member_names)
+    head_to_head = get_head_to_head(query, current_member_names)
+    intervals = get_intervals(query, current_member_names)
 
     close_db()
     return render_template("current_season_analytics.html",
+                           year=CURRENT_SEASON,
                            cards=CURRENT_SEASON_CARDS,
                            roto_against=roto_against.to_html(
                                classes="table table-striped"),
@@ -2376,9 +2455,10 @@ def fetch_games():
             print("Something went wrong fetching new games!")
             data = []
 
+    updates = []
+    new_additions = []
+
     if data:
-        new_additions = []
-        updates = []
         for game in data:
             first_name_home, last_name_home = game[HOME_TEAM].split(" ")
             member_id_home = get_member_id(first_name_home, last_name_home)
@@ -2437,29 +2517,33 @@ def fetch_games():
     columns = ["Season", "Week", "Team A Name",
                "Team A Score", "Team B Name", "Team B Score"]
     updated_df = pd.DataFrame(columns=columns)
+    updated_html = None
+
     additions_df = pd.DataFrame(columns=columns)
+    additions_html = None
 
-    for row in updates:
-        updated_df.loc[len(updated_df.index)] = [
-            row[SEASON],
-            row[WEEK],
-            row["home_team"],
-            row["home_score"],
-            row["away_team"],
-            row["away_score"]
-        ]
-    updated_html = updated_df.to_html(classes="table table-striped")
+    if data:
+        for row in updates:
+            updated_df.loc[len(updated_df.index)] = [
+                row[SEASON],
+                row[WEEK],
+                row["home_team"],
+                row["home_score"],
+                row["away_team"],
+                row["away_score"]
+            ]
+        updated_html = updated_df.to_html(classes="table table-striped")
 
-    for row in new_additions:
-        additions_df.loc[len(additions_df)] = [
-            row[SEASON],
-            row[WEEK],
-            row["home_team"],
-            row["home_score"],
-            row["away_team"],
-            row["away_score"]
-        ]
-    additions_html = additions_df.to_html(classes="table table-striped")
+        for row in new_additions:
+            additions_df.loc[len(additions_df)] = [
+                row[SEASON],
+                row[WEEK],
+                row["home_team"],
+                row["home_score"],
+                row["away_team"],
+                row["away_score"]
+            ]
+        additions_html = additions_df.to_html(classes="table table-striped")
 
     close_db()
     return render_template("fetch_games_results.html",
