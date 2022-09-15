@@ -78,6 +78,11 @@
               <div class="panel-body">
                 <div class="table-responsive justify-content-center">
                   {{value|safe}}
+                  <p>
+                    <a href="{{url_for('season_summary', year=key)}}"
+                      >{{key}} season archives page</a
+                    >
+                  </p>
                 </div>
               </div>
             </div>
