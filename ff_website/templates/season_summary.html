@@ -59,6 +59,34 @@
     </div>
   </div>
   {% if year %}
+  <h1>{{year}} Summary</h1>
+  {% endif %} {% if season_settings %}
+  <div class="col-12">
+    <hr class="separator" />
+    <h2>Season Settings</h2>
+    <hr class="separator" />
+    <ul>
+      {% for key1, value1 in season_settings.items() %}
+      <li>{{key1}}</li>
+      <ul>
+        {% for key2, value2 in value1.items() %}
+
+        <!--Save without file formatting, otherwise this will not work-->
+        {% if key2 == 'Starters Composition' %}
+        <li>{{key2}}</li>
+        <ul>
+          {% for key3, value3 in value2.items() %}
+          <li><b>{{key3}}</b>:&nbsp;{{value3}}</li>
+          {% endfor %}
+        </ul>
+        {%else%}
+        <li><b>{{key2}}</b>:&nbsp;{{value2}}</li>
+        {% endif %} {% endfor %}
+      </ul>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %} {% if all_weeks %}
   <div class="col-12">
     <hr class="separator" />
     <h2>Standings</h2>
@@ -86,6 +114,7 @@
     </div>
     {%endfor %}
   </div>
+  {% if playoffs %}
   <hr class="separator" />
   <h2>Playoff Results</h2>
   <hr class="separator" />
@@ -99,5 +128,6 @@
     </div>
     {%endfor%}
   </div>
+  {% endif %}
 </div>
 {% endif %} {% endblock content %}

@@ -1,0 +1,33 @@
+{
+    "Draft Information": {
+        "Format": "Snake",
+        "Draft Date": "September 6th, 2021"
+    },
+    "Roster Information": {
+        "Total Size": 14,
+        "Total Starters": 9,
+        "Total Bench": 5,
+        "IR Spots": 2,
+        "Starters Composition": {
+            "QB": 1,
+            "RB": 2,
+            "WR": 2,
+            "TE": 1,
+            "FLEX": 1,
+            "K": 1,
+            "D/ST": 1
+        }
+    },
+    "Positional Scoring": {
+        "QB": "Standard Scoring",
+        "RB": "0.5 PPR Standard Scoring",
+        "WR": "0.5 PPR Standard Scoring",
+        "TE": "0.5 PPR Standard Scoring",
+        "K": "Reduced Scoring",
+        "D/ST": "Standard Scoring"
+    },
+    "Additional Notes":{
+       "Divisions": "No",
+       "Waiver Order": "Auction"
+    }
+}

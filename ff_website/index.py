@@ -1,11 +1,9 @@
 import glob
 import json
 import os
-from flask_bcrypt import Bcrypt
 import requests
 from datetime import datetime
 from pathlib import Path
-from random import randint, shuffle
 
 import inflect
 import pandas as pd
@@ -1638,7 +1636,7 @@ def season_summary():
 
     form = SeasonSelector()
     args = request.args
-    year, standings, all_weeks, roto, playoffs = None, None, None, None, None
+    year, standings, all_weeks, roto, playoffs, read_seasonal_league_settings = None, None, None, None, None, None
 
     standings = pd.DataFrame()
     roto = pd.DataFrame()
@@ -1666,14 +1664,15 @@ def season_summary():
             {WEEK} ASC
             """, (year,)
         ).fetchall()
-        if len(query) == 0 or int(year) == CURRENT_SEASON:
-            return redirect(url_for("season_summary"))
 
         standings, _ = get_standings(query)
         playoffs = get_playoff_results_for_season_summary(
             query, NUM_PLAYOFF_TEAMS_PER_YEAR[int(year)])
         all_weeks = get_all_week_results(query)
         roto = get_roto(query)
+
+        read_seasonal_league_settings = json.load(open(os.path.join(
+            app.root_path, "data", "season_settings_archives", f"{year}_season_settings.json")))
 
     if form.validate_on_submit():
         close_db()
@@ -1683,6 +1682,7 @@ def season_summary():
     return render_template("season_summary.html",
                            form=form,
                            year=year,
+                           season_settings=read_seasonal_league_settings,
                            all_weeks=all_weeks,
                            roto=roto.to_html(classes="table table-striped"),
                            playoffs=playoffs,

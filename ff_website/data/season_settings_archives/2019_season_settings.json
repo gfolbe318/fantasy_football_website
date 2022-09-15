@@ -1,0 +1,33 @@
+{
+    "Draft Information": {
+        "Format": "Snake",
+        "Draft Date": "August 29th, 2019"
+    },
+    "Roster Information": {
+        "Total Size": 16,
+        "Total Starters": 9,
+        "Total Bench": 7,
+        "IR Spots": 0,
+        "Starters Composition": {
+            "QB": 1,
+            "RB": 2,
+            "WR": 2,
+            "TE": 1,
+            "FLEX": 1,
+            "K": 1,
+            "D/ST": 1
+        }
+    },
+    "Positional Scoring": {
+        "QB": "Standard Scoring",
+        "RB": "0.5 PPR Standard Scoring",
+        "WR": "0.5 PPR Standard Scoring",
+        "TE": "0.5 PPR Standard Scoring",
+        "K": "Standard Scoring",
+        "D/ST": "Standard Scoring"
+    },
+    "Additional Notes":{
+       "Divisions": "No",
+       "Waiver Order": "Inverse standings"
+    }
+}
