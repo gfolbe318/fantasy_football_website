@@ -1745,6 +1745,15 @@ def archived_reports():
                            )
 
 
+@app.route("/archives/league_gatherings", methods=["GET"])
+def league_gatherings():
+    images = [
+        "thanksgiving_2021.jpg",
+        "thanksgiving_2022.jpg"
+    ]
+    return render_template("league_gatherings.html", images=images)
+
+
 @app.route("/current_season", methods=["GET", "POST"])
 def current_season():
     return render_template("current_season.html", cards=CURRENT_SEASON_CARDS, title="Current Season")
@@ -1835,38 +1844,32 @@ def current_season_payouts():
     ).fetchall()
 
     dollars = {
-        "League Winner": 360,
-        "League Runner Up": 140,
-        "Roto Winner": 115,
-        "Roto 2nd Place": 80,
-        "Roto 3rd Place": 50,
-        "#1 Seed in Playoffs": 35,
-        "#2 Seed in Playoffs": 35,
-        "#3 Seed in Playoffs": 35,
+        "League Winner": 900,
+        "League Runner Up": 150,
+        "Roto Winner": 225,
+        "Roto 2nd Place": 45,
+        "Roto 3rd Place": 15,
+        "#1 Seed in Playoffs": 65,
+        "#2 Seed in Playoffs": 65,
+        "#3 Seed in Playoffs": 45,
         "#4 Seed in Playoffs": 35,
-        "#5 Seed in Playoffs": 35,
-        "#6 Seed in Playoffs": 35,
-        "Roto 4th Place": 15,
-        "Roto 5th Place": 15,
-        "Roto 6th Place": 15,
-        "Roto 7th Place": 15,
-        "Roto 8th Place": 15,
-        "Roto 9th Place": 15,
-        "Highest Single Game Score": 15,
-        "Week 1 Winner": 10,
-        "Week 2 Winner": 10,
-        "Week 3 Winner": 10,
-        "Week 4 Winner": 10,
-        "Week 5 Winner": 10,
-        "Week 6 Winner": 10,
-        "Week 7 Winner": 10,
-        "Week 8 Winner": 10,
-        "Week 9 Winner": 10,
-        "Week 10 Winner": 10,
-        "Week 11 Winner": 10,
-        "Week 12 Winner": 10,
-        "Week 13 Winner": 10,
-        "Week 14 Winner": 10,
+        "#5 Seed in Playoffs": 15,
+        "#6 Seed in Playoffs": 10,
+        "Highest Single Game Score": 30,
+        "Week 1 Winner": 15,
+        "Week 2 Winner": 15,
+        "Week 3 Winner": 15,
+        "Week 4 Winner": 15,
+        "Week 5 Winner": 15,
+        "Week 6 Winner": 15,
+        "Week 7 Winner": 15,
+        "Week 8 Winner": 15,
+        "Week 9 Winner": 15,
+        "Week 10 Winner": 15,
+        "Week 11 Winner": 15,
+        "Week 12 Winner": 15,
+        "Week 13 Winner": 15,
+        "Week 14 Winner": 15,
     }
 
     payouts = pd.DataFrame(index=list(dollars.keys()), columns=[

@@ -58,5 +58,835 @@
         "home_score": 109.34,
         "away_team": "Max Levine",
         "away_score": 112.5
+    },
+    {
+        "season": "2022",
+        "week": 2,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Noah Nathan",
+        "home_score": 99.72,
+        "away_team": "Garrett Folbe",
+        "away_score": 90.08
+    },
+    {
+        "season": "2022",
+        "week": 2,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Daniel Michaels",
+        "home_score": 81.14,
+        "away_team": "Alex Ross",
+        "away_score": 102.9
+    },
+    {
+        "season": "2022",
+        "week": 2,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jarrett Black",
+        "home_score": 127.98,
+        "away_team": "Merrick Weingarten",
+        "away_score": 136.72
+    },
+    {
+        "season": "2022",
+        "week": 2,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jonah Lopas",
+        "home_score": 81.0,
+        "away_team": "Daniel Banooni",
+        "away_score": 102.12
+    },
+    {
+        "season": "2022",
+        "week": 2,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Brad Silverman",
+        "home_score": 106.92,
+        "away_team": "Merrick Bank",
+        "away_score": 148.04
+    },
+    {
+        "season": "2022",
+        "week": 2,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jason Silverstone",
+        "home_score": 147.78,
+        "away_team": "Max Levine",
+        "away_score": 130.8
+    },
+    {
+        "season": "2022",
+        "week": 3,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jonah Lopas",
+        "home_score": 69.7,
+        "away_team": "Daniel Michaels",
+        "away_score": 100.54
+    },
+    {
+        "season": "2022",
+        "week": 3,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Max Levine",
+        "home_score": 120.72,
+        "away_team": "Merrick Bank",
+        "away_score": 100.48
+    },
+    {
+        "season": "2022",
+        "week": 3,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jarrett Black",
+        "home_score": 121.06,
+        "away_team": "Brad Silverman",
+        "away_score": 77.2
+    },
+    {
+        "season": "2022",
+        "week": 3,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Merrick Weingarten",
+        "home_score": 101.72,
+        "away_team": "Garrett Folbe",
+        "away_score": 131.04
+    },
+    {
+        "season": "2022",
+        "week": 3,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Daniel Banooni",
+        "home_score": 116.82,
+        "away_team": "Noah Nathan",
+        "away_score": 103.76
+    },
+    {
+        "season": "2022",
+        "week": 3,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Alex Ross",
+        "home_score": 95.64,
+        "away_team": "Jason Silverstone",
+        "away_score": 99.38
+    },
+    {
+        "season": "2022",
+        "week": 4,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Max Levine",
+        "home_score": 112.42,
+        "away_team": "Jarrett Black",
+        "away_score": 171.98
+    },
+    {
+        "season": "2022",
+        "week": 4,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jason Silverstone",
+        "home_score": 142.52,
+        "away_team": "Daniel Michaels",
+        "away_score": 100.22
+    },
+    {
+        "season": "2022",
+        "week": 4,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Garrett Folbe",
+        "home_score": 115.08,
+        "away_team": "Brad Silverman",
+        "away_score": 114.28
+    },
+    {
+        "season": "2022",
+        "week": 4,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jonah Lopas",
+        "home_score": 60.86,
+        "away_team": "Noah Nathan",
+        "away_score": 154.66
+    },
+    {
+        "season": "2022",
+        "week": 4,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Alex Ross",
+        "home_score": 101.46,
+        "away_team": "Merrick Bank",
+        "away_score": 117.62
+    },
+    {
+        "season": "2022",
+        "week": 4,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Merrick Weingarten",
+        "home_score": 101.34,
+        "away_team": "Daniel Banooni",
+        "away_score": 121.22
+    },
+    {
+        "season": "2022",
+        "week": 5,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Alex Ross",
+        "home_score": 114.12,
+        "away_team": "Jarrett Black",
+        "away_score": 118.92
+    },
+    {
+        "season": "2022",
+        "week": 5,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Max Levine",
+        "home_score": 100.08,
+        "away_team": "Garrett Folbe",
+        "away_score": 115.0
+    },
+    {
+        "season": "2022",
+        "week": 5,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jonah Lopas",
+        "home_score": 92.28,
+        "away_team": "Merrick Weingarten",
+        "away_score": 92.62
+    },
+    {
+        "season": "2022",
+        "week": 5,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Merrick Bank",
+        "home_score": 106.68,
+        "away_team": "Jason Silverstone",
+        "away_score": 128.24
+    },
+    {
+        "season": "2022",
+        "week": 5,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Noah Nathan",
+        "home_score": 119.04,
+        "away_team": "Daniel Michaels",
+        "away_score": 104.68
+    },
+    {
+        "season": "2022",
+        "week": 5,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Daniel Banooni",
+        "home_score": 136.36,
+        "away_team": "Brad Silverman",
+        "away_score": 95.82
+    },
+    {
+        "season": "2022",
+        "week": 6,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Daniel Banooni",
+        "home_score": 125.04,
+        "away_team": "Max Levine",
+        "away_score": 119.54
+    },
+    {
+        "season": "2022",
+        "week": 6,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jonah Lopas",
+        "home_score": 93.52,
+        "away_team": "Brad Silverman",
+        "away_score": 109.4
+    },
+    {
+        "season": "2022",
+        "week": 6,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jason Silverstone",
+        "home_score": 106.72,
+        "away_team": "Jarrett Black",
+        "away_score": 80.06
+    },
+    {
+        "season": "2022",
+        "week": 6,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Merrick Bank",
+        "home_score": 90.78,
+        "away_team": "Daniel Michaels",
+        "away_score": 87.82
+    },
+    {
+        "season": "2022",
+        "week": 6,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Garrett Folbe",
+        "home_score": 90.68,
+        "away_team": "Alex Ross",
+        "away_score": 91.2
+    },
+    {
+        "season": "2022",
+        "week": 6,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Merrick Weingarten",
+        "home_score": 112.66,
+        "away_team": "Noah Nathan",
+        "away_score": 110.82
+    },
+    {
+        "season": "2022",
+        "week": 7,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Daniel Banooni",
+        "home_score": 117.12,
+        "away_team": "Alex Ross",
+        "away_score": 122.1
+    },
+    {
+        "season": "2022",
+        "week": 7,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Garrett Folbe",
+        "home_score": 103.44,
+        "away_team": "Jason Silverstone",
+        "away_score": 151.04
+    },
+    {
+        "season": "2022",
+        "week": 7,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Max Levine",
+        "home_score": 84.86,
+        "away_team": "Jonah Lopas",
+        "away_score": 99.28
+    },
+    {
+        "season": "2022",
+        "week": 7,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jarrett Black",
+        "home_score": 105.76,
+        "away_team": "Merrick Bank",
+        "away_score": 78.22
+    },
+    {
+        "season": "2022",
+        "week": 7,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Daniel Michaels",
+        "home_score": 123.7,
+        "away_team": "Merrick Weingarten",
+        "away_score": 76.84
+    },
+    {
+        "season": "2022",
+        "week": 7,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Brad Silverman",
+        "home_score": 113.68,
+        "away_team": "Noah Nathan",
+        "away_score": 120.58
+    },
+    {
+        "season": "2022",
+        "week": 8,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jason Silverstone",
+        "home_score": 153.52,
+        "away_team": "Daniel Banooni",
+        "away_score": 171.92
+    },
+    {
+        "season": "2022",
+        "week": 8,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Alex Ross",
+        "home_score": 117.04,
+        "away_team": "Jonah Lopas",
+        "away_score": 152.78
+    },
+    {
+        "season": "2022",
+        "week": 8,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Noah Nathan",
+        "home_score": 139.34,
+        "away_team": "Max Levine",
+        "away_score": 133.58
+    },
+    {
+        "season": "2022",
+        "week": 8,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Merrick Weingarten",
+        "home_score": 142.98,
+        "away_team": "Brad Silverman",
+        "away_score": 73.62
+    },
+    {
+        "season": "2022",
+        "week": 8,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Merrick Bank",
+        "home_score": 110.52,
+        "away_team": "Garrett Folbe",
+        "away_score": 136.16
+    },
+    {
+        "season": "2022",
+        "week": 8,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Daniel Michaels",
+        "home_score": 98.38,
+        "away_team": "Jarrett Black",
+        "away_score": 100.48
+    },
+    {
+        "season": "2022",
+        "week": 9,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jonah Lopas",
+        "home_score": 57.24,
+        "away_team": "Jason Silverstone",
+        "away_score": 117.76
+    },
+    {
+        "season": "2022",
+        "week": 9,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Daniel Banooni",
+        "home_score": 154.1,
+        "away_team": "Merrick Bank",
+        "away_score": 121.3
+    },
+    {
+        "season": "2022",
+        "week": 9,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Max Levine",
+        "home_score": 134.06,
+        "away_team": "Merrick Weingarten",
+        "away_score": 89.56
+    },
+    {
+        "season": "2022",
+        "week": 9,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Alex Ross",
+        "home_score": 128.08,
+        "away_team": "Noah Nathan",
+        "away_score": 107.2
+    },
+    {
+        "season": "2022",
+        "week": 9,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jarrett Black",
+        "home_score": 134.3,
+        "away_team": "Garrett Folbe",
+        "away_score": 103.28
+    },
+    {
+        "season": "2022",
+        "week": 9,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Brad Silverman",
+        "home_score": 79.3,
+        "away_team": "Daniel Michaels",
+        "away_score": 134.5
+    },
+    {
+        "season": "2022",
+        "week": 10,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jarrett Black",
+        "home_score": 128.18,
+        "away_team": "Daniel Banooni",
+        "away_score": 125.16
+    },
+    {
+        "season": "2022",
+        "week": 10,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Merrick Bank",
+        "home_score": 102.94,
+        "away_team": "Jonah Lopas",
+        "away_score": 91.88
+    },
+    {
+        "season": "2022",
+        "week": 10,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Noah Nathan",
+        "home_score": 94.88,
+        "away_team": "Jason Silverstone",
+        "away_score": 122.54
+    },
+    {
+        "season": "2022",
+        "week": 10,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Merrick Weingarten",
+        "home_score": 78.74,
+        "away_team": "Alex Ross",
+        "away_score": 130.88
+    },
+    {
+        "season": "2022",
+        "week": 10,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Daniel Michaels",
+        "home_score": 110.9,
+        "away_team": "Garrett Folbe",
+        "away_score": 83.18
+    },
+    {
+        "season": "2022",
+        "week": 10,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Brad Silverman",
+        "home_score": 109.06,
+        "away_team": "Max Levine",
+        "away_score": 125.04
+    },
+    {
+        "season": "2022",
+        "week": 11,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jason Silverstone",
+        "home_score": 104.96,
+        "away_team": "Merrick Weingarten",
+        "away_score": 113.06
+    },
+    {
+        "season": "2022",
+        "week": 11,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jarrett Black",
+        "home_score": 105.24,
+        "away_team": "Jonah Lopas",
+        "away_score": 85.12
+    },
+    {
+        "season": "2022",
+        "week": 11,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Garrett Folbe",
+        "home_score": 134.0,
+        "away_team": "Daniel Banooni",
+        "away_score": 171.62
+    },
+    {
+        "season": "2022",
+        "week": 11,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Brad Silverman",
+        "home_score": 115.94,
+        "away_team": "Alex Ross",
+        "away_score": 93.08
+    },
+    {
+        "season": "2022",
+        "week": 11,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Noah Nathan",
+        "home_score": 107.7,
+        "away_team": "Merrick Bank",
+        "away_score": 101.46
+    },
+    {
+        "season": "2022",
+        "week": 11,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Daniel Michaels",
+        "home_score": 109.16,
+        "away_team": "Max Levine",
+        "away_score": 107.92
+    },
+    {
+        "season": "2022",
+        "week": 12,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jarrett Black",
+        "home_score": 119.76,
+        "away_team": "Noah Nathan",
+        "away_score": 129.46
+    },
+    {
+        "season": "2022",
+        "week": 12,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Merrick Bank",
+        "home_score": 101.88,
+        "away_team": "Merrick Weingarten",
+        "away_score": 84.9
+    },
+    {
+        "season": "2022",
+        "week": 12,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Daniel Michaels",
+        "home_score": 108.3,
+        "away_team": "Daniel Banooni",
+        "away_score": 93.32
+    },
+    {
+        "season": "2022",
+        "week": 12,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jonah Lopas",
+        "home_score": 110.54,
+        "away_team": "Garrett Folbe",
+        "away_score": 96.56
+    },
+    {
+        "season": "2022",
+        "week": 12,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jason Silverstone",
+        "home_score": 163.32,
+        "away_team": "Brad Silverman",
+        "away_score": 121.36
+    },
+    {
+        "season": "2022",
+        "week": 12,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Max Levine",
+        "home_score": 121.0,
+        "away_team": "Alex Ross",
+        "away_score": 134.32
+    },
+    {
+        "season": "2022",
+        "week": 13,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Garrett Folbe",
+        "home_score": 83.28,
+        "away_team": "Noah Nathan",
+        "away_score": 148.14
+    },
+    {
+        "season": "2022",
+        "week": 13,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Alex Ross",
+        "home_score": 81.06,
+        "away_team": "Daniel Michaels",
+        "away_score": 121.18
+    },
+    {
+        "season": "2022",
+        "week": 13,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Merrick Weingarten",
+        "home_score": 75.78,
+        "away_team": "Jarrett Black",
+        "away_score": 128.38
+    },
+    {
+        "season": "2022",
+        "week": 13,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Daniel Banooni",
+        "home_score": 123.58,
+        "away_team": "Jonah Lopas",
+        "away_score": 112.96
+    },
+    {
+        "season": "2022",
+        "week": 13,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Max Levine",
+        "home_score": 113.6,
+        "away_team": "Jason Silverstone",
+        "away_score": 155.52
+    },
+    {
+        "season": "2022",
+        "week": 13,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Merrick Bank",
+        "home_score": 91.12,
+        "away_team": "Brad Silverman",
+        "away_score": 104.46
+    },
+    {
+        "season": "2022",
+        "week": 14,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jason Silverstone",
+        "home_score": 127.96,
+        "away_team": "Alex Ross",
+        "away_score": 108.12
+    },
+    {
+        "season": "2022",
+        "week": 14,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Merrick Bank",
+        "home_score": 78.28,
+        "away_team": "Max Levine",
+        "away_score": 127.0
+    },
+    {
+        "season": "2022",
+        "week": 14,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Noah Nathan",
+        "home_score": 98.24,
+        "away_team": "Daniel Banooni",
+        "away_score": 113.72
+    },
+    {
+        "season": "2022",
+        "week": 14,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Garrett Folbe",
+        "home_score": 93.88,
+        "away_team": "Merrick Weingarten",
+        "away_score": 66.46
+    },
+    {
+        "season": "2022",
+        "week": 14,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Brad Silverman",
+        "home_score": 90.8,
+        "away_team": "Jarrett Black",
+        "away_score": 93.52
+    },
+    {
+        "season": "2022",
+        "week": 14,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Daniel Michaels",
+        "home_score": 151.42,
+        "away_team": "Jonah Lopas",
+        "away_score": 122.68
+    },
+    {
+        "season": "2022",
+        "week": 15,
+        "matchup_length": 1,
+        "playoffs": true,
+        "home_team": "Noah Nathan",
+        "home_score": 125.82,
+        "away_team": "Max Levine",
+        "away_score": 151.64
+    },
+    {
+        "season": "2022",
+        "week": 15,
+        "matchup_length": 1,
+        "playoffs": true,
+        "home_team": "Jarrett Black",
+        "home_score": 82.52,
+        "away_team": "Daniel Michaels",
+        "away_score": 108.42
+    },
+    {
+        "season": "2022",
+        "week": 16,
+        "matchup_length": 1,
+        "playoffs": true,
+        "home_team": "Jason Silverstone",
+        "home_score": 114.86,
+        "away_team": "Max Levine",
+        "away_score": 115.9
+    },
+    {
+        "season": "2022",
+        "week": 16,
+        "matchup_length": 1,
+        "playoffs": true,
+        "home_team": "Daniel Banooni",
+        "home_score": 102.06,
+        "away_team": "Daniel Michaels",
+        "away_score": 106.22
+    },
+    {
+        "season": "2022",
+        "week": 17,
+        "matchup_length": 1,
+        "playoffs": true,
+        "home_team": "Daniel Michaels",
+        "home_score": 86.08,
+        "away_team": "Max Levine",
+        "away_score": 109.94
     }
 ]

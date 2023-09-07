@@ -713,7 +713,7 @@ def get_projected_playoff_teams(standings: pd.DataFrame, ranks, roto: pd.DataFra
     ret = []
     for member in playoff_teams:
         name = f"#{ranks[member]} {member}"
-        if ranks[member] > num_total:
+        if ranks[member] > num_total-num_roto:
             name += "*"
         ret.append(name)
     return ret
