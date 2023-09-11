@@ -1,45 +1,14 @@
 from setuptools import find_packages, setup
+import pipreqs
+
+# https://pypi.org/project/pipreqs/
+# https://stackoverflow.com/questions/8161617/how-can-i-specify-library-versions-in-setup-py
+with open('requirements.txt') as f:
+    required = f.read().splitlines()
 
 setup(
     name="ff_website",
     version="1.0.0",
     packages=find_packages(),
-    install_requires=[
-        "autopep8",
-        "bcrypt",
-        "certifi",
-        "cffi",
-        "click",
-        "chardet",
-        "dnspython",
-        "email-validator",
-        "Flask",
-        "Flask-Bcrypt"
-        "Flask-CLI",
-        "Flask-Login",
-        "Flask-WTF",
-        "idna",
-        "importlib-metadata",
-        "inflect",
-        "itsdangerous",
-        "Jinja2",
-        "MarkupSafe",
-        "mccabe",
-        "numpy",
-        "pandas",
-        "Pillow",
-        "pip",
-        "pycodestyle",
-        "python-dateutil"
-        "pytz"
-        "setuptools",
-        "six",
-        "toml",
-        "typing-extensions",
-        "urllib3",
-        "Werkzeug",
-        "Flask-WTF",
-        "WTForms",
-        "zipp"
-    ],
+    install_requires=required,
 )

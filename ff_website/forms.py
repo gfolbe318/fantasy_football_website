@@ -4,6 +4,8 @@ from wtforms import FloatField, SelectField, StringField, SubmitField
 from wtforms.fields.simple import PasswordField, TextAreaField
 from wtforms.validators import DataRequired, Length, ValidationError, Email, EqualTo
 
+import email_validator
+
 from ff_website.constants import CURRENT_SEASON
 
 

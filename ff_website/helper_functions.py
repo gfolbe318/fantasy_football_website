@@ -1,5 +1,3 @@
-from logging import lastResort
-from pdb import post_mortem
 from ff_website.constants import *
 import pandas as pd
 import os
@@ -393,7 +391,7 @@ def get_schedules(query, name):
         df = get_individual_schedule(value, name)
         styled = df.style.apply(highlight_winning_rows, 1)
 
-        all_schedules[key] = styled.render()
+        all_schedules[key] = styled.to_html()
 
     return None if all_schedules == {} else all_schedules
 
