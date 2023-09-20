@@ -716,7 +716,7 @@ def add_league_members():
         """
     )
 
-    members = json.load(open(member_data, "r"))
+    members = json.load(open(os.path.join("ff-website", "data", member_data, "r")))
 
     for member in members:
         db.execute(
@@ -1935,7 +1935,7 @@ def current_season_payouts():
             helper = f"Roto {ordinal(key+1)} Place"
         payouts.at[helper, "League Member"] = value["Member"] + flag
         payouts.at[helper, "Value"] = str(value["Total"]) + flag
-        if key > 7:
+        if key > 1: # number of roto teams included + 2 (Awful way to do this)
             break
 
     week_winners = get_week_winners(query, 13)

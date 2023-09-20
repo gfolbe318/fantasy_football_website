@@ -49,8 +49,8 @@ AWAY_TEAM = "away_team"
 AWAY_SCORE = "away_score"
 
 
-member_data = "ff_website\data\\all_members.json"
-games_data = "ff_website\data\\all_games.json"
+member_data = "all_members.json"
+games_data = "all_games.json"
 
 NUM_PLAYOFF_TEAMS_PER_YEAR = {
     2017: 4,

@@ -1,0 +1,32 @@
+{
+    "Draft Information": {
+        "Format": "Auction",
+        "Draft Date": "September 6th, 2022"
+    },
+    "Roster Information": {
+        "Total Size": 14,
+        "Total Starters": 9,
+        "Total Bench": 5,
+        "IR Spots": 1,
+        "Starters Composition": {
+            "QB": 1,
+            "RB": 2,
+            "WR": 2,
+            "TE": 1,
+            "FLEX": 1,
+            "OP": 1,
+            "D/ST": 1
+        }
+    },
+    "Positional Scoring": {
+        "QB": "Standard Scoring",
+        "RB": "0.5 PPR Standard Scoring",
+        "WR": "0.5 PPR Standard Scoring",
+        "TE": "0.75 PPR Standard Scoring",
+        "D/ST": "Reduced Scoring"
+    },
+    "Additional Notes":{
+       "Divisions": "No",
+       "Waiver Order": "Auction"
+    }
+}
