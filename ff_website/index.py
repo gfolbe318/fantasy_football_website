@@ -80,8 +80,9 @@ def load_user(user_id):
 def page_not_found(e):
     return render_template('404.html'), 404
 
-
-app.register_error_handler(404, page_not_found)
+@app.errorhandler(500)
+def api_error(e):
+    return render_template('404.html')
 
 
 @app.route("/register", methods=["GET", "POST"])
