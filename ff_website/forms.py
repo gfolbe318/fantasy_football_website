@@ -1,10 +1,10 @@
+import os
+
 from flask_wtf import FlaskForm
-from flask_wtf.file import FileField
+from flask_wtf.file import FileField, FileAllowed, FileRequired
 from wtforms import FloatField, SelectField, StringField, SubmitField
 from wtforms.fields.simple import PasswordField, TextAreaField
 from wtforms.validators import DataRequired, Length, ValidationError, Email, EqualTo
-
-import email_validator
 
 from ff_website.constants import CURRENT_SEASON
 
@@ -195,12 +195,18 @@ class MakeAnnouncement(FlaskForm):
 
 
 class JarrettReport(FlaskForm):
-    weeks = get_weeks
-    title = StringField('Title', validators=[DataRequired()])
+    title = StringField('Title', validators=[DataRequired()]) 
+    
     week = SelectField('Week', choices=get_weeks(include_zero=True),
                        validators=[DataRequired()])
-    report = TextAreaField(
-        'Report', validators=[DataRequired()])
+    
+    season = SelectField('Season', choices=get_years_helper(2017, CURRENT_SEASON),
+                       validators=[DataRequired()], default=CURRENT_SEASON)
+    
+    report = FileField('Upload Report', validators=[
+        FileRequired(), FileAllowed(['pdf'], 'PDFs only!')]
+    )
+
     submit = SubmitField('Create Report')
 
 

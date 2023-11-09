@@ -47,6 +47,7 @@ HOME_TEAM = "home_team"
 HOME_SCORE = "home_score"
 AWAY_TEAM = "away_team"
 AWAY_SCORE = "away_score"
+STATIC_URL = "static_url"
 
 
 member_data = "all_members.json"
@@ -84,7 +85,7 @@ CURRENT_SEASON_CARDS = [
     {
         "name": "Report of The Week",
         "filename": 'img/report.png',
-        "description": "Coming to you live from Lincoln, it's the Jart Report!",
+        "description": "Coming to you live from Omaha, it's the 🌽Jart Report🌽!",
         "link": 'current_season_report'
     },
     {

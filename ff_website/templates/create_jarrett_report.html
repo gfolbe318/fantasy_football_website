@@ -1,9 +1,3 @@
-<!--
-https://word2cleanhtml.com/ is a good tool to use for converting word docs into readable html
-Remember to go through and clean the document before submitting to the cleaner, and once html
-is cleaned, don't forget to go back and update the headers.
--->
-
 {% extends "layout.html" %} {% block content %}
 <div class="container-fluid content">
   <div class="row justify-content-center">
@@ -13,8 +7,8 @@ is cleaned, don't forget to go back and update the headers.
           <form
             novalidate="novalidate"
             method="POST"
-            action=""
             autocomplete="off"
+            enctype="multipart/form-data"
           >
             <fieldset class="form-group">
               <legend>Create a Jarrett Report</legend>
@@ -41,6 +35,21 @@ is cleaned, don't forget to go back and update the headers.
 
                 <div class="col-lg-6 col-sm-12">
                   <div class="form-group">
+                    {{ form.season.label(class="form-control-md") }} {% if
+                    form.season.errors %} {{ form.season(class="form-control
+                    form-control-md is-invalid") }}
+                    <div class="invalid-feedback">
+                      {% for error in form.season.errors %}
+                      <span>{{ error }}</span>
+                      {% endfor %}
+                    </div>
+                    {% else %} {{ form.season(class="form-control
+                    form-control-md") }} {% endif %}
+                  </div>
+                </div>
+
+                <div class="col-lg-6 col-sm-12">
+                  <div class="form-group">
                     {{ form.week.label(class="form-control-md") }} {% if
                     form.week.errors %} {{ form.week(class="form-control
                     form-control-md is-invalid") }}
@@ -54,18 +63,15 @@ is cleaned, don't forget to go back and update the headers.
                   </div>
                 </div>
               </div>
-
               <div class="form-group">
-                {{ form.report.label(class="form-control-md") }} {% if
-                form.report.errors %} {{ form.report(class="form-control
-                form-control-md is-invalid") }}
+                {{ form.report.label }} {% if form.report.errors %} {{
+                form.report(class="form-control form-control-md is-invalid") }}
                 <div class="invalid-feedback">
                   {% for error in form.report.errors %}
                   <span>{{ error }}</span>
                   {% endfor %}
                 </div>
-                {% else %} {{ form.report(class="form-control form-control-md")
-                }} {% endif %}
+                {% else %} {{ form.report }} {% endif %}
               </div>
             </fieldset>
             <div class="form-group">

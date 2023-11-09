@@ -23,31 +23,58 @@
       </a>
     </div>
   </div>
-  {% endif %} {% if data is not none %}
-  <div class="row">
-    <div class="col">
-      <small>
-        For a list of all Jarrett Reports, including those from previous
-        seasons, visit the
-        <a href="{{url_for('archived_reports')}}">archived reports.</a>
-      </small>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col">
-      <p class="post-title"><b>{{data.title}}</b></p>
-      <i
-        ><small class="text-muted"
-          ><b>Week {{data.week}}, {{data.season}} Season</b>
-        </small></i
-      >
-      <hr class="post-title-underline" />
-      {{data.report|safe}}
-      <hr class="post-title-underline" />
-    </div>
-    {% else %}
-    <h2>No report available at this time</h2>
+  {% endif %}
+  <p>
+    Welcome to the new look home for the 🌽Jarrett Report🌽! All of the current
+    season's reports can be found on this page. If you are looking for older
+    reports, please visit the
+    <a href="{{ url_for('archived_reports') }}">archives.</a> <br />
+    {% if current_report %}
+    <small>
+      Editor's note: The "Open Report" button is intentionally red and white -
+      GBR (subject to change if Matt Rhule does his thing at Michigan's
+      expense)</small
+    >
     {% endif %}
+  </p>
+
+  {% if not current_report %}
+  <div class="center-text">
+    <h2>No reports for this current season yet</h2>
+    <p>
+      View previous reports at the
+      <a href="{{ url_for('archived_reports') }}">archives.</a>
+    </p>
   </div>
+  {% else %}
+  <div class="center-text">
+    <h4>
+      Current Report: Week {{current_report.week}} - {{current_report.title}}
+    </h4>
+    <p>
+      <a
+        href="{{ url_for('static', filename=current_report.file_name) }}"
+        target="_blank"
+      >
+        <button type="button" class="btn-lg btn-danger">🌽Open Report🌽</button>
+      </a>
+    </p>
+  </div>
+  {% endif %} {% if season_reports %}
+  <p>Additional reports from this season</p>
+  <ul class="corn-bullet">
+    {% for report in season_reports %}
+    <li>
+      Week {{ report.week }} -
+      <a
+        href="{{ url_for('static', filename=report.file_name) }}"
+        target="_blank"
+      >
+        {{ report.title }}
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
 </div>
 {% endblock content %}

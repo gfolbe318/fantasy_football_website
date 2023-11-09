@@ -7,11 +7,13 @@ from pathlib import Path
 
 import inflect
 import pandas as pd
-from flask import flash, jsonify, redirect, render_template, request, url_for
+from flask import flash, jsonify, redirect, render_template, request, url_for, send_file
 from flask_login import (UserMixin, current_user, login_required, login_user,
                          logout_user)
 from PIL import Image
 from pytz import timezone
+
+from werkzeug.utils import secure_filename
 
 from ff_website import app, bcrypt
 from ff_website.apis import get_member_id
@@ -251,7 +253,7 @@ def homepage():
             "title": "League Office",
             "img_file": url_for("static", filename="img/espn.png"),
             "description": "Visit our official home page on ESPN for your complete fantasy football experience.",
-            "link": "https://fantasy.espn.com/football/league?leagueId=50890012&seasonId=2022"
+            "link": "https://fantasy.espn.com/football/league?leagueId=50890012&seasonId=2023"
         }
     ]
     return render_template("home.html", ql=links, title="Home")
@@ -910,26 +912,43 @@ def create_jarrett_report():
 
     form = JarrettReport()
     if form.validate_on_submit():
-        content = {
-            "title": form.title.data,
-            "season": CURRENT_SEASON,
-            "week": form.week.data,
-            "report": form.report.data
-        }
-        file_name = f"jarrett_report_{CURRENT_SEASON}_week_{form.week.data}.json"
-        base_path = os.path.join(
-            app.root_path, "jarrett_reports", str(CURRENT_SEASON))
+        file_name = f"jarrett_report_{form.season.data}_{form.week.data}.pdf"
+        base_path = os.path.join(app.root_path, "static", "jarrett_reports")
 
         os.makedirs(base_path, exist_ok=True)
-
-        full_path = os.path.join(base_path, file_name)
-        if os.path.exists(full_path):
-            form.week.errors.append('A report at this week already exists')
-
+        
+        db = get_db()
+        query = db.execute(
+            f"""
+            SELECT report_id
+            FROM report
+            WHERE {SEASON}=? AND {WEEK}=?
+            """, (form.season.data, form.week.data)
+        ).fetchone()
+        
+        if query:
+            form.season.errors.append(
+                "A report at this season/week already exists"
+            )
+            form.week.errors.append(
+                "A report at this season/week already exists"
+            )
+            flash('Report not created', 'danger')
+            return render_template("create_jarrett_report.html", form=form, title="Create Jarrett Report")
+        
         else:
-            json.dump(content, open(full_path, "w"))
+            secured_file = secure_filename(file_name)
+            form.report.data.save(os.path.join(app.root_path, "static", "jarrett_reports", secured_file))
+            db.execute(
+                f"""
+                INSERT INTO report
+                ({TITLE}, {SEASON}, {WEEK}, {STATIC_URL})
+                VALUES(?, ?, ?, ?)
+                """, (form.title.data, form.season.data, form.week.data, f"jarrett_reports/{file_name}")
+            )
+            db.commit()
             flash('Jarrett Report Created!', 'success')
-            return redirect(url_for('current_season_report', week=form.week.data, season=CURRENT_SEASON))
+
     return render_template("create_jarrett_report.html", form=form, title="Create Jarrett Report")
 
 
@@ -948,83 +967,29 @@ def delete_jarrett_report():
         week = args.get("week")
     except AttributeError:
         print("Something went wrong getting args!")
-
-    filename = f"jarrett_report_{season}_week_{week}.json"
+        
+    filename = f"jarrett_report_{season}_{week}.pdf"
     base_path = os.path.join(
-        app.root_path, "jarrett_reports", str(season), filename
+        app.root_path, "static", "jarrett_reports", filename
     )
+    print(base_path)
 
     if os.path.exists(base_path):
         os.remove(base_path)
         flash("Report deleted!", "danger")
+        
+        db = get_db()
+        db.execute(
+            f"""
+            DELETE FROM report
+            WHERE {SEASON}=? AND {WEEK}=?
+            """, (season, week)
+        )
+        db.commit()
     else:
         flash("Report could not be deleted", "warning")
 
     return redirect(url_for('archived_reports'))
-
-
-@app.route("/tools/update_jarrett_report", methods=["GET", "POST"])
-@login_required
-def update_jarrett_report():
-    form = JarrettReport()
-    args = request.args
-    season = None
-    week = None
-    try:
-        season = args.get("season")
-        week = args.get("week")
-    except AttributeError:
-        print("Something went wrong getting args!")
-
-    filename = f"jarrett_report_{season}_week_{week}.json"
-    base_path = os.path.join(
-        app.root_path, "jarrett_reports", str(season), filename
-    )
-
-    if os.path.exists(base_path):
-
-        data = json.load(open(base_path, "r"))
-        report = data["report"]
-        title = data["title"]
-        week = data["week"]
-
-        form = JarrettReport(week=week, title=title, report=report)
-        if form.validate_on_submit():
-            if form.week.data != week:
-                new_filename = f"jarrett_report_{season}_week_{form.week.data}.json"
-
-                if os.path.exists(os.path.join(app.root_path, "jarrett_reports", str(season), new_filename)):
-                    form.week.errors.append(
-                        "A report for this week already exists")
-                    return render_template("update_jarrett_report.html", form=form)
-                else:
-                    os.remove(os.path.join(app.root_path,
-                                           "jarrett_reports", str(season), filename))
-
-            content = {
-                "title": form.title.data,
-                "season": CURRENT_SEASON,
-                "week": form.week.data,
-                "report": form.report.data
-            }
-            file_name = f"jarrett_report_{CURRENT_SEASON}_week_{form.week.data}.json"
-            base_path = os.path.join(
-                app.root_path, "jarrett_reports", str(CURRENT_SEASON))
-
-            json.dump(content, open(
-                os.path.join(base_path, file_name), "w"))
-            if form.title.data == title and form.report.data == report and form.week.data == week:
-                flash('Report unchanged', 'warning')
-                return redirect(url_for('current_season_report', week=form.week.data, season=CURRENT_SEASON))
-            else:
-                flash('Jarrett report updated successfully!', 'success')
-                return redirect(url_for('current_season_report', week=form.week.data, season=CURRENT_SEASON))
-
-    else:
-        flash("Report doesn't exist", "warning")
-        return redirect(url_for('homepage'))
-    return render_template("update_jarrett_report.html", form=form, title="Update Report")
-
 
 @ app.route("/tools/list_all_users")
 @ login_required
@@ -1717,32 +1682,36 @@ def inactive_members():
 
 @app.route("/archives/archived_reports", methods=["GET", "POST"])
 def archived_reports():
-    archived_reports = []
-
-    base_path = os.path.join(app.root_path, "jarrett_reports")
-    reports = glob.glob(base_path + "/*/*")
-
-    for report in reports:
-        data = json.load(open(report, "r"))
-        archived_reports.append({
-            "title": data["title"],
-            "week": int(data["week"]),
-            "season": int(data["season"]),
-            "link": report
-        })
-
-    archived_reports.sort(key=lambda x: (x["season"], x["week"]))
-    organized_reports = OrderedDict()
-    for report in archived_reports:
-        season = report["season"]
-        if season not in organized_reports:
-            organized_reports[season] = [report]
+    
+    db = get_db()
+    reports = db.execute(
+        f"""
+        SELECT {WEEK}, {SEASON}, {TITLE}, {STATIC_URL}
+        FROM report
+        ORDER BY {SEASON} DESC, {WEEK} ASC
+        """
+    )
+    archived_reports = {}
+    for row in reports:
+        season = row[SEASON]
+        if season not in archived_reports:
+            archived_reports[season] = [{
+                "week" : row[WEEK],
+                "season": row[SEASON],
+                "title" : row[TITLE],
+                "file_name" : row[STATIC_URL]
+            }]
         else:
-            organized_reports[season].append(report)
-
+            archived_reports[season].append({
+                "week" : row[WEEK],
+                "season": row[SEASON],
+                "title" : row[TITLE],
+                "file_name" : row[STATIC_URL]
+            })     
+    
     return render_template("archived_reports.html",
-                           organized_reports=organized_reports,
-                           title="Archived Reports"
+                           archived_reports=archived_reports,
+                           title="🌽Archived Reports🌽"
                            )
 
 
@@ -2023,7 +1992,9 @@ def current_season_analytics():
 
     current_member_names = [
         f"{row['first_name']} {row['last_name']}" for row in current_members_query]
-
+    
+    point_share = get_point_share(query, current_member_names)
+    normalization_share = get_normalization_share(query, current_member_names)
     roto_against = get_roto_against(query, current_member_names)
     head_to_head = get_head_to_head(query, current_member_names)
     intervals = get_intervals(query, current_member_names)
@@ -2043,49 +2014,38 @@ def current_season_analytics():
 
 @app.route("/current_season/report", methods=["GET", "POST"])
 def current_season_report():
-    args = request.args
-    season = None
-    week = None
-    try:
-        season = args.get("season")
-        week = args.get("week")
-    except AttributeError:
-        print("Something went wrong getting args!")
-
-    base_path = os.path.join(
-        app.root_path, "jarrett_reports"
-    )
-    files = glob.glob(base_path + "/*/*")
-    if not files:
-        return render_template("current_season_report.html", data=None, cards=CURRENT_SEASON_CARDS)
-
-    helper = []
-    for file in files:
-        temp_week, temp_year = parse_jarrett_report_filename(
-            os.path.basename(file))
-        helper.append({
-            "week": str(temp_week),
-            "season": str(temp_year),
-            "filepath": file
+    db = get_db()
+    
+    reports = db.execute(
+        f"""
+        SELECT {WEEK}, {TITLE}, {STATIC_URL}
+        FROM report
+        WHERE {SEASON} = {CURRENT_SEASON}
+        ORDER BY {WEEK} DESC
+        """
+    ).fetchall()
+    
+    data = []    
+    for report in reports:
+        data.append({
+            "title": report[TITLE],
+            "file_name": report[STATIC_URL],
+            "week": report[WEEK]
         })
-    helper.sort(key=lambda x: (int(x["season"]), int(x["week"])))
-
-    if week == None and season == None:
-        current_report = helper[-1]
-        data = json.load(open(current_report["filepath"]))
-    else:
-        for file in helper:
-            if file["week"] == week and file["season"] == season:
-                data = json.load(open(file["filepath"]))
-                break
-        else:
-            current_report = helper[-1]
-            data = json.load(open(current_report["filepath"]))
-
+            
+    current_report, season_reports = None, None
+    
+    if len(data) == 1:
+        current_report = data[0]
+    elif len(data) > 1:
+        current_report = data[0]
+        season_reports = data[1:]  
+        
     return render_template("current_season_report.html",
-                           data=data,
+                           current_report=current_report,
+                           season_reports=season_reports,
                            cards=CURRENT_SEASON_CARDS,
-                           title="The Jart Report")
+                           title="🌽The Jart Report🌽")
 
 
 @app.route("/current_season/power_rankings", methods=["GET", "POST"])

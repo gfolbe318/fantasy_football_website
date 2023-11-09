@@ -5,6 +5,8 @@ import json
 from collections import OrderedDict
 import heapq
 
+pd.options.mode.chained_assignment = None
+
 
 class Record(object):
     def __init__(self, name, value):
@@ -791,7 +793,46 @@ def get_league_schedules(query):
     schedules_df = schedules_df.set_index(["weeks"])
     return schedules_df
 
-
+def get_point_share(query, current_member_names):
+    point_share_df = pd.DataFrame(index=current_member_names)
+        
+    if not query:
+        point_share_df["Avg"] = 0.0
+        point_share_df["Total"] = 0
+        return point_share_df
+    else:
+        points_df = gen_points_df(query, current_member_names)
+        points_df["PF"] = points_df.sum(axis=1)
+        for col in points_df.columns:
+            point_share_df[col] = points_df[col].apply(lambda x : x / points_df[col].sum())
+    
+        point_share_df = point_share_df.round(4)
+        point_share_df = point_share_df.rename(columns={
+            "PF" : "Avg"
+        })
+        point_share_df = point_share_df.astype('str')
+        
+        point_share_df["PF"] = points_df["PF"]
+        point_share_df.sort_values(by="Avg", ascending=False, inplace=True)
+        
+        print(point_share_df)
+        
+def get_normalization_share(query, current_member_names):
+    norm_df = pd.DataFrame(index=current_member_names)
+    
+    if not query:
+        norm_df["Total"] = 0
+    else:
+        points_df = gen_points_df(query, current_member_names)
+        for col in points_df.columns:
+            norm_df = points_df.apply(lambda x : (x - points_df.values.min()) / (points_df.values.max() - points_df.values.min()))
+        
+        norm_df = norm_df.round(4)
+        norm_df["Total"] = norm_df.sum(axis=1)
+        norm_df.sort_values(by="Total", ascending=False, inplace=True)
+        
+        print(norm_df)
+        
 def get_roto_against(query, current_member_names):
     roto_df = get_roto(query, current_member_names)
     rows = get_league_members(query)
@@ -1025,16 +1066,43 @@ def hall_of_fame_helper(query):
     league_members = get_league_members(query)
 
     for member in league_members:
-        total_points, streak, _, _, _ = get_additional_stats(
-            query, member)
-
         _, _, wins, _, po_wins, _ = get_overall_record(query, member)
 
         most_wins_overall.append(Record(member, wins))
         most_playoff_wins.append(Record(member, po_wins))
-        most_points_all_time.append(Record(member, total_points))
-        longest_win_streak.append(Record(member, streak))
 
+    points_dict = {member : 0 for member in league_members}
+    streak_dict = {member : 0 for member in league_members}
+    
+    winning_team, losing_team = '', ''
+    for row in query:
+        team_A_name = f"{row['team_A_first_name']} {row['team_A_last_name']}"
+        team_B_name = f"{row['team_B_first_name']} {row['team_B_last_name']}"
+
+        team_A_score = row[TEAM_A_SCORE]
+        team_B_score = row[TEAM_B_SCORE]
+        
+        points_dict[team_A_name] += team_A_score
+        points_dict[team_B_name] += team_B_score
+
+        if team_A_score > team_B_score:
+            winning_team = team_A_name
+            losing_team = team_B_name
+
+        else:
+            winning_team = team_B_name
+            losing_team = team_A_name
+            
+        longest_win_streak.append(Record(losing_team, streak_dict[losing_team]))
+        streak_dict[winning_team] += 1        
+        streak_dict[losing_team] = 0
+
+    for name, points in points_dict.items():
+        most_points_all_time.append(Record(name, round(points, 2)))  
+    
+    for name, streak in streak_dict.items():
+        longest_win_streak.append(Record(name, streak))   
+    
     split_seasons_query = {}
     for row in query:
         year = row[SEASON]
@@ -1050,7 +1118,7 @@ def hall_of_fame_helper(query):
                  2016: "Jonah Lopas"}
 
     for key, value in split_seasons_query.items():
-        standings_playoffs, _ = get_standings(value, True)
+        standings_playoffs, _ = get_standings(value, include_playoffs=True)
         standings_reg, _ = get_standings(value)
         roto = get_roto(value)
 

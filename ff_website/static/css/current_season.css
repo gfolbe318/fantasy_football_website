@@ -45,3 +45,15 @@
 .jarrett-report-title {
   font-size: 2rem;
 }
+
+.center-text {
+  text-align: center;
+}
+
+.corn-bullet {
+  list-style-type: '🌽'
+}
+
+ul.corn-bullet > ul {
+  list-style-type: '🌽'
+}

@@ -1,5 +1,5 @@
 {% extends "layout.html" %} {% block content %} {% for year, reports in
-organized_reports.items() %} {% for report in reports %}
+archived_reports.items() %} {% for report in reports %}
 <div
   class="modal fade"
   id="modal{{report.season}}-{{report.week}}"
@@ -43,34 +43,26 @@ organized_reports.items() %} {% for report in reports %}
   <div class="row">
     <div class="col">
       <hr class="separator" />
-      <h1>Archived Reports</h1>
+      <h1>{{title}}</h1>
       <hr class="separator" />
       <div class="row season_intro">
         <div class="col">
-          {% for year, reports in organized_reports.items() %}
-          <ul>
+          {% for year, reports in archived_reports.items() %}
+          <ul class="corn-bullet">
             <li>
               {{year}}
-              <ul class="small-ul-padding">
+              <ul class="small-ul-padding corn-bullet">
                 {% for report in reports %}
                 <li>
                   Week&nbsp;{{report.week}}&nbsp;-&nbsp
                   <a
-                    href="{{ url_for('current_season_report', season=report.season, week=report.week )}}"
+                    href="{{ url_for('static', filename=report.file_name) }}"
+                    target="_blank"
                   >
                     {{report.title}}
                   </a>
                   {% if current_user.admin_privileges == 1 %}
-                  <ul>
-                    <li>
-                      <a
-                        href="{{ url_for('update_jarrett_report', season=report.season, week=report.week) }}"
-                      >
-                        <button class="btn btn-sm btn-warning mb-1 mt-1">
-                          Update Report
-                        </button>
-                      </a>
-                    </li>
+                  <ul class>
                     <li>
                       <button
                         class="btn btn-sm btn-danger mt-1 mb-1"

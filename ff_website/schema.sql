@@ -44,3 +44,12 @@ CREATE TABLE IF NOT EXISTS announcement
     timestamp TEXT NOT NULL,
     FOREIGN KEY (author) REFERENCES user (user_id) ON UPDATE CASCADE ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS report
+(
+    report_id INTEGER PRIMARY KEY,
+    season INTEGER NOT NULL,
+    week INTEGER NOT NULL,
+    title TEXT NOT NULL,
+    static_url TEXT NOT NULL
+)
