@@ -26,8 +26,12 @@
         "K": "Standard Scoring",
         "D/ST": "Standard Scoring"
     },
-    "Additional Notes":{
-       "Divisions": "Yes",
-       "Waiver Order": "Inverse standings"
+    "Playoffs": {
+        "Number of Teams": 6,
+        "Roto Wildcards": 0
+    },
+    "Additional Notes": {
+        "Divisions": "Yes",
+        "Waiver Order": "Inverse standings"
     }
 }

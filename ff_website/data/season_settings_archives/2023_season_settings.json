@@ -25,8 +25,12 @@
         "TE": "0.75 PPR Standard Scoring",
         "D/ST": "Reduced Scoring"
     },
-    "Additional Notes":{
-       "Divisions": "No",
-       "Waiver Order": "Auction"
+    "Playoffs": {
+        "Number of Teams": 6,
+        "Roto Wildcards": 2
+    },
+    "Additional Notes": {
+        "Divisions": "No",
+        "Waiver Order": "Auction"
     }
 }
