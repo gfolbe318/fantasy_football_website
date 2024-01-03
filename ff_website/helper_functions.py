@@ -793,45 +793,6 @@ def get_league_schedules(query):
     schedules_df = schedules_df.set_index(["weeks"])
     return schedules_df
 
-def get_point_share(query, current_member_names):
-    point_share_df = pd.DataFrame(index=current_member_names)
-        
-    if not query:
-        point_share_df["Avg"] = 0.0
-        point_share_df["Total"] = 0
-        return point_share_df
-    else:
-        points_df = gen_points_df(query, current_member_names)
-        points_df["PF"] = points_df.sum(axis=1)
-        for col in points_df.columns:
-            point_share_df[col] = points_df[col].apply(lambda x : x / points_df[col].sum())
-    
-        point_share_df = point_share_df.round(4)
-        point_share_df = point_share_df.rename(columns={
-            "PF" : "Avg"
-        })
-        point_share_df = point_share_df.astype('str')
-        
-        point_share_df["PF"] = points_df["PF"]
-        point_share_df.sort_values(by="Avg", ascending=False, inplace=True)
-        
-        print(point_share_df)
-        
-def get_normalization_share(query, current_member_names):
-    norm_df = pd.DataFrame(index=current_member_names)
-    
-    if not query:
-        norm_df["Total"] = 0
-    else:
-        points_df = gen_points_df(query, current_member_names)
-        for col in points_df.columns:
-            norm_df = points_df.apply(lambda x : (x - points_df.values.min()) / (points_df.values.max() - points_df.values.min()))
-        
-        norm_df = norm_df.round(4)
-        norm_df["Total"] = norm_df.sum(axis=1)
-        norm_df.sort_values(by="Total", ascending=False, inplace=True)
-        
-        print(norm_df)
         
 def get_roto_against(query, current_member_names):
     roto_df = get_roto(query, current_member_names)
@@ -1055,6 +1016,8 @@ def hall_of_fame_helper(query):
     most_points_all_time = []
     most_points_single_season_excl_playoffs = []
     most_ppg_all_time = []
+    most_appearances_overall = []
+    highest_win_percentage_overall = []
     most_wins_overall = []
     most_wins_single_season_excl_playoffs = []
     most_wins_single_season_incl_playoffs = []
@@ -1064,15 +1027,18 @@ def hall_of_fame_helper(query):
     most_top_scoring_weeks = []
 
     league_members = get_league_members(query)
+    wins_dict = {member : 0 for member in league_members}
 
     for member in league_members:
         _, _, wins, _, po_wins, _ = get_overall_record(query, member)
 
         most_wins_overall.append(Record(member, wins))
         most_playoff_wins.append(Record(member, po_wins))
+        wins_dict[member] = wins
 
     points_dict = {member : 0 for member in league_members}
     streak_dict = {member : 0 for member in league_members}
+    appearance_dict = {member : 0 for member in league_members}
     
     winning_team, losing_team = '', ''
     for row in query:
@@ -1084,6 +1050,9 @@ def hall_of_fame_helper(query):
         
         points_dict[team_A_name] += team_A_score
         points_dict[team_B_name] += team_B_score
+        
+        appearance_dict[team_A_name] += 1
+        appearance_dict[team_B_name] += 1
 
         if team_A_score > team_B_score:
             winning_team = team_A_name
@@ -1102,6 +1071,16 @@ def hall_of_fame_helper(query):
     
     for name, streak in streak_dict.items():
         longest_win_streak.append(Record(name, streak))   
+        
+    for name, appearances in appearance_dict.items():
+        most_appearances_overall.append(Record(name, appearances))
+        
+    for name in league_members:
+        highest_win_percentage_overall.append(Record(
+            name,
+            f"{round(100 * wins_dict[name] / appearance_dict[name], 2)}%"
+        ))        
+        
     
     split_seasons_query = {}
     for row in query:
@@ -1175,8 +1154,12 @@ def hall_of_fame_helper(query):
         most_points_single_season_excl_playoffs)
 
     top_3_most_ppg_all_time = get_top_three(most_ppg_all_time)
+    
+    top_3_most_appearances_overall = get_top_three(most_appearances_overall)
 
     top_3_most_wins_overall = get_top_three(most_wins_overall)
+    
+    top_3_win_percentage_overall = get_top_three(highest_win_percentage_overall)
 
     top_3_most_wins_single_season_excl_playoffs = get_top_three(
         most_wins_single_season_excl_playoffs)
@@ -1195,7 +1178,9 @@ def hall_of_fame_helper(query):
     return top_3_most_points_all_time, \
         top_3_most_points_single_season_excl_playoffs, \
         top_3_most_ppg_all_time, \
+        top_3_most_appearances_overall, \
         top_3_most_wins_overall, \
+        top_3_win_percentage_overall, \
         top_3_most_wins_single_season_excl_playoffs, \
         top_3_most_wins_single_season_incl_playoffs, \
         top_3_most_playoff_wins, \

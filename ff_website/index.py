@@ -972,7 +972,6 @@ def delete_jarrett_report():
     base_path = os.path.join(
         app.root_path, "static", "jarrett_reports", filename
     )
-    print(base_path)
 
     if os.path.exists(base_path):
         os.remove(base_path)
@@ -1711,17 +1710,51 @@ def archived_reports():
     
     return render_template("archived_reports.html",
                            archived_reports=archived_reports,
-                           title="🌽Archived Reports🌽"
+                           title="Archived Jart Reports🌽"
                            )
 
 
 @app.route("/archives/league_gatherings", methods=["GET"])
 def league_gatherings():
-    images = [
-        "thanksgiving_2021.jpg",
-        "thanksgiving_2022.jpg"
+    
+    data = [
+        {
+            "image" : "thanksgiving_2021.jpg",
+            "date" : "Wednesday, November 24th, 2021",
+            "location" : "Royal Oak, MI",
+            "description" : """
+                The first annual edition of the league's Drinksgiving pregame took place at Noah's new apartment in Royal Oak.
+                Our gracious host laid out a few Oreos to satisfy our appetites, and Daniel provided illegally imported Israeli alcohol. 
+                Boogie Fever capped the night off, where a reserved table sat empty all night.
+                """
+        },
+        {
+            "image" : "thanksgiving_2022.jpg",
+            "date" : "Wednesday, November 23rd, 2022",
+            "location" : "Royal Oak, MI",
+            "description" : """ 
+            The night began in Jason's new condo at an hour so early, some of us were still working.
+            The league quickly relocated to Dick O' Dow's where some members were quick enough to cut the heniously long line.
+            Others weren't as lucky, which resulted in a push to Social.
+            """
+        },
+        {
+            "image" : "thanksgiving_2023.jpg",
+            "date" : "Wednesday, November 22nd, 2023",
+            "location" : "Royal Oak, MI",
+            "description" : """
+            In 2023, Garrett and Brad became the 3rd and 4th members to host a Drinksgiving pregame, this time in their new 
+            apartment in downtown Royal Oak. The ratio may have been bad, and our glue guy was missing, but the mini hot dogs
+            and little bites kept morale high. The night ended at Dick O' Dow's (for some at a later hour than others)
+            for a second consecutive year, though the fire marshall wasn't for the boys that night, 
+            restricting some league members to the front room.
+            """
+        }        
     ]
-    return render_template("league_gatherings.html", images=images)
+        
+    return render_template("league_gatherings.html", 
+                           title="League Gatherings",
+                           data=data)
 
 
 @app.route("/current_season", methods=["GET", "POST"])
@@ -1820,7 +1853,7 @@ def current_season_payouts():
         "Roto 2nd Place": 45,
         "Roto 3rd Place": 15,
         "#1 Seed in Playoffs": 65,
-        "#2 Seed in Playoffs": 65,
+        "#2 Seed in Playoffs": 55,
         "#3 Seed in Playoffs": 45,
         "#4 Seed in Playoffs": 35,
         "#5 Seed in Playoffs": 15,
@@ -1880,7 +1913,7 @@ def current_season_payouts():
             payouts.at["League Runner Up",
                        "League Member"] = playoffs[last_week][0]["losing_team"]
         standings, ranks = get_standings(query)
-        matchups = get_projected_playoff_teams(standings, ranks, roto, 6, 1)
+        matchups = get_projected_playoff_teams(standings, ranks, roto, 6, 2)
         for i, seed in enumerate(matchups):
             key = f"#{i+1} Seed in Playoffs"
 
@@ -1993,8 +2026,6 @@ def current_season_analytics():
     current_member_names = [
         f"{row['first_name']} {row['last_name']}" for row in current_members_query]
     
-    point_share = get_point_share(query, current_member_names)
-    normalization_share = get_normalization_share(query, current_member_names)
     roto_against = get_roto_against(query, current_member_names)
     head_to_head = get_head_to_head(query, current_member_names)
     intervals = get_intervals(query, current_member_names)
@@ -2045,7 +2076,7 @@ def current_season_report():
                            current_report=current_report,
                            season_reports=season_reports,
                            cards=CURRENT_SEASON_CARDS,
-                           title="🌽The Jart Report🌽")
+                           title="The Jart Report🌽")
 
 
 @app.route("/current_season/power_rankings", methods=["GET", "POST"])
@@ -2281,7 +2312,9 @@ def hall_of_fame():
     top_3_most_points_all_time, \
         top_3_most_points_single_season_excl_playoffs, \
         top_3_most_ppg_all_time, \
+        top_3_most_appearances_overall, \
         top_3_most_wins_overall, \
+        top_3_win_percentage_overall, \
         top_3_most_wins_single_season_excl_playoffs, \
         top_3_most_wins_single_season_incl_playoffs, \
         top_3_most_playoff_wins, \
@@ -2312,7 +2345,9 @@ def hall_of_fame():
                            top_3_most_points_all_time=top_3_most_points_all_time,
                            top_3_most_ppg_all_time=top_3_most_ppg_all_time,
                            top_3_most_points_single_season_excl_playoffs=top_3_most_points_single_season_excl_playoffs,
+                           top_3_most_appearances_overall=top_3_most_appearances_overall,
                            top_3_most_wins_overall=top_3_most_wins_overall,
+                           top_3_win_percentage_overall=top_3_win_percentage_overall,
                            top_3_most_wins_single_season_excl_playoffs=top_3_most_wins_single_season_excl_playoffs,
                            top_3_most_wins_single_season_incl_playoffs=top_3_most_wins_single_season_incl_playoffs,
                            top_3_most_playoff_wins=top_3_most_playoff_wins,
@@ -2409,13 +2444,9 @@ def fetch_games():
             data = get_data_one_week_playoffs(d, member_ids, year)
             if write:
                 json.dump(data, open(data_path, "w"), indent=4)
-                all_data_path = os.path.join(
-                    app.root_path, "data", f"all_games.json")
-                all_data = json.load(open(all_data_path, "r"))
-                all_data.extend(data)
-                json.dump(all_data, open(all_data_path, "w"), indent=4)
 
         except Exception as e:
+            print(e)
             print("Something went wrong fetching new games!")
             data = []
 

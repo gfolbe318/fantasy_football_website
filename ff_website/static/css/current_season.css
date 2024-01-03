@@ -51,9 +51,9 @@
 }
 
 .corn-bullet {
-  list-style-type: '🌽'
+  list-style-type: '\1F33D'
 }
 
 ul.corn-bullet > ul {
-  list-style-type: '🌽'
+  list-style-type: '\1F33D'
 }

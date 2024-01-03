@@ -85,7 +85,7 @@ CURRENT_SEASON_CARDS = [
     {
         "name": "Report of The Week",
         "filename": 'img/report.png',
-        "description": "Coming to you live from Omaha, it's the 🌽Jart Report🌽!",
+        "description": "Coming to you live from Omaha, it's the Jart Report🌽!",
         "link": 'current_season_report'
     },
     {

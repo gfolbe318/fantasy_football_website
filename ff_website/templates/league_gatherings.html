@@ -1,3 +1,30 @@
-{% extends "layout.html" %} {% block content %} {% for image in images %}
-<img src="{{url_for('static', filename='img/')}}{{image}}" />
-{% endfor %} {% endblock content %}
+{% extends "layout.html" %} {% block content %}
+
+<div class="container-fluid content">
+  <div class="row">
+    <div class="col-12">
+      <hr class="separator" />
+      <h1>{{title}}</h1>
+      <hr class="separator" />
+    </div>
+  </div>
+  {% for d in data %}
+  <div class="row">
+    <div class="col-12">
+      <div class="card w-90 mb-3 ml-1 mr-1">
+        <img
+          class="card-img-top"
+          src="{{ url_for('static', filename='img/')}}{{d.image}}"
+          alt="Card image cap"
+        />
+        <div class="card-body">
+          <h5 class="card-title">{{d.date}}<br />({{d.location}})</h5>
+          <p class="card-text">{{d.description}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% endblock content %}

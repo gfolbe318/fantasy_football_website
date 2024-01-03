@@ -53,9 +53,21 @@
         <li>{{elem|safe}}</li>
         {% endfor %}
       </ul>
+      <p><b>Most appearances overall (including playoffs)</b></p>
+      <ul class="records-list">
+        {% for elem in top_3_most_appearances_overall %}
+        <li>{{elem|safe}}</li>
+        {% endfor %}
+      </ul>
       <p><b>Most wins overall (including playoffs)</b></p>
       <ul class="records-list">
         {% for elem in top_3_most_wins_overall %}
+        <li>{{elem|safe}}</li>
+        {% endfor %}
+      </ul>
+      <p><b>Higest win percentage overall</b></p>
+      <ul class="records-list">
+        {% for elem in top_3_win_percentage_overall %}
         <li>{{elem|safe}}</li>
         {% endfor %}
       </ul>
@@ -71,7 +83,7 @@
         <li>{{elem|safe}}</li>
         {% endfor %}
       </ul>
-      <p><b>Most playoff wins all time</b></p>
+      <p><b>Most playoff wins all time (bye weeks do not count as a win)</b></p>
       <ul class="records-list">
         {% for elem in top_3_most_playoff_wins %}
         <li>{{elem|safe}}</li>
