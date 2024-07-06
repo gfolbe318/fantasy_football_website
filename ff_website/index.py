@@ -1724,7 +1724,7 @@ def league_gatherings():
             "location" : "Royal Oak, MI",
             "description" : """
                 The first annual edition of the league's Drinksgiving pregame took place at Noah's new apartment in Royal Oak.
-                Our gracious host laid out a few Oreos to satisfy our appetites, and Daniel provided illegally imported Israeli alcohol. 
+                Our gracious host laid out a few Oreos to satisfy our appetites, and Dmichs provided illegally imported Israeli alcohol. 
                 Boogie Fever capped the night off, where a reserved table sat empty all night.
                 """
         },
@@ -1734,8 +1734,8 @@ def league_gatherings():
             "location" : "Royal Oak, MI",
             "description" : """ 
             The night began in Jason's new condo at an hour so early, some of us were still working.
-            The league quickly relocated to Dick O' Dow's where some members were quick enough to cut the heniously long line.
-            Others weren't as lucky, which resulted in a push to Social.
+            The league quickly relocated to Dick O' Dow's where some members were savvy enough to cut the heniously long line.
+            Others weren't as lucky, which resulted in a league divided after some pushed to Social.
             """
         },
         {
@@ -1749,7 +1749,31 @@ def league_gatherings():
             for a second consecutive year, though the fire marshall wasn't for the boys that night, 
             restricting some league members to the front room.
             """
-        }        
+        },
+        {
+            "image": "tinroof.jpg",
+            "date": "Friday, June 14th, 2024",
+            "location": "Detroit, MI",
+            "description": """
+            The league celebrated Merrick Bank returning to the Detroit area by helping him break in his (and Alexa's) new apartment in
+            Downtown Detroit.  After the pregame, the group relocated to Tin Roof, followed by Deluxx Fluxx. Despite Jason and 
+            Garrett's best efforts at foosball, the night took an unexpected turn when our guest, Michael Kunz, decided to 
+            fight a street sign outside of the bar, cutting his head. The allegations of half of the group getting removed from 
+            the club remain unproven.
+            """
+        },
+        {
+            "image": "july_4th_2024.jpg",
+            "date": "Thursday, July 4th, 2024",
+            "location": "Keego Harbor, MI",
+            "description": """
+            With Merrick Weingarten out of the country on our nation's birthday, Merrick Bank answered the call of our boating
+            needs by hosting us in his parents' new lakehouse. After braving the choppy waters of Sylvan Lake, the gang indulged 
+            in a never-ending barrage of food, highlighted by our boat captain cheffing it up on the grill with some burgers, dogs,
+            and a suspiciously large amount of Leo's chili.
+            """
+        }
+         
     ]
         
     return render_template("league_gatherings.html", 
