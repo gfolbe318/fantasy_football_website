@@ -253,7 +253,7 @@ def homepage():
             "title": "League Office",
             "img_file": url_for("static", filename="img/espn.png"),
             "description": "Visit our official home page on ESPN for your complete fantasy football experience.",
-            "link": "https://fantasy.espn.com/football/league?leagueId=50890012&seasonId=2023"
+            "link": "https://fantasy.espn.com/football/league?leagueId=50890012&seasonId=2024"
         }
     ]
     return render_template("home.html", ql=links, title="Home")
@@ -2455,7 +2455,8 @@ def fetch_games():
         try:
             ID = league_IDs[year]
 
-            base_url = f"https://fantasy.espn.com/apis/v3/games/ffl/seasons/{year}/segments/0/leagues/{ID}"
+            # ESPN changed this for 2024 - not sure if it'll stay up or not
+            base_url = f"https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/seasons/{year}/segments/0/leagues/{ID}"
             r = requests.get(url=base_url,
                              params={"view": "mMatchupScore"},
                              cookies=cookies)
@@ -2470,7 +2471,6 @@ def fetch_games():
                 json.dump(data, open(data_path, "w"), indent=4)
 
         except Exception as e:
-            print(e)
             print("Something went wrong fetching new games!")
             data = []
 
