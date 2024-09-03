@@ -1,33 +1,31 @@
 {
     "Draft Information": {
         "Format": "Auction",
-        "Draft Date": "September 4th, 2024"
+        "Draft Date": "September 1st, 2024"
     },
     "Roster Information": {
-        "Total Size": 0,
-        "Total Starters": 0,
-        "Total Bench": 0,
-        "IR Spots": 0,
+        "Total Size": 13,
+        "Total Starters": 8,
+        "Total Bench": 5,
+        "IR Spots": 2,
         "Starters Composition": {
-            "QB": 0,
-            "RB": 0,
-            "WR": 0,
-            "TE": 0,
-            "FLEX": 0,
-            "OP": 0,
-            "D/ST": 0
+            "QB": 1,
+            "RB": 2,
+            "WR": 2,
+            "TE": 1,
+            "FLEX": 1,
+            "OP": 1
         }
     },
     "Positional Scoring": {
-        "QB": "TBD",
-        "RB": "TBD",
-        "WR": "TBD",
-        "TE": "TBD",
-        "D/ST": "TBD"
+        "QB": "Standard Scoring",
+        "RB": "0.5 PPR Standard Scoring",
+        "WR": "0.5 PPR Standard Scoring",
+        "TE": "0.75 PPR Standard Scoring"
     },
     "Playoffs": {
-        "Number of Teams": 0,
-        "Roto Wildcards": 0
+        "Number of Teams": 6,
+        "Roto Wildcards": 2
     },
     "Additional Notes": {
         "Divisions": "No",

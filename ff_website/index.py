@@ -1772,8 +1772,17 @@ def league_gatherings():
             in a never-ending barrage of food, highlighted by our boat captain cheffing it up on the grill with some burgers, dogs,
             and a suspiciously large amount of Leo's chili.
             """
+        },
+        {
+            "image": "nola.jpg",
+            "date": "Saturday, August 31st, 2024",
+            "location": "New Orleans, LA",
+            "description": """
+            The league's first group trip finally took place in the great city of New Orleans. Highlighted by a seafood boil (pictured),
+            nights on the town on Bourbon Street, a campus tour of Tulane University, and a semi-live draft, the gang enjoyed eachother's 
+            company in the Big Easy.
+            """
         }
-         
     ]
         
     return render_template("league_gatherings.html", 
@@ -1871,32 +1880,32 @@ def current_season_payouts():
     ).fetchall()
 
     dollars = {
-        "League Winner": 900,
-        "League Runner Up": 150,
-        "Roto Winner": 225,
-        "Roto 2nd Place": 45,
-        "Roto 3rd Place": 15,
-        "#1 Seed in Playoffs": 65,
-        "#2 Seed in Playoffs": 55,
-        "#3 Seed in Playoffs": 45,
-        "#4 Seed in Playoffs": 35,
-        "#5 Seed in Playoffs": 15,
-        "#6 Seed in Playoffs": 10,
-        "Highest Single Game Score": 30,
-        "Week 1 Winner": 15,
-        "Week 2 Winner": 15,
-        "Week 3 Winner": 15,
-        "Week 4 Winner": 15,
-        "Week 5 Winner": 15,
-        "Week 6 Winner": 15,
-        "Week 7 Winner": 15,
-        "Week 8 Winner": 15,
-        "Week 9 Winner": 15,
-        "Week 10 Winner": 15,
-        "Week 11 Winner": 15,
-        "Week 12 Winner": 15,
-        "Week 13 Winner": 15,
-        "Week 14 Winner": 15,
+        "League Winner": 1200,
+        "League Runner Up": 200,
+        "Roto Winner": 300,
+        "Roto 2nd Place": 60,
+        "Roto 3rd Place": 20,
+        "#1 Seed in Playoffs": 75,
+        "#2 Seed in Playoffs": 65,
+        "#3 Seed in Playoffs": 55,
+        "#4 Seed in Playoffs": 45,
+        "#5 Seed in Playoffs": 25,
+        "#6 Seed in Playoffs": 15,
+        "Highest Single Game Score": 60,
+        "Week 1 Winner": 20,
+        "Week 2 Winner": 20,
+        "Week 3 Winner": 20,
+        "Week 4 Winner": 20,
+        "Week 5 Winner": 20,
+        "Week 6 Winner": 20,
+        "Week 7 Winner": 20,
+        "Week 8 Winner": 20,
+        "Week 9 Winner": 20,
+        "Week 10 Winner": 20,
+        "Week 11 Winner": 20,
+        "Week 12 Winner": 20,
+        "Week 13 Winner": 20,
+        "Week 14 Winner": 20,
     }
 
     payouts = pd.DataFrame(index=list(dollars.keys()), columns=[
