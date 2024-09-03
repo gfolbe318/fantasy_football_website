@@ -8,7 +8,6 @@ ff_website/static/js/bootstrap.*
 env/
 instance/
 ff_website.egg-info/
-img/
 sitemap.txt
 ff_website/credentials.py
 ff_website/data/backups/*
