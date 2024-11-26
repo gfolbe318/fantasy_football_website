@@ -1782,6 +1782,16 @@ def league_gatherings():
             nights on the town on Bourbon Street, a campus tour of Tulane University, and a semi-live draft, the gang enjoyed eachother's 
             company in the Big Easy.
             """
+        },
+        {
+            "image": "MB_engagement.jpg",
+            "date": "Sunday, November 17th, 2024",
+            "location": "New York City, NY",
+            "description": """
+            Merrick Bank became first member of the league to pop the question, proposing to his high school sweetheart, Alexa, in Central
+            Park. To celebrate, our league's New York City coalition (including newly relocated Brad), joined him for drinks and festivities.
+            Mazel Tov to the Banks! 🥂 
+            """
         }
     ]
         
