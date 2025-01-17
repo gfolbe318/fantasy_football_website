@@ -1792,6 +1792,16 @@ def league_gatherings():
             Park. To celebrate, our league's New York City coalition (including newly relocated Brad), joined him for drinks and festivities.
             Mazel Tov to the Banks! 🥂 
             """
+        },
+        {
+            "image": "thanksgiving_2024.jpg",
+            "date": "Sunday, November 27th, 2024",
+            "location": "Royal Oak, MI",
+            "description": """
+            9 league members! Count 'em! This year's annual Drinksgiving pregame, graciously hosted by our resident Noogler, Jason Silverstone, saw 
+            a record breaking number of league members attend, the most in one spot since our college days. In fact, the league had such a good time 
+            together that we stayed as Jason's spot for the entire night, forgoing the usual bar push.
+            """
         }
     ]
         
