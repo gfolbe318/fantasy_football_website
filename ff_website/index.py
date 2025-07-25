@@ -1802,6 +1802,16 @@ def league_gatherings():
             a record breaking number of league members attend, the most in one spot since our college days. In fact, the league had such a good time 
             together that we stayed as Jason's spot for the entire night, forgoing the usual bar push.
             """
+        },
+        {
+            "image": "july_4th_2025.jpg",
+            "date": "Friday, July 4th, 2025",
+            "location": "Bloomfield Hills, MI",
+            "description": """
+            After a 2 year hiatus, the league returned to Upper Long Lake to enjoy a picture-perfect day on the water. Despite some nautical 
+            malfunctions, new friends were made from both Cincinatti and New York City, bonding over a love for our great nation and consuming 
+            festive, tri-colored Jell-O shots. The night was capped off with volleyball (Julia Kalugar, MVP) and a barbecue (Cindy Weingarten, MVP).
+            """
         }
     ]
         
