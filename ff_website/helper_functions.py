@@ -306,7 +306,7 @@ def get_playoff_appearances(query):
         if row[PLAYOFFS] == 1:
             playoffs.add(row[SEASON])
 
-    l = list(playoffs)
+    l = list(sorted(playoffs))
     if len(l) == 0:
         return "None"
     else:
@@ -509,6 +509,8 @@ def get_championships(summaries: pd.DataFrame, name):
         for index, row in summaries.iterrows():
             if row["Overall Finish"] == "Champion":
                 championships.append(index)
+                
+    championships = sorted(championships)
 
     if len(championships) == 0:
         return "None"
