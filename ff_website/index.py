@@ -1809,7 +1809,7 @@ def league_gatherings():
             "location": "Bloomfield Hills, MI",
             "description": """
             After a 2 year hiatus, the league returned to Upper Long Lake to enjoy a picture-perfect day on the water. Despite some nautical 
-            malfunctions, new friends were made from both Cincinatti and New York City, bonding over a love for our great nation and consuming 
+            malfunctions, new friends were made from both Cincinnati and New York City, bonding over a love for our great nation and consuming 
             festive, tri-colored Jell-O shots. The night was capped off with volleyball (Julia Kalugar, MVP) and a barbecue (Cindy Weingarten, MVP).
             """
         }
