@@ -30,5 +30,13 @@
     "Additional Notes": {
         "Divisions": "No",
         "Waiver Order": "Auction"
+    },
+    "Keeper": {
+        "Max Limit": "$15",
+        "Holding Period": "1 year",
+        "Inflation Rate": "N/A",
+        "Positional Restrictions": "N/A",
+        "Keeper Trading": "Allowed",
+        "Additional Notes": "Player cannot have been waived at any point to be claimed as a keeper"
     }
 }
