@@ -25,7 +25,8 @@
     },
     "Playoffs": {
         "Number of Teams": 6,
-        "Roto Wildcards": 2
+        "Roto Wildcards": 2,
+        "Playoff Matchup Deciders": "Higher seed chooses opponent"
     },
     "Additional Notes": {
         "Divisions": "No",
