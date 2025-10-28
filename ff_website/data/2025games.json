@@ -1,0 +1,422 @@
+[
+    {
+        "season": "2025",
+        "week": 1,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Daniel Banooni",
+        "home_score": 104.25,
+        "away_team": "Max Levine",
+        "away_score": 102.44
+    },
+    {
+        "season": "2025",
+        "week": 1,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jason Silverstone",
+        "home_score": 91.58,
+        "away_team": "Jonah Lopas",
+        "away_score": 138.05
+    },
+    {
+        "season": "2025",
+        "week": 1,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Garrett Folbe",
+        "home_score": 93.55,
+        "away_team": "Jarrett Black",
+        "away_score": 81.57
+    },
+    {
+        "season": "2025",
+        "week": 1,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Alex Ross",
+        "home_score": 105.85,
+        "away_team": "Merrick Bank",
+        "away_score": 73.46
+    },
+    {
+        "season": "2025",
+        "week": 1,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Merrick Weingarten",
+        "home_score": 102.32,
+        "away_team": "Brad Silverman",
+        "away_score": 111.15
+    },
+    {
+        "season": "2025",
+        "week": 1,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Noah Nathan",
+        "home_score": 83.59,
+        "away_team": "Daniel Michaels",
+        "away_score": 115.98
+    },
+    {
+        "season": "2025",
+        "week": 2,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Garrett Folbe",
+        "home_score": 85.74,
+        "away_team": "Daniel Banooni",
+        "away_score": 89.61
+    },
+    {
+        "season": "2025",
+        "week": 2,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Merrick Weingarten",
+        "home_score": 108.08,
+        "away_team": "Jarrett Black",
+        "away_score": 103.47
+    },
+    {
+        "season": "2025",
+        "week": 2,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Max Levine",
+        "home_score": 132.73,
+        "away_team": "Alex Ross",
+        "away_score": 75.7
+    },
+    {
+        "season": "2025",
+        "week": 2,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jonah Lopas",
+        "home_score": 142.22,
+        "away_team": "Brad Silverman",
+        "away_score": 108.38
+    },
+    {
+        "season": "2025",
+        "week": 2,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Daniel Michaels",
+        "home_score": 97.74,
+        "away_team": "Merrick Bank",
+        "away_score": 109.65
+    },
+    {
+        "season": "2025",
+        "week": 2,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jason Silverstone",
+        "home_score": 127.28,
+        "away_team": "Noah Nathan",
+        "away_score": 93.57
+    },
+    {
+        "season": "2025",
+        "week": 3,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jarrett Black",
+        "home_score": 113.45,
+        "away_team": "Jonah Lopas",
+        "away_score": 123.15
+    },
+    {
+        "season": "2025",
+        "week": 3,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Noah Nathan",
+        "home_score": 123.49,
+        "away_team": "Merrick Bank",
+        "away_score": 82.11
+    },
+    {
+        "season": "2025",
+        "week": 3,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Daniel Michaels",
+        "home_score": 100.03,
+        "away_team": "Max Levine",
+        "away_score": 71.4
+    },
+    {
+        "season": "2025",
+        "week": 3,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Merrick Weingarten",
+        "home_score": 96.96,
+        "away_team": "Daniel Banooni",
+        "away_score": 100.84
+    },
+    {
+        "season": "2025",
+        "week": 3,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Garrett Folbe",
+        "home_score": 67.07,
+        "away_team": "Alex Ross",
+        "away_score": 110.29
+    },
+    {
+        "season": "2025",
+        "week": 3,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Brad Silverman",
+        "home_score": 99.28,
+        "away_team": "Jason Silverstone",
+        "away_score": 94.53
+    },
+    {
+        "season": "2025",
+        "week": 4,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jarrett Black",
+        "home_score": 74.84,
+        "away_team": "Brad Silverman",
+        "away_score": 139.19
+    },
+    {
+        "season": "2025",
+        "week": 4,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Daniel Banooni",
+        "home_score": 139.83,
+        "away_team": "Jonah Lopas",
+        "away_score": 136.12
+    },
+    {
+        "season": "2025",
+        "week": 4,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Merrick Bank",
+        "home_score": 105.61,
+        "away_team": "Jason Silverstone",
+        "away_score": 83.73
+    },
+    {
+        "season": "2025",
+        "week": 4,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Max Levine",
+        "home_score": 122.95,
+        "away_team": "Noah Nathan",
+        "away_score": 117.63
+    },
+    {
+        "season": "2025",
+        "week": 4,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Alex Ross",
+        "home_score": 104.22,
+        "away_team": "Merrick Weingarten",
+        "away_score": 107.19
+    },
+    {
+        "season": "2025",
+        "week": 4,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Garrett Folbe",
+        "home_score": 112.01,
+        "away_team": "Daniel Michaels",
+        "away_score": 114.21
+    },
+    {
+        "season": "2025",
+        "week": 5,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jarrett Black",
+        "home_score": 148.81,
+        "away_team": "Jason Silverstone",
+        "away_score": 93.58
+    },
+    {
+        "season": "2025",
+        "week": 5,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Brad Silverman",
+        "home_score": 127.43,
+        "away_team": "Daniel Banooni",
+        "away_score": 131.35
+    },
+    {
+        "season": "2025",
+        "week": 5,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jonah Lopas",
+        "home_score": 129.8,
+        "away_team": "Alex Ross",
+        "away_score": 106.41
+    },
+    {
+        "season": "2025",
+        "week": 5,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Max Levine",
+        "home_score": 86.45,
+        "away_team": "Merrick Bank",
+        "away_score": 105.38
+    },
+    {
+        "season": "2025",
+        "week": 5,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Noah Nathan",
+        "home_score": 117.07,
+        "away_team": "Garrett Folbe",
+        "away_score": 127.12
+    },
+    {
+        "season": "2025",
+        "week": 5,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Merrick Weingarten",
+        "home_score": 100.53,
+        "away_team": "Daniel Michaels",
+        "away_score": 119.77
+    },
+    {
+        "season": "2025",
+        "week": 6,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jarrett Black",
+        "home_score": 121.25,
+        "away_team": "Daniel Banooni",
+        "away_score": 99.9
+    },
+    {
+        "season": "2025",
+        "week": 6,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jason Silverstone",
+        "home_score": 72.61,
+        "away_team": "Max Levine",
+        "away_score": 77.01
+    },
+    {
+        "season": "2025",
+        "week": 6,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Merrick Weingarten",
+        "home_score": 114.58,
+        "away_team": "Noah Nathan",
+        "away_score": 135.35
+    },
+    {
+        "season": "2025",
+        "week": 6,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Garrett Folbe",
+        "home_score": 90.28,
+        "away_team": "Merrick Bank",
+        "away_score": 99.12
+    },
+    {
+        "season": "2025",
+        "week": 6,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Daniel Michaels",
+        "home_score": 106.6,
+        "away_team": "Jonah Lopas",
+        "away_score": 114.08
+    },
+    {
+        "season": "2025",
+        "week": 6,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Brad Silverman",
+        "home_score": 126.49,
+        "away_team": "Alex Ross",
+        "away_score": 107.75
+    },
+    {
+        "season": "2025",
+        "week": 7,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Noah Nathan",
+        "home_score": 141.41,
+        "away_team": "Jonah Lopas",
+        "away_score": 85.11
+    },
+    {
+        "season": "2025",
+        "week": 7,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Merrick Bank",
+        "home_score": 89.84,
+        "away_team": "Merrick Weingarten",
+        "away_score": 134.95
+    },
+    {
+        "season": "2025",
+        "week": 7,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Daniel Michaels",
+        "home_score": 142.28,
+        "away_team": "Brad Silverman",
+        "away_score": 132.99
+    },
+    {
+        "season": "2025",
+        "week": 7,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Max Levine",
+        "home_score": 88.95,
+        "away_team": "Garrett Folbe",
+        "away_score": 104.2
+    },
+    {
+        "season": "2025",
+        "week": 7,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jarrett Black",
+        "home_score": 92.97,
+        "away_team": "Alex Ross",
+        "away_score": 116.57
+    },
+    {
+        "season": "2025",
+        "week": 7,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Daniel Banooni",
+        "home_score": 98.15,
+        "away_team": "Jason Silverstone",
+        "away_score": 82.87
+    }
+]

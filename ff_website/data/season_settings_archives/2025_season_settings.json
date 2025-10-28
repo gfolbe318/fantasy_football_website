@@ -1,0 +1,42 @@
+{
+    "Draft Information": {
+        "Format": "Auction",
+        "Draft Date": "August 23rd, 2025"
+    },
+    "Roster Information": {
+        "Total Size": 13,
+        "Total Starters": 8,
+        "Total Bench": 5,
+        "IR Spots": 2,
+        "Starters Composition": {
+            "QB": 1,
+            "RB": 2,
+            "WR": 2,
+            "TE": 1,
+            "FLEX": 1,
+            "OP": 1
+        }
+    },
+    "Positional Scoring": {
+        "QB": "Standard Scoring",
+        "RB": "0.5 PPR Standard Scoring",
+        "WR": "0.5 PPR Standard Scoring",
+        "TE": "0.75 PPR Standard Scoring"
+    },
+    "Playoffs": {
+        "Number of Teams": 6,
+        "Roto Wildcards": 2
+    },
+    "Additional Notes": {
+        "Divisions": "No",
+        "Waiver Order": "Auction"
+    },
+    "Keeper": {
+        "Max Limit": "$15",
+        "Holding Period": "1 year",
+        "Inflation Rate": "N/A",
+        "Positional Restrictions": "N/A",
+        "Keeper Trading": "Disallowed",
+        "Additional Notes": "Player must be on team throughout duration of the season (draft to EOS)"
+    }
+}

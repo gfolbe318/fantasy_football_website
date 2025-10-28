@@ -13,33 +13,14 @@
     {% endfor %}
   </div>
   <hr class="separator" />
-  <h1>{{year}} Payouts</h1>
+  <h1>Payouts</h1>
   <hr class="separator" />
   <div class="row">
     <div class="col-12 season_intro">
       <p class="text-justify">
-        Thanks to our accountant Brad, we have a payout system that is very
-        simple and not at all overkill! On this page, you can see a table
-        holding the payouts, their values, and current league member who has
-        claimed them. Rows marked with an asterisk indicate that the payout has
-        not yet been completed, and rather reflect the current frontrunner. For
-        a reminder of the current standings, head over to the
-        <a href="{{url_for('current_season_info')}}">season info page</a>.
+        The league no longer plays for monetary prizes. Here, we play strictly
+        for pride.
       </p>
-      <p>Currently, the following payouts are owed:</p>
-      <ul>
-        {% for name, value in owed.items() %}
-        <li><b>{{name}}:</b>&nbsp;${{value}}</li>
-        {% endfor %}
-      </ul>
-    </div>
-  </div>
-  <div class="row text-center justify-content-center">
-    <div class="col-12">
-      <hr class="separator" />
-      <h3>Payout Table</h3>
-      <hr class="separator" />
-      <div class="table-responsive">{{payouts|safe}}</div>
     </div>
   </div>
 </div>
