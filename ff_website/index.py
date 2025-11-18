@@ -1812,6 +1812,15 @@ def league_gatherings():
             malfunctions, new friends were made from both Cincinnati and New York City, bonding over a love for our great nation and consuming 
             festive, tri-colored Jell-O shots. The night was capped off with volleyball (Julia Kalugar, MVP) and a barbecue (Cindy Weingarten, MVP).
             """
+        },
+        {
+            "image": "san_diego.jpg",
+            "date": "Saturday, August 23rd, 2025",
+            "location": "San Diego, CA",
+            "description": """
+            The league's second trip found them in sunny San Diego, the former home of Alex Ross. Between enduring the choppy waters of the Pacific,
+            defending our Jewish homeland, and fine dining, the trip was another success.            
+            """
         }
     ]
         
