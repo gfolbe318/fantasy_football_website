@@ -1821,6 +1821,18 @@ def league_gatherings():
             The league's second trip found them in sunny San Diego, the former home of Alex Ross. Between enduring the choppy waters of the Pacific,
             defending our Jewish homeland, and fine dining, the trip was another success.            
             """
+        },
+        {
+            "image": "thanksgiving_2025.jpg",
+            "date": "Wednesday, November 26th, 2025",
+            "location": "Royal Oak, MI",
+            "description": """
+            Four years after hosting the initial Blackout Wednesday pregame, Noah became the first ever league member to become a repeat host,
+            this time with a gorgeous spread courtesy of Julia (we can only assume). The league yet again skipped the bars in favor of quality
+            time, thus signaling a potential retirement from the bar scene on Blackout Wednesday (stay tuned for next year). The real highlight
+            of the day, however, came before the pregame. A shifted-up trade deadline of 3pm EST made for an afternoon filled with three blockbuster 
+            trades all within a few hours of each other, a record-breaking sequence!
+            """
         }
     ]
         
