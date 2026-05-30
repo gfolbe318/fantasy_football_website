@@ -1833,6 +1833,17 @@ def league_gatherings():
             of the day, however, came before the pregame. A shifted-up trade deadline of 3pm EST made for an afternoon filled with three blockbuster 
             trades all within a few hours of each other, a record-breaking sequence!
             """
+        },
+       {
+            "image": "mb_wedding.jpg",
+            "date": "Sunday, May 17th, 2026",
+            "location": "Clarkston, MI",
+            "description": """
+            Just behind the 18th green of historic Shepherd's Hollow Golf Club, Merrick Bank became the first league member to tie the knot, marrying
+            his high school sweetheart, Alexa. 11 of the 12 members were in attendance, signifying a league record since archives have been collected.
+            A weekend full of fun activities was highlighted by a Dick O' Dow's takeover on Saturday night, top-tier hors d'oeuvres, and dancing the 
+            night away. Cheers to a lifetime of happiness, and the first of (hopefully) many league weddings!
+            """
         }
     ]
         
