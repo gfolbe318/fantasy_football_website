@@ -8,9 +8,10 @@ league_IDs = {
     "2023": "50890012",
     "2024": "50890012",
     "2025": "50890012",
+    "2026": "50890012",
 }
 
-CURRENT_SEASON = 2025
+CURRENT_SEASON = 2026
 
 # db keys
 MEMBER_ID = "member_id"
@@ -65,6 +66,7 @@ NUM_PLAYOFF_TEAMS_PER_YEAR = {
     2023: 6,
     2024: 6,
     2025: 6,
+    2026: 6,
 }
 
 CURRENT_SEASON_CARDS = [

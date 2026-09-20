@@ -1834,7 +1834,7 @@ def league_gatherings():
             trades all within a few hours of each other, a record-breaking sequence!
             """
         },
-       {
+        {
             "image": "mb_wedding.jpg",
             "date": "Sunday, May 17th, 2026",
             "location": "Clarkston, MI",
@@ -1843,6 +1843,25 @@ def league_gatherings():
             his high school sweetheart, Alexa. 11 of the 12 members were in attendance, signifying a league record since archives have been collected.
             A weekend full of fun activities was highlighted by a Dick O' Dow's takeover on Saturday night, top-tier hors d'oeuvres, and dancing the 
             night away. Cheers to a lifetime of happiness, and the first of (hopefully) many league weddings!
+            """
+        },
+        {
+            "image": "mw_wedding.jpg",
+            "date": "Saturday, June 6th, 2026",
+            "location": "Philadelphia, PA",
+            "description": """
+            The city of brotherly love welcomed the league to celebrate the marriage of Merrick and Amanda, highlighted by an extravagent appetizer spread
+            and a band that kept the hits coming all night. Not to be forgotten was the league-wide cheesesteak sharing session that took place in the lobby 
+            the Notary Hotel, a true league-bonding experience. Mazel tov to the Weingartens!
+            """
+        },
+        {
+            "image": "july_4th_2026.jpg",
+            "date": "Friday, July 3rd, 2026",
+            "location": "Bloomfield Hills, MI",
+            "description": """
+            The league celebrated America's 250th (and Tori's 26.5th) birthday in style on Upper Long Lake, defending our homecourt yet again in Volleyball
+            against the visiting Cincinnati squad. USA! USA! USA!
             """
         }
     ]
