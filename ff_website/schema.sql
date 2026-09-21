@@ -32,7 +32,8 @@ CREATE TABLE IF NOT EXISTS user
     email TEXT NOT NULL,
     password TEXT NOT NULL,
     admin_privileges INTEGER NOT NULL,
-    announcement_privileges INTEGER NOT NULL
+    announcement_privileges INTEGER NOT NULL,
+    power_ranking_privileges INTEGER NOT NULL,
 );
 
 CREATE TABLE IF NOT EXISTS announcement

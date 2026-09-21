@@ -37,6 +37,7 @@ EMAIL = "email"
 PASSWORD = "password"
 ADMIN_PRIVILEGES = "admin_privileges"
 ANNOUNCEMENT_PRIVILEGES = "announcement_privileges"
+POWER_RANKING_PRIVILEGES = "power_ranking_privileges"
 
 ANNOUNCEMENT_ID = "announcement_id"
 AUTHOR = "author"

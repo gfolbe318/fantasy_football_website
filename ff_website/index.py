@@ -28,17 +28,18 @@ from ff_website.helper_functions import *
 
 
 class User(UserMixin):
-    def __init__(self, id, username, email, password, admin_privileges, announcement_privileges):
+    def __init__(self, id, username, email, password, admin_privileges, announcement_privileges, power_ranking_privileges):
         self.id = id
         self.username = username
         self.email = email
         self.password = password
         self.admin_privileges = admin_privileges
         self.announcement_privileges = announcement_privileges
+        self.power_ranking_privileges = power_ranking_privileges
         self.authenticated = False
 
     def __repr__(self):
-        return f"{self.username}, admin_privileges: {self.admin_privileges}, announcement_privileges: {self.announcement_privileges}"
+        return f"{self.username}, admin_privileges: {self.admin_privileges}, announcement_privileges: {self.announcement_privileges}, power_ranking_privileges: {self.power_ranking_privileges}"
 
     def is_active(self):
         return self.is_active()
@@ -74,7 +75,8 @@ def load_user(user_id):
                     email=lu[EMAIL],
                     password=lu[PASSWORD],
                     admin_privileges=lu[ADMIN_PRIVILEGES],
-                    announcement_privileges=lu[ANNOUNCEMENT_PRIVILEGES]
+                    announcement_privileges=lu[ANNOUNCEMENT_PRIVILEGES],
+                    power_ranking_privileges=lu[POWER_RANKING_PRIVILEGES],
                     )
 
 
@@ -115,17 +117,19 @@ def register():
                 form.password.data).decode('utf-8')
             admin_privileges = 0
             announcement_privileges = 0
+            power_ranking_privileges = 0
             if form.username.data in accepted_admins:
                 admin_privileges = 1
                 announcement_privileges = 1
+                power_ranking_privileges = 1
 
             db.execute(
                 f"""
                 INSERT INTO user
                 ({USERNAME}, {EMAIL}, {PASSWORD}, {
-                 ADMIN_PRIVILEGES}, {ANNOUNCEMENT_PRIVILEGES})
-                VALUES(?, ?, ?, ?, ?)
-                """, (form.username.data, form.email.data, hashed_password, admin_privileges, announcement_privileges)
+                 ADMIN_PRIVILEGES}, {ANNOUNCEMENT_PRIVILEGES}, {POWER_RANKING_PRIVILEGES})
+                VALUES(?, ?, ?, ?, ?, ?)
+                """, (form.username.data, form.email.data, hashed_password, admin_privileges, announcement_privileges, power_ranking_privileges)
             )
             db.commit()
             id = db.execute(
@@ -139,7 +143,9 @@ def register():
                         email=form.email.data,
                         password=hashed_password,
                         admin_privileges=admin_privileges,
-                        announcement_privileges=announcement_privileges)
+                        announcement_privileges=announcement_privileges,
+                        power_ranking_privileges=power_ranking_privileges,
+                        )
             login_user(user)
             close_db()
             return redirect(url_for('homepage'))
@@ -167,7 +173,9 @@ def login():
                 user = User(id=query[USER_ID], username=query[USERNAME],
                             email=query[EMAIL], password=query[PASSWORD],
                             admin_privileges=query[ADMIN_PRIVILEGES],
-                            announcement_privileges=query[ANNOUNCEMENT_PRIVILEGES])
+                            announcement_privileges=query[ANNOUNCEMENT_PRIVILEGES],
+                            power_ranking_privileges=query[POWER_RANKING_PRIVILEGES],
+                            )
                 login_user(user)
                 close_db()
                 return redirect(url_for('homepage'))
@@ -286,9 +294,6 @@ def members():
 @login_required
 def tools():
 
-    if not current_user.admin_privileges:
-        return redirect(url_for('homepage'))
-
     return render_template("tools.html", title="Tools")
 
 
@@ -297,7 +302,8 @@ def tools():
 def list_members():
 
     if not current_user.admin_privileges:
-        return redirect(url_for('homepage'))
+        flash('Action not permitted', "danger")
+        return redirect(url_for('tools'))
 
     db = get_db()
     all_members = db.execute(
@@ -315,7 +321,8 @@ def list_members():
 def update_member(member_id):
 
     if not current_user.admin_privileges:
-        return redirect(url_for('homepage'))
+        flash("Action not permitted", "danger")
+        return redirect(url_for('tools'))
 
     db = get_db()
     info = db.execute(
@@ -392,7 +399,8 @@ def update_member(member_id):
 def delete_member(member_id):
 
     if not current_user.admin_privileges:
-        return redirect(url_for('homepage'))
+        flash("Action not permitted", "danger")
+        return redirect(url_for('tools'))
 
     db = get_db()
     query = db.execute(
@@ -448,7 +456,12 @@ def delete_member(member_id):
 
 @app.route("/tools/list_all_seasons", methods=["GET", "POST"])
 @login_required
-def list_all_seasons():
+def list_all_seasons():    
+
+    if not current_user.admin_privileges:
+        flash("Action not permitted", "danger")
+        return redirect(url_for('tools'))
+
     db = get_db()
     query = db.execute(
         f"""
@@ -466,7 +479,8 @@ def list_all_seasons():
 def list_games(season):
 
     if not current_user.admin_privileges:
-        return redirect(url_for('homepage'))
+        flash("Action not permitted", "danger")
+        return redirect(url_for('tools'))
 
     db = get_db()
     all_games = db.execute(
@@ -512,7 +526,8 @@ def list_games(season):
 def update_game(game_id):
 
     if not current_user.admin_privileges:
-        return redirect(url_for('homepage'))
+        flash("Action not permitted", "danger")
+        return redirect(url_for('tools'))
 
     db = get_db()
     info = db.execute(
@@ -581,7 +596,8 @@ def update_game(game_id):
 def delete_game(game_id):
 
     if not current_user.admin_privileges:
-        return redirect(url_for('homepage'))
+        flash("Action not permitted", "danger")
+        return redirect(url_for('tools'))
 
     db = get_db()
     db.execute(
@@ -601,7 +617,8 @@ def delete_game(game_id):
 def create_member():
 
     if not current_user.admin_privileges:
-        return redirect(url_for('homepage'))
+        flash("Action not permitted", "danger")
+        return redirect(url_for('tools'))
 
     db = get_db()
     form = CreateMember()
@@ -655,7 +672,8 @@ def create_member():
 def create_game():
 
     if not current_user.admin_privileges:
-        return redirect(url_for('homepage'))
+        flash("Action not permitted", "danger")
+        return redirect(url_for('tools'))
 
     db = get_db()
 
@@ -708,7 +726,8 @@ def create_game():
 def add_league_members():
 
     if not current_user.admin_privileges:
-        return redirect(url_for('homepage'))
+        flash("Action not permitted", "danger")
+        return redirect(url_for('tools'))
 
     db = get_db()
 
@@ -740,6 +759,11 @@ def add_league_members():
 @app.route("/tools/add_all_games", methods=["GET", "POST"])
 @login_required
 def add_games():
+    
+    if not current_user.admin_privileges:
+        flash("Action not permitted", "danger")
+        return redirect(url_for('tools'))
+
     # Hard coded so that we can load data for years if there's no existing data
     seasons = [x for x in range(2017, CURRENT_SEASON + 1)]
 
@@ -750,9 +774,11 @@ def add_games():
 @login_required
 def create_power_rankings():
 
-    if not current_user.admin_privileges:
-        return redirect(url_for('homepage'))
-
+    if (not current_user.admin_privileges):
+        if not current_user.power_ranking_privileges:
+            flash("Action not permitted", "danger")
+            return redirect(url_for('tools'))
+    
     db = get_db()
     actives_query = db.execute(
         f"""
@@ -855,8 +881,11 @@ def create_power_rankings():
 @app.route("/tools/list_all_power_rankings", methods=["GET", "POST"])
 @login_required
 def list_all_power_rankings():
-    if current_user.admin_privileges != 1:
-        return redirect(url_for('homepage'))
+
+    if (not current_user.admin_privileges):
+        if not current_user.power_ranking_privileges:
+            flash("Action not permitted", "danger")
+            return redirect(url_for('tools'))
 
     base_path = os.path.join(
         app.root_path, "data", "power_rankings", str(CURRENT_SEASON))
@@ -877,8 +906,11 @@ def list_all_power_rankings():
 
 @app.route("/tools/delete_power_ranking", methods=["GET", "POST"])
 def delete_power_ranking():
-    if current_user.admin_privileges != 1:
-        return redirect(url_for('homepage'))
+
+    if (not current_user.admin_privileges):
+        if not current_user.power_ranking_privileges:
+            flash("Action not permitted", "danger")
+            return redirect(url_for('tools'))
 
     args = request.args
     season = None
@@ -907,8 +939,10 @@ def delete_power_ranking():
 @app.route("/tools/create_jarrett_report", methods=["GET", "POST"])
 @login_required
 def create_jarrett_report():
-    if current_user.admin_privileges == 0:
-        return redirect(url_for('homepage'))
+
+    if (not current_user.admin_privileges):
+            flash("Action not permitted", "danger")
+            return redirect(url_for('tools'))
 
     form = JarrettReport()
     if form.validate_on_submit():
@@ -993,10 +1027,16 @@ def delete_jarrett_report():
 @ app.route("/tools/list_all_users")
 @ login_required
 def list_all_users():
+    
+    if not current_user.admin_privileges:
+        flash("Action not permitted", "danger")
+        return redirect(url_for('tools'))
+
+    
     db = get_db()
     query = db.execute(
         f"""
-        SELECT {USERNAME}, {USER_ID}, {ADMIN_PRIVILEGES}, {ANNOUNCEMENT_PRIVILEGES} FROM user
+        SELECT {USERNAME}, {USER_ID}, {ADMIN_PRIVILEGES}, {ANNOUNCEMENT_PRIVILEGES}, {POWER_RANKING_PRIVILEGES} FROM user
         WHERE {USERNAME} NOT IN {tuple(set(accepted_admins))}
         """
     ).fetchall()
@@ -1006,7 +1046,8 @@ def list_all_users():
             "user_id": row[USER_ID],
             "username": row[USERNAME],
             "admin_priv": row[ADMIN_PRIVILEGES],
-            "announce_priv": row[ANNOUNCEMENT_PRIVILEGES]
+            "announce_priv": row[ANNOUNCEMENT_PRIVILEGES],
+            "power_ranking_priv": row[POWER_RANKING_PRIVILEGES]
         })
 
     return render_template("users_admin.html", data=data, title="Users Admin")
@@ -1074,6 +1115,38 @@ def revoke_announcement_status(user_id):
     db.commit()
     close_db()
     return redirect(url_for('list_all_users'))
+
+@app.route("/tools/grant_power_ranking_status/<int:user_id>")
+@login_required
+def grant_power_ranking_status(user_id):
+    db = get_db()
+    db.execute(
+        f"""
+        UPDATE user
+        SET {POWER_RANKING_PRIVILEGES}=?
+        WHERE {USER_ID}=?
+        """, (1, user_id)
+    )
+    db.commit()
+    close_db()
+    return redirect(url_for('list_all_users'))
+
+
+@app.route("/tools/revoke_power_ranking_status/<int:user_id>")
+@login_required
+def revoke_power_ranking_status(user_id):
+    db = get_db()
+    db.execute(
+        f"""
+        UPDATE user
+        SET {POWER_RANKING_PRIVILEGES}=?
+        WHERE {USER_ID}=?
+        """, (0, user_id)
+    )
+    db.commit()
+    close_db()
+    return redirect(url_for('list_all_users'))
+
 
 
 @app.route("/member/<int:member_id>", methods=["GET", "POST"])
