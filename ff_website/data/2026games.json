@@ -58,5 +58,65 @@
         "home_score": 171.91,
         "away_team": "Merrick Weingarten",
         "away_score": 111.1
+    },
+    {
+        "season": "2026",
+        "week": 2,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Garrett Folbe",
+        "home_score": 47.07,
+        "away_team": "Max Levine",
+        "away_score": 98.08
+    },
+    {
+        "season": "2026",
+        "week": 2,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Merrick Weingarten",
+        "home_score": 76.75,
+        "away_team": "Merrick Bank",
+        "away_score": 121.7
+    },
+    {
+        "season": "2026",
+        "week": 2,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jarrett Black",
+        "home_score": 121.77,
+        "away_team": "Alex Ross",
+        "away_score": 125.49
+    },
+    {
+        "season": "2026",
+        "week": 2,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Daniel Banooni",
+        "home_score": 136.3,
+        "away_team": "Brad Silverman",
+        "away_score": 90.17
+    },
+    {
+        "season": "2026",
+        "week": 2,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Daniel Michaels",
+        "home_score": 95.45,
+        "away_team": "Jonah Lopas",
+        "away_score": 114.01
+    },
+    {
+        "season": "2026",
+        "week": 2,
+        "matchup_length": 1,
+        "playoffs": false,
+        "home_team": "Jason Silverstone",
+        "home_score": 99.86,
+        "away_team": "Noah Nathan",
+        "away_score": 105.93
     }
 ]
